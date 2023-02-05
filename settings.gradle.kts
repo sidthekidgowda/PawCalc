@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "PawCalc"
-include ':app'
+include(":app")
