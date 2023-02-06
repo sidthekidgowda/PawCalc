@@ -4,20 +4,20 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:
-     - name: Checkout the code
-       uses: actions/checkout@v3
-   
-    - name: set up JDK 1.8
-      uses: actions/setup-java@v2
-      with:
-        java-version: 1.8
-       
-     - name: Build the app
-        run: ./gradlew clean assembleDebug
+    build:
+        runs-on: ubuntu-latest
 
-    - name: Run Unit tests
-        run: ./gradlew test
+      steps:
+        - name: Checkout the code
+          uses: actions/checkout@v3
+
+        - name: set up JDK 1.8
+          uses: actions/setup-java@v2
+          with:
+            java-version: 1.8
+
+        - name: Build the app
+          run: ./gradlew clean assembleDebug
+
+        - name: Run Unit tests
+          run: ./gradlew test
