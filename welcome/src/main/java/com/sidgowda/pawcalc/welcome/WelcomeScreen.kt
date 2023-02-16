@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun WelcomeScreen(modifier: Modifier = Modifier, onClick: ()-> Unit) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(24.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly
