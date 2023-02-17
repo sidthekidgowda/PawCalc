@@ -12,7 +12,7 @@ class PawCalcActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PawCalcTheme {
-                HomeScreen()
+                PawCalcApp()
             }
         }
     }
@@ -23,6 +23,6 @@ class PawCalcActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     PawCalcTheme {
-       HomeScreen()
+       PawCalcApp()
     }
 }

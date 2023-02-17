@@ -8,7 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+
+const val SETTINGS_ROUTE = "settings_screen"
+fun NavGraphBuilder.settingsGraph() {
+    composable(route = SETTINGS_ROUTE) {
+        SettingsScreen()
+    }
+}
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
