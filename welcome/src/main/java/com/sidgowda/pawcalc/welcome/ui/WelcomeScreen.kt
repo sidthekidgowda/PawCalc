@@ -5,22 +5,22 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 
-const val WELCOME_SCREEN_ROUTE = "welcome_screen"
-fun NavGraphBuilder.welcomeGraph(onNavigateToAddDog: () -> Unit) {
-    composable(route = WELCOME_SCREEN_ROUTE) {
-        WelcomeScreen(onNavigateToAddDog = onNavigateToAddDog)
-    }
+@Composable
+fun WelcomeScreenRoute(onNavigateToNewDogScreen: ()-> Unit) {
+    WelcomeScreen(onNavigateToAddDog = onNavigateToNewDogScreen)
 }
 
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier, onNavigateToAddDog: ()-> Unit) {
+fun WelcomeScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToAddDog: ()-> Unit
+) {
     Column(
         modifier = modifier
             .padding(24.dp)
@@ -28,16 +28,17 @@ fun WelcomeScreen(modifier: Modifier = Modifier, onNavigateToAddDog: ()-> Unit) 
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
-            "Welcome to PawCalc. Find out how old your dog is in accurate human years.",
+            stringResource(id = R.string.welcome_content),
             fontSize = 36.sp,
             fontFamily = FontFamily.Monospace
         )
+        // todo make custom component, Button with Fix width and takes an onClick
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onNavigateToAddDog
         ) {
             Text(
-                "Add Dog",
+                stringResource(id = R.string.add_dog),
                 fontSize = 24.sp
             )
         }

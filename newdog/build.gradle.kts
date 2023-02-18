@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.viewmodel)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.library)
     kapt(libs.hilt.compiler)

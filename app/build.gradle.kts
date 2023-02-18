@@ -55,12 +55,15 @@ kapt {
 
 dependencies {
     implementation(projects.welcome)
+    // todo fix transitive dependencies
+    implementation(projects.newdog)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.compose.material)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.library)

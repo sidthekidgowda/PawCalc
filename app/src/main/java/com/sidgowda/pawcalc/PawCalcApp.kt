@@ -19,9 +19,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import com.sidgowda.pawcalc.welcome.WelcomeScreen
-import com.sidgowda.pawcalc.welcome.welcomeGraph
+import com.sidgowda.pawcalc.welcome.navigation.navigateToWelcomeScreen
+import com.sidgowda.pawcalc.welcome.navigation.welcomeScreen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -75,7 +77,7 @@ fun PawCalcNavGraph(
         navController = navController,
         startDestination = Screens.DogList.route
     ) {
-        welcomeGraph(
+        welcomeScreen(
             onNavigateToAddDog = {
                 navController.navigate(Screens.DogList.route) {
                     popUpTo(Screens.Welcome.route) { inclusive = true }
@@ -87,9 +89,11 @@ fun PawCalcNavGraph(
         dogListGraph(
             isNewUser = isNewUser,
             navigateToWelcomeScreen = {
-                navController.navigate(Screens.Welcome.route) {
-                    popUpTo(Screens.DogList.route) { inclusive = true }
-                }
+                navController.navigateToWelcomeScreen(
+                    navOptions {
+                        popUpTo(Screens.DogList.route) { inclusive = true }
+                    }
+                )
             }
         )
     }
