@@ -20,10 +20,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.sidgowda.pawcalc.newdog.navigation.navigateToNewDogScreen
+import com.sidgowda.pawcalc.newdog.navigation.newDogScreenDestination
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import com.sidgowda.pawcalc.welcome.WelcomeScreen
 import com.sidgowda.pawcalc.welcome.navigation.navigateToWelcomeScreen
-import com.sidgowda.pawcalc.welcome.navigation.welcomeScreen
+import com.sidgowda.pawcalc.welcome.navigation.welcomeScreenDestination
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -77,16 +79,25 @@ fun PawCalcNavGraph(
         navController = navController,
         startDestination = Screens.DogList.route
     ) {
-        welcomeScreen(
+        welcomeScreenDestination(
             onNavigateToAddDog = {
-                navController.navigate(Screens.DogList.route) {
-                    popUpTo(Screens.Welcome.route) { inclusive = true }
-                }
+                navController.navigateToNewDogScreen(
+                    navOptions {
+                        popUpTo(Screens.Welcome.route) {
+                            inclusive = false
+                        }
+                    }
+                )
                 updateNewUser()
             }
         )
-        settingsGraph()
-        dogListGraph(
+        settingsScreenDestination()
+        newDogScreenDestination(
+            onNavigateToDogDetails = {
+                navController.navigate(Screens.DogList.route)
+            }
+        )
+        dogListDestination(
             isNewUser = isNewUser,
             navigateToWelcomeScreen = {
                 navController.navigateToWelcomeScreen(
@@ -98,7 +109,7 @@ fun PawCalcNavGraph(
         )
     }
 }
-fun NavGraphBuilder.dogListGraph(isNewUser: Boolean, navigateToWelcomeScreen: () -> Unit) {
+fun NavGraphBuilder.dogListDestination(isNewUser: Boolean, navigateToWelcomeScreen: () -> Unit) {
     composable(route = Screens.DogList.route) {
         if (isNewUser) {
             LaunchedEffect(key1 = Unit) {

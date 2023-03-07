@@ -6,13 +6,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.welcome.WelcomeScreenRoute
 
-const val WELCOME_SCREEN_ROUTE = "welcome_screen"
+const val WELCOME_SCREEN_ROUTE = "welcome_screen_route"
 
-fun NavController.navigateToWelcomeScreen(navOptions: NavOptions?) {
+fun NavController.navigateToWelcomeScreen(navOptions: NavOptions? = null) {
     this.navigate(WELCOME_SCREEN_ROUTE, navOptions)
 }
 
-fun NavGraphBuilder.welcomeScreen(onNavigateToAddDog: () -> Unit) {
+fun NavGraphBuilder.welcomeScreenDestination(onNavigateToAddDog: () -> Unit) {
     composable(route = WELCOME_SCREEN_ROUTE) {
         WelcomeScreenRoute(onNavigateToNewDogScreen = onNavigateToAddDog)
     }
