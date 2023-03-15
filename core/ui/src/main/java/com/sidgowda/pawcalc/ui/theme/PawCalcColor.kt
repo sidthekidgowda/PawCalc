@@ -15,7 +15,9 @@ val Grey700 = Color(0xFF555555) // onSurface
 val Green200 = Color(0xFF63D68F) // primary
 val Blue200 = Color(0xFF30C4C7) // secondary
 val Grey200 = Color(0xFF646868) // surface
-
+val Grey500 = Color(0xFF8C9090) // background
+val Grey900 = Color(0xFF121212) // background
+val White = Color(0xFFFFFFFF) // onSurface
 interface PawCalcColorScheme {
     val primary: Color
     val onPrimary: Color
@@ -64,11 +66,11 @@ object PawCalcColorDarkScheme : PawCalcColorScheme {
     override val onSecondary: Color
         get() = Color.Black
     override val surface: Color
-        get() = Grey200
+        get() = Grey900
     override val onSurface: Color
         get() = Color.White
     override val background: Color
-        get() = Color.Black
+        get() = Grey900
     override val onBackground: Color
-        get() = Color.White
+        get() = White
 }

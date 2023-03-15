@@ -5,17 +5,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
+import com.sidgowda.pawcalc.ui.component.PawCalcButton
+import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
 fun NewDogRoute(newDogViewModel: NewDogViewModel = hiltViewModel()) {
@@ -39,7 +39,6 @@ fun NewDogScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Text("New Dog", modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(16.dp))
         DogInputField(
             value = newDogViewModel.name,
@@ -66,9 +65,16 @@ fun NewDogScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(16.dp))
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
-            Text("Save")
-        }
+        PawCalcButton(
+            onClick = {  },
+            content = {
+                Text(
+                    text = "Save",
+                    style = PawCalcTheme.typography.h3,
+                    color = PawCalcTheme.colors.onPrimary
+                )
+            }
+        )
     }
 }
 
