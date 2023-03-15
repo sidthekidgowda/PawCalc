@@ -1,6 +1,5 @@
 package com.sidgowda.pawcalc
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,7 +26,6 @@ import com.sidgowda.pawcalc.welcome.WelcomeScreen
 import com.sidgowda.pawcalc.welcome.navigation.navigateToWelcomeScreen
 import com.sidgowda.pawcalc.welcome.navigation.welcomeScreenDestination
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun PawCalcApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
