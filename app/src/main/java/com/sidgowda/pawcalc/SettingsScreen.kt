@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 const val SETTINGS_ROUTE = "settings_screen"
-fun NavGraphBuilder.settingsGraph() {
+fun NavGraphBuilder.settingsScreenDestination() {
     composable(route = SETTINGS_ROUTE) {
         SettingsScreen()
     }
