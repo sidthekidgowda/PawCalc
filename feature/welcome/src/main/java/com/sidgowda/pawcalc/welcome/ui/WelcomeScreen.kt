@@ -32,7 +32,10 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(50.dp))
-        PawCalcLogo(modifier = Modifier.size(100.dp))
+        PawCalcLogo(
+            modifier = Modifier.size(140.dp),
+            contentDescription = stringResource(id = R.string.cd_paw_calc_logo)
+        )
         Spacer(modifier = Modifier.height(50.dp))
         Text(
             modifier = Modifier.padding(horizontal = 20.dp),
@@ -41,7 +44,7 @@ fun WelcomeScreen(
             style = PawCalcTheme.typography.h1,
             color = PawCalcTheme.colors.onBackground
         )
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(50.dp))
         PawCalcButton(
             onClick = onNavigateToAddDog,
             content = {
