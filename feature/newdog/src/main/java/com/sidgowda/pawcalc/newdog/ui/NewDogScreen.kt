@@ -18,19 +18,21 @@ import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-fun NewDogRoute(newDogViewModel: NewDogViewModel = hiltViewModel()) {
-    NewDogScreen(
+fun NewDogScreen(
+    onSaveDog: () -> Unit
+) {
+    NewDog(
         modifier = Modifier.fillMaxSize(),
-        newDogViewModel,
-        onNavigateToDogDetails = {}
+        viewModel = hiltViewModel(),
+        onSaveDog = onSaveDog
     )
 }
 
 @Composable
-fun NewDogScreen(
+internal fun NewDog(
     modifier: Modifier = Modifier,
-    newDogViewModel: NewDogViewModel,
-    onNavigateToDogDetails: () -> Unit
+    viewModel: NewDogViewModel,
+    onSaveDog: () -> Unit
 ) {
     Column(
         modifier
@@ -42,32 +44,32 @@ fun NewDogScreen(
     ) {
         Spacer(Modifier.height(16.dp))
         DogInputField(
-            value = newDogViewModel.name,
+            value = viewModel.name,
             label = "Name",
-            onValueChange = { newValue -> newDogViewModel.updateName(newValue) },
+            onValueChange = { newValue -> viewModel.updateName(newValue) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(16.dp))
         DogInputField(
-            value = newDogViewModel.weight,
+            value = viewModel.weight,
             label = "Weight",
             placeholder = "lbs",
-            onValueChange = { newValue -> newDogViewModel.updateWeight(newValue) },
+            onValueChange = { newValue -> viewModel.updateWeight(newValue) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(16.dp))
         DogInputField(
-            value = newDogViewModel.date,
+            value = viewModel.date,
             label = "Date",
             placeholder = "mm/dd/yyyy",
-            onValueChange = { newValue -> newDogViewModel.updateDate(newValue) },
+            onValueChange = { newValue -> viewModel.updateDate(newValue) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(16.dp))
         PawCalcButton(
-            onClick = {  },
+            onClick = onSaveDog,
             content = {
                 Text(
                     text = "Save",

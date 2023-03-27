@@ -10,11 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 
 const val DOG_LIST_ROUTE = "dog_list_screen"
-fun NavGraphBuilder.dogListScreen() {
+
+fun NavController.navigateToDogListScreen(navOptions: NavOptions) {
+    this.navigate(DOG_LIST_ROUTE, navOptions)
+}
+fun NavGraphBuilder.dogListScreenDestination() {
     composable(route = DOG_LIST_ROUTE) {
         DogListScreen()
     }

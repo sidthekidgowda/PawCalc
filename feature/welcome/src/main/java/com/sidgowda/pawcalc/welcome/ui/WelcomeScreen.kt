@@ -15,19 +15,19 @@ import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-fun WelcomeScreenRoute(onNavigateToNewDogScreen: ()-> Unit) {
-    WelcomeScreen(onNavigateToAddDog = onNavigateToNewDogScreen)
+fun WelcomeScreen(onNavigateToNewDog: () -> Unit) {
+    Welcome(onNavigateToNewDog = onNavigateToNewDog)
 }
 
 @Composable
-fun WelcomeScreen(
+internal fun Welcome(
     modifier: Modifier = Modifier,
-    onNavigateToAddDog: ()-> Unit
+    onNavigateToNewDog: ()-> Unit
 ) {
     Column(
         modifier = modifier
-            .padding(24.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -46,7 +46,7 @@ fun WelcomeScreen(
         )
         Spacer(modifier = Modifier.height(50.dp))
         PawCalcButton(
-            onClick = onNavigateToAddDog,
+            onClick = onNavigateToNewDog,
             content = {
                 Text(
                     stringResource(id = R.string.add_dog),
@@ -63,10 +63,12 @@ fun WelcomeScreen(
 @Composable
 fun PreviewWelcomeScreen() {
     PawCalcTheme {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(PawCalcTheme.colors.background)) {
-            WelcomeScreen(onNavigateToAddDog = {})
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PawCalcTheme.colors.background)
+        ) {
+            WelcomeScreen(onNavigateToNewDog = {})
         }
     }
 }

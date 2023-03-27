@@ -8,8 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.sidgowda.pawcalc.newdog.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.newdog.navigation.navigateToNewDogScreen
 import com.sidgowda.pawcalc.newdog.navigation.newDogScreenDestination
+import com.sidgowda.pawcalc.welcome.navigation.WELCOME_SCREEN_ROUTE
 import com.sidgowda.pawcalc.welcome.navigation.navigateToWelcomeScreen
 import com.sidgowda.pawcalc.welcome.navigation.welcomeScreenDestination
 
@@ -17,29 +19,33 @@ import com.sidgowda.pawcalc.welcome.navigation.welcomeScreenDestination
 fun PawCalcNavGraph(
     modifier: Modifier = Modifier,
     isNewUser: Boolean,
-    navController: NavHostController,
-    updateNewUser: () -> Unit
+    navController: NavHostController
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.DogList.route
+        startDestination = DOG_LIST_ROUTE
     ) {
         welcomeScreenDestination(
-            onNavigateToAddDog = {
+            onNavigateToNewDog = {
                 navController.navigateToNewDogScreen(
                     navOptions {
-                        popUpTo(Screens.Welcome.route) {
-                            inclusive = false
+                        popUpTo(WELCOME_SCREEN_ROUTE) {
+                            inclusive = true
                         }
                     }
                 )
-                updateNewUser()
             }
         )
         settingsScreenDestination()
         newDogScreenDestination(
-            onNavigateToDogDetails = {
-                navController.navigate(Screens.DogList.route)
+            onSaveDog = {
+                navController.navigateToDogListScreen(
+                    navOptions {
+                        popUpTo(NEW_DOG_SCREEN_ROUTE) {
+                            inclusive = true
+                        }
+                    }
+                )
             }
         )
         dogListDestination(
@@ -47,7 +53,9 @@ fun PawCalcNavGraph(
             navigateToWelcomeScreen = {
                 navController.navigateToWelcomeScreen(
                     navOptions {
-                        popUpTo(Screens.DogList.route) { inclusive = true }
+                        popUpTo(DOG_LIST_ROUTE) {
+                            inclusive = true
+                        }
                     }
                 )
             }
@@ -56,9 +64,9 @@ fun PawCalcNavGraph(
 }
 
 fun NavGraphBuilder.dogListDestination(isNewUser: Boolean, navigateToWelcomeScreen: () -> Unit) {
-    composable(route = Screens.DogList.route) {
+    composable(route = DOG_LIST_ROUTE) {
         if (isNewUser) {
-            LaunchedEffect(key1 = Unit) {
+            LaunchedEffect(Unit) {
                 navigateToWelcomeScreen()
             }
         } else {

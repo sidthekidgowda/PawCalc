@@ -1,5 +1,7 @@
 package com.sidgowda.pawcalc
 
+import android.annotation.SuppressLint
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,6 +12,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sidgowda.pawcalc.ui.component.PawCalcTopAppBar
@@ -17,49 +20,47 @@ import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import com.sidgowda.pawcalc.welcome.WelcomeScreen
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun PawCalcApp(
-    modifier: Modifier = Modifier,
     isNewUser: Boolean = false
 ) {
+    var isNewUser by remember { mutableStateOf(isNewUser) }
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStack?.destination
-    var isNewUser by remember { mutableStateOf(isNewUser) }
-    val currentScreen = currentDestination?.route ?: Screens.DogList.route
-    val backButtonScreens = listOf(Screens.Settings.route)
-
+    val currentDestination by derivedStateOf {
+        currentBackStack?.destination?.route?.let {
+            Destination.fromString(it)
+        } ?: run {
+            if (isNewUser) {
+                Destination.Welcome
+            } else {
+                Destination.DogList
+            }
+        }
+    }
     Scaffold(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             HomeTopBar(
-                title = topBarTitle(currentScreen),
-                canNavigateBack = backButtonScreens.contains(currentScreen),
+                title = currentDestination.title,
+                canNavigateBack = navController.backQueue.size > 1,
                 navigateBack = { navController.navigateUp() },
-                navigateToSettings = { navController.navigate(Screens.Settings.route) }
+                navigateToSettings = { navController.navigate(SETTINGS_ROUTE) }
             )
         }
     ) { innerPadding ->
         PawCalcNavGraph(
             isNewUser = isNewUser,
             navController = navController,
-            updateNewUser =  { isNewUser = false },
-            modifier = modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }
 
-fun topBarTitle(route: String): String =
-    when (route) {
-        Screens.Welcome.route -> "PawCalc"
-        Screens.DogList.route -> "PawCalc"
-        Screens.Settings.route -> "Settings"
-        else -> "PawCalc"
-    }
-
 @Composable
 fun HomeTopBar(
-    title: String,
+    @StringRes title: Int,
     canNavigateBack: Boolean,
     actionIcon: ImageVector = Icons.Default.Settings,
     navigateBack: () -> Unit,
@@ -68,7 +69,7 @@ fun HomeTopBar(
     PawCalcTopAppBar(
         title = {
             Text(
-                text = title,
+                text = stringResource(id = title),
                 style = PawCalcTheme.typography.h2,
                 color = PawCalcTheme.colors.onPrimarySurface()
             )
@@ -107,7 +108,7 @@ fun HomeTopBar(
 fun PreviewHomeTopBar() {
     PawCalcTheme {
         HomeTopBar(
-            title = "PawCalc",
+            title = R.string.title_home,
             canNavigateBack = false,
             navigateBack = {},
             navigateToSettings = {}
@@ -119,7 +120,7 @@ fun PreviewHomeTopBar() {
 fun PreviewSettingsTopBar() {
     PawCalcTheme {
         HomeTopBar(
-            title = "Settings",
+            title = R.string.title_settings,
             canNavigateBack = true,
             navigateBack = {},
             navigateToSettings = {}
@@ -133,10 +134,13 @@ fun PreviewHomeScreen() {
     PawCalcTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column {
-                PreviewHomeTopBar()
-                WelcomeScreen() {
-
-                }
+                HomeTopBar(
+                    title = R.string.title_home,
+                    canNavigateBack = false,
+                    navigateBack = {},
+                    navigateToSettings = {}
+                )
+                WelcomeScreen(onNavigateToNewDog = {})
             }
         }
     }
