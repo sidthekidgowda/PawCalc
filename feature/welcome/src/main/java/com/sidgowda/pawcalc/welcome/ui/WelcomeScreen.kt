@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
+import com.sidgowda.pawcalc.ui.component.PawCalcLogo
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
@@ -30,7 +31,9 @@ fun WelcomeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(50.dp))
+        PawCalcLogo(modifier = Modifier.size(100.dp))
+        Spacer(modifier = Modifier.height(50.dp))
         Text(
             modifier = Modifier.padding(horizontal = 20.dp),
             textAlign = TextAlign.Center,
@@ -38,8 +41,7 @@ fun WelcomeScreen(
             style = PawCalcTheme.typography.h1,
             color = PawCalcTheme.colors.onBackground
         )
-        // todo make custom component, Button with Fix width and takes an onClick
-        Spacer(modifier = Modifier.weight(1.0f))
+        Spacer(modifier = Modifier.height(100.dp))
         PawCalcButton(
             onClick = onNavigateToAddDog,
             content = {
@@ -53,6 +55,7 @@ fun WelcomeScreen(
     }
 }
 
+//-------Preview------------------------------------------------------------------------------------
 @LightDarkPreview
 @Composable
 fun PreviewWelcomeScreen() {
