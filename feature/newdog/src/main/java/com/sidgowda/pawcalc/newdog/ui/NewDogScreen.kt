@@ -20,6 +20,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 @Composable
 fun NewDogRoute(newDogViewModel: NewDogViewModel = hiltViewModel()) {
     NewDogScreen(
+        modifier = Modifier.fillMaxSize(),
         newDogViewModel,
         onNavigateToDogDetails = {}
     )
@@ -27,10 +28,10 @@ fun NewDogRoute(newDogViewModel: NewDogViewModel = hiltViewModel()) {
 
 @Composable
 fun NewDogScreen(
-    newDogViewModel: NewDogViewModel,
     modifier: Modifier = Modifier,
-    onNavigateToDogDetails: () -> Unit) {
-
+    newDogViewModel: NewDogViewModel,
+    onNavigateToDogDetails: () -> Unit
+) {
     Column(
         modifier
             .fillMaxSize()

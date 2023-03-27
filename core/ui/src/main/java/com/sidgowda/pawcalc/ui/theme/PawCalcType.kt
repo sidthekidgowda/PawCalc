@@ -17,7 +17,7 @@ val OpenSans = FontFamily(
 object PawCalcTypography {
     val h1 = TextStyle(
         fontFamily = OpenSans,
-        fontSize = 40.sp,
+        fontSize = 36.sp,
         fontWeight = FontWeight.Normal
     )
 
