@@ -1,13 +1,15 @@
 package com.sidgowda.pawcalc
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,20 +25,15 @@ import com.sidgowda.pawcalc.welcome.WelcomeScreen
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun PawCalcApp(
-    isNewUser: Boolean = false
+    activity: Activity
 ) {
-    var isNewUser by remember { mutableStateOf(isNewUser) }
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination by derivedStateOf {
         currentBackStack?.destination?.route?.let {
             Destination.fromString(it)
         } ?: run {
-            if (isNewUser) {
-                Destination.Welcome
-            } else {
-                Destination.DogList
-            }
+            Destination.DogList
         }
     }
     Scaffold(
@@ -44,27 +41,35 @@ fun PawCalcApp(
         topBar = {
             HomeTopBar(
                 title = currentDestination.title,
-                canNavigateBack = navController.backQueue.size > 1,
-                navigateBack = { navController.navigateUp() },
-                navigateToSettings = { navController.navigate(SETTINGS_ROUTE) }
+                navIcon = currentDestination.navIcon,
+                actionIcon = currentDestination.actionIcon,
+                onNavIconClick = {
+                    navController.popBackStack(route = DOG_LIST_ROUTE, inclusive = false )
+                                 },
+                onActionClick = { navController.navigate(SETTINGS_ROUTE) }
             )
         }
     ) { innerPadding ->
-        PawCalcNavGraph(
-            isNewUser = isNewUser,
-            navController = navController,
-            modifier = Modifier.padding(innerPadding)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            PawCalcNavGraph(
+                navController = navController,
+                activity = activity
+            )
+        }
     }
 }
 
 @Composable
 fun HomeTopBar(
     @StringRes title: Int,
-    canNavigateBack: Boolean,
-    actionIcon: ImageVector = Icons.Default.Settings,
-    navigateBack: () -> Unit,
-    navigateToSettings: () -> Unit
+    navIcon: ImageVector?,
+    actionIcon: ImageVector?,
+    onNavIconClick: () -> Unit,
+    onActionClick: () -> Unit
 ) {
     PawCalcTopAppBar(
         title = {
@@ -75,27 +80,29 @@ fun HomeTopBar(
             )
         },
         navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateBack) {
+            if (navIcon != null) {
+                IconButton(onClick = onNavIconClick) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        null,
-                        tint = PawCalcTheme.colors.primarySurface()
+                        imageVector = navIcon,
+                        contentDescription = null,
+                        tint = PawCalcTheme.colors.onPrimarySurface()
                     )
                 }
             } else {
                 null
             }
         },
-        action = {
-            IconButton(
-                onClick = navigateToSettings
-            ) {
-                Icon(
-                    imageVector = actionIcon,
-                    contentDescription = null,
-                    tint = PawCalcTheme.colors.onPrimarySurface()
-                )
+        actionIcon = {
+            if (actionIcon != null) {
+                IconButton(onClick = onActionClick) {
+                    Icon(
+                        imageVector = actionIcon,
+                        contentDescription = null,
+                        tint = PawCalcTheme.colors.onPrimarySurface()
+                    )
+                }
+            } else {
+                null
             }
         }
     )
@@ -109,21 +116,24 @@ fun PreviewHomeTopBar() {
     PawCalcTheme {
         HomeTopBar(
             title = R.string.title_home,
-            canNavigateBack = false,
-            navigateBack = {},
-            navigateToSettings = {}
+            navIcon = Icons.Default.Close,
+            actionIcon = Icons.Default.Settings,
+            onNavIconClick = {},
+            onActionClick = {}
         )
     }
 }
+
 @LightDarkPreview
 @Composable
 fun PreviewSettingsTopBar() {
     PawCalcTheme {
         HomeTopBar(
             title = R.string.title_settings,
-            canNavigateBack = true,
-            navigateBack = {},
-            navigateToSettings = {}
+            navIcon = null,
+            actionIcon = null,
+            onNavIconClick = {},
+            onActionClick = {}
         )
     }
 }
@@ -136,11 +146,12 @@ fun PreviewHomeScreen() {
             Column {
                 HomeTopBar(
                     title = R.string.title_home,
-                    canNavigateBack = false,
-                    navigateBack = {},
-                    navigateToSettings = {}
+                    navIcon = null,
+                    actionIcon = null,
+                    onNavIconClick = {},
+                    onActionClick = {}
                 )
-                WelcomeScreen(onNavigateToNewDog = {})
+                WelcomeScreen(onNavigateToNewDog = {}, onPopBackStack = {})
             }
         }
     }

@@ -15,14 +15,23 @@ import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-fun WelcomeScreen(onNavigateToNewDog: () -> Unit) {
-    Welcome(onNavigateToNewDog = onNavigateToNewDog)
+fun WelcomeScreen(
+    onNavigateToNewDog: () -> Unit,
+    onPopBackStack: () -> Unit
+) {
+    Welcome(
+        onBoarded = {
+            onPopBackStack()
+            onNavigateToNewDog()
+            OnboardingSingleton.onOnboarded()
+        }
+    )
 }
 
 @Composable
 internal fun Welcome(
     modifier: Modifier = Modifier,
-    onNavigateToNewDog: ()-> Unit
+    onBoarded: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -46,7 +55,7 @@ internal fun Welcome(
         )
         Spacer(modifier = Modifier.height(50.dp))
         PawCalcButton(
-            onClick = onNavigateToNewDog,
+            onClick = onBoarded,
             content = {
                 Text(
                     stringResource(id = R.string.add_dog),
@@ -68,7 +77,7 @@ fun PreviewWelcomeScreen() {
                 .fillMaxSize()
                 .background(PawCalcTheme.colors.background)
         ) {
-            WelcomeScreen(onNavigateToNewDog = {})
+            WelcomeScreen(onNavigateToNewDog = {}, onPopBackStack = {})
         }
     }
 }

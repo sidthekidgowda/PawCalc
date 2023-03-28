@@ -12,8 +12,12 @@ fun NavController.navigateToNewDogScreen(navOptions: NavOptions? = null) {
     this.navigate(NEW_DOG_SCREEN_ROUTE, navOptions)
 }
 
-fun NavGraphBuilder.newDogScreenDestination(onSaveDog: () -> Unit) {
+fun NavGraphBuilder.newDogScreenDestination(
+    onSaveDog: () -> Unit
+) {
     composable(route = NEW_DOG_SCREEN_ROUTE) {
-        NewDogScreen(onSaveDog = onSaveDog)
+        NewDogScreen(
+            onSaveDog = onSaveDog
+        )
     }
 }

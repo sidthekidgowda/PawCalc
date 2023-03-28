@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +22,7 @@ fun PawCalcTopAppBar(
     modifier: Modifier = Modifier,
     navigationIcon: @Composable (() -> Unit)? = null,
     title: @Composable () -> Unit,
-    action: @Composable () -> Unit
+    actionIcon: @Composable (() -> Unit)? = null
 ) {
     TopAppBar(
         modifier = modifier,
@@ -40,16 +41,19 @@ fun PawCalcTopAppBar(
             Row(modifier = Modifier.align(Alignment.Center)) {
                 title()
             }
-            Row(modifier = Modifier.align(Alignment.CenterEnd)) {
-                action()
+            actionIcon?.let { icon ->
+                Row(modifier = Modifier.align(Alignment.CenterEnd)) {
+                    icon()
+                }
             }
         }
     }
 }
 
+//--------Preview-----------------------------------------------------------------------------------
 @LightDarkPreview
 @Composable
-fun PreviewPawCalcTopAppBar() {
+fun PreviewPawCalcTopAppBarWithBothActionIconAndNavigationIcon() {
     PawCalcTheme {
         PawCalcTopAppBar(
             title = {
@@ -59,7 +63,7 @@ fun PreviewPawCalcTopAppBar() {
                     color = PawCalcTheme.colors.onPrimarySurface()
                 )
             },
-            action = {
+            actionIcon = {
                 IconButton(
                     onClick = {  }
                 ) {
@@ -87,7 +91,35 @@ fun PreviewPawCalcTopAppBar() {
 
 @LightDarkPreview
 @Composable
-fun PreviewPawCalcTopAppBarWithoutNavigateBack() {
+fun PreviewPawCalcTopAppBarWithNavigationIconAndWithoutAtionIcon() {
+    PawCalcTheme {
+        PawCalcTopAppBar(
+            title = {
+                Text(
+                    text = "Hello",
+                    style = PawCalcTheme.typography.h1,
+                    color = PawCalcTheme.colors.onPrimarySurface()
+                )
+            },
+            actionIcon = null,
+            navigationIcon = {
+                IconButton(onClick = {
+
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        tint = PawCalcTheme.colors.onPrimarySurface()
+                    )
+                }
+            }
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun PreviewPawCalcTopAppBarWithActionIconAndNoNavigationIcon() {
     PawCalcTheme {
         PawCalcTopAppBar(
             title = {
@@ -97,7 +129,7 @@ fun PreviewPawCalcTopAppBarWithoutNavigateBack() {
                     color = PawCalcTheme.colors.onPrimarySurface()
                 )
             },
-            action = {
+            actionIcon = {
                 IconButton(
                     onClick = {  }
                 ) {
@@ -113,3 +145,20 @@ fun PreviewPawCalcTopAppBarWithoutNavigateBack() {
     }
 }
 
+@LightDarkPreview
+@Composable
+fun PreviewPawCalcTopAppBarWithoutActionIconAndNoNavigationIcon() {
+    PawCalcTheme {
+        PawCalcTopAppBar(
+            title = {
+                Text(
+                    text = "Settings",
+                    style = PawCalcTheme.typography.h2,
+                    color = PawCalcTheme.colors.onPrimarySurface()
+                )
+            },
+            actionIcon = null,
+            navigationIcon = null
+        )
+    }
+}

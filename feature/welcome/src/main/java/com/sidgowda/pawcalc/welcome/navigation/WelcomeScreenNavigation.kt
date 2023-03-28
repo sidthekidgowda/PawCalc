@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.welcome.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,8 +13,19 @@ fun NavController.navigateToWelcomeScreen(navOptions: NavOptions? = null) {
     this.navigate(WELCOME_SCREEN_ROUTE, navOptions)
 }
 
-fun NavGraphBuilder.welcomeScreenDestination(onNavigateToNewDog: () -> Unit) {
+
+fun NavGraphBuilder.welcomeScreenDestination(
+    setOnboardingResult: () -> Unit,
+    onNavigateToNewDog: () -> Unit,
+    onPopBackStack: () -> Unit
+) {
     composable(route = WELCOME_SCREEN_ROUTE) {
-        WelcomeScreen(onNavigateToNewDog = onNavigateToNewDog)
+        LaunchedEffect(key1 = Unit) {
+            setOnboardingResult()
+        }
+        WelcomeScreen(
+            onNavigateToNewDog = onNavigateToNewDog,
+            onPopBackStack = onPopBackStack
+        )
     }
 }
