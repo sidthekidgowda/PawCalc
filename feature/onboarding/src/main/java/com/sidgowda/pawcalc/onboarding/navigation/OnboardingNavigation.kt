@@ -13,7 +13,6 @@ fun NavController.navigateToOnboarding(navOptions: NavOptions? = null) {
     this.navigate(ONBOARDING_ROUTE, navOptions)
 }
 
-
 fun NavGraphBuilder.onboardingDestination(
     setOnboardingResult: () -> Unit,
     onNavigateToNewDog: () -> Unit,

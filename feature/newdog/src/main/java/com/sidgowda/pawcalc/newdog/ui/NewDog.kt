@@ -18,10 +18,10 @@ import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-fun NewDogScreen(
+fun NewDog(
     onSaveDog: () -> Unit
 ) {
-    NewDog(
+    NewDogScreen(
         modifier = Modifier.fillMaxSize(),
         viewModel = hiltViewModel(),
         onSaveDog = onSaveDog
@@ -29,7 +29,7 @@ fun NewDogScreen(
 }
 
 @Composable
-internal fun NewDog(
+internal fun NewDogScreen(
     modifier: Modifier = Modifier,
     viewModel: NewDogViewModel,
     onSaveDog: () -> Unit
