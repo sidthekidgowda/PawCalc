@@ -1,6 +1,5 @@
 package com.sidgowda.pawcalc
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,7 +13,7 @@ import com.sidgowda.pawcalc.welcome.navigation.welcomeScreenDestination
 @Composable
 fun PawCalcNavGraph(
     navController: NavHostController,
-    activity: Activity
+    onActivityFinish: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -24,9 +23,7 @@ fun PawCalcNavGraph(
             onNavigateToWelcomeDog = {
                 navController.navigateToWelcomeScreen()
             },
-            onOnboardingCanceled = {
-                activity.finish()
-            }
+            onOnboardingCanceled = onActivityFinish
         )
         welcomeScreenDestination(
             setOnboardingResult = {

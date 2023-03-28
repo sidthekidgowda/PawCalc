@@ -54,8 +54,6 @@ kapt {
 }
 
 dependencies {
-    // todo fix transitive dependencies
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.3")
     implementation(projects.feature.newdog)
     implementation(projects.feature.welcome)
     implementation(projects.core.ui)
@@ -67,6 +65,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.library)
     kapt(libs.hilt.compiler)

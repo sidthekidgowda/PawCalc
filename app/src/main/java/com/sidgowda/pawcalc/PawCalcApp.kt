@@ -1,7 +1,6 @@
 package com.sidgowda.pawcalc
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,7 @@ import com.sidgowda.pawcalc.welcome.WelcomeScreen
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun PawCalcApp(
-    activity: Activity
+    onActivityFinish: () -> Unit
 ) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -44,8 +43,8 @@ fun PawCalcApp(
                 navIcon = currentDestination.navIcon,
                 actionIcon = currentDestination.actionIcon,
                 onNavIconClick = {
-                    navController.popBackStack(route = DOG_LIST_ROUTE, inclusive = false )
-                                 },
+                    navController.popBackStack(route = DOG_LIST_ROUTE, inclusive = false)
+                },
                 onActionClick = { navController.navigate(SETTINGS_ROUTE) }
             )
         }
@@ -57,7 +56,7 @@ fun PawCalcApp(
         ) {
             PawCalcNavGraph(
                 navController = navController,
-                activity = activity
+                onActivityFinish = onActivityFinish
             )
         }
     }

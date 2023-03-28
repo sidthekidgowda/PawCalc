@@ -3,6 +3,8 @@ package com.sidgowda.pawcalc
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -13,9 +15,17 @@ class PawCalcActivity : ComponentActivity() {
         setContent {
             PawCalcTheme {
                 PawCalcApp(
-                    this@PawCalcActivity
+                    onActivityFinish = { this@PawCalcActivity.finish() }
                 )
             }
         }
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun PreviewPawCalcActivity() {
+    PawCalcTheme {
+        PawCalcApp(onActivityFinish = {})
     }
 }

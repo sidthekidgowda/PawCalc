@@ -45,7 +45,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.3")
     implementation(projects.core.ui)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -55,6 +54,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidJunit)
