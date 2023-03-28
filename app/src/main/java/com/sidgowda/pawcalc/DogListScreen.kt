@@ -20,9 +20,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.sidgowda.pawcalc.welcome.OnboardingResult
-import com.sidgowda.pawcalc.welcome.OnboardingState
-import com.sidgowda.pawcalc.welcome.navigation.WELCOME_SCREEN_ROUTE
+import com.sidgowda.pawcalc.onboarding.OnboardingResult
+import com.sidgowda.pawcalc.onboarding.OnboardingState
+import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
 
 const val DOG_LIST_ROUTE = "dog_list_screen"
 
@@ -31,13 +31,13 @@ fun NavController.navigateToDogListScreen(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.dogListScreenDestination(
-    onNavigateToWelcomeDog: () -> Unit,
+    onNavigateToOnboarding: () -> Unit,
     onOnboardingCanceled: () -> Unit
 ) {
     composable(route = DOG_LIST_ROUTE) { backStackEntry ->
         DogListScreen(
             savedStateHandle = backStackEntry.savedStateHandle,
-            onNavigateToWelcomeDog = onNavigateToWelcomeDog,
+            onNavigateToOnboarding = onNavigateToOnboarding,
             onOnboardingCanceled = onOnboardingCanceled
         )
     }
@@ -47,11 +47,11 @@ fun NavGraphBuilder.dogListScreenDestination(
 fun DogListScreen(
     savedStateHandle: SavedStateHandle,
     viewModel: DogListViewModel = hiltViewModel(),
-    onNavigateToWelcomeDog: () -> Unit,
+    onNavigateToOnboarding: () -> Unit,
     onOnboardingCanceled: () -> Unit
 ) {
     val onboardingState = viewModel.onboardingState.collectAsState().value
-    val onboardingResult by savedStateHandle.getLiveData<OnboardingResult>(WELCOME_SCREEN_ROUTE).observeAsState()
+    val onboardingResult by savedStateHandle.getLiveData<OnboardingResult>(ONBOARDING_ROUTE).observeAsState()
 
     when (onboardingState) {
         OnboardingState.Onboarded -> {
@@ -60,7 +60,7 @@ fun DogListScreen(
         OnboardingState.NotOnboarded -> {
             when (onboardingResult) {
                 null ->  LaunchedEffect(key1 = Unit) {
-                    onNavigateToWelcomeDog()
+                    onNavigateToOnboarding()
                 }
                 OnboardingResult.Completed -> DogList()
                 OnboardingResult.Cancelled -> LaunchedEffect(key1 = Unit) {

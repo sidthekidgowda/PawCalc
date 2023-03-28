@@ -1,7 +1,7 @@
 package com.sidgowda.pawcalc
 
 import androidx.lifecycle.ViewModel
-import com.sidgowda.pawcalc.welcome.OnboardingSingleton
+import com.sidgowda.pawcalc.onboarding.OnboardingSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

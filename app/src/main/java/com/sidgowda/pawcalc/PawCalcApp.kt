@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.sidgowda.pawcalc.onboarding.Onboarding
 import com.sidgowda.pawcalc.ui.component.PawCalcTopAppBar
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
-import com.sidgowda.pawcalc.welcome.WelcomeScreen
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -150,7 +150,7 @@ fun PreviewHomeScreen() {
                     onNavIconClick = {},
                     onActionClick = {}
                 )
-                WelcomeScreen(onNavigateToNewDog = {}, onPopBackStack = {})
+                Onboarding(onNavigateToNewDog = {}, onPopBackStack = {})
             }
         }
     }

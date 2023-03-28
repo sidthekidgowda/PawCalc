@@ -5,10 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.sidgowda.pawcalc.newdog.navigation.navigateToNewDogScreen
 import com.sidgowda.pawcalc.newdog.navigation.newDogScreenDestination
-import com.sidgowda.pawcalc.welcome.OnboardingResult
-import com.sidgowda.pawcalc.welcome.navigation.WELCOME_SCREEN_ROUTE
-import com.sidgowda.pawcalc.welcome.navigation.navigateToWelcomeScreen
-import com.sidgowda.pawcalc.welcome.navigation.welcomeScreenDestination
+import com.sidgowda.pawcalc.onboarding.OnboardingResult
+import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
+import com.sidgowda.pawcalc.onboarding.navigation.navigateToOnboarding
+import com.sidgowda.pawcalc.onboarding.navigation.onboardingDestination
 
 @Composable
 fun PawCalcNavGraph(
@@ -20,15 +20,15 @@ fun PawCalcNavGraph(
         startDestination = DOG_LIST_ROUTE
     ) {
         dogListScreenDestination(
-            onNavigateToWelcomeDog = {
-                navController.navigateToWelcomeScreen()
+            onNavigateToOnboarding = {
+                navController.navigateToOnboarding()
             },
             onOnboardingCanceled = onActivityFinish
         )
-        welcomeScreenDestination(
+        onboardingDestination(
             setOnboardingResult = {
                 navController.previousBackStackEntry?.savedStateHandle?.set(
-                    WELCOME_SCREEN_ROUTE,
+                    ONBOARDING_ROUTE,
                     OnboardingResult.Cancelled
                 )
             },

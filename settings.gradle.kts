@@ -19,7 +19,7 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 rootProject.name = "PawCalc"
 include(":app")
-include(":feature:welcome")
+include(":feature:onboarding")
 include(":feature:newdog")
 include(":core:ui")
 
