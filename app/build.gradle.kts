@@ -44,7 +44,9 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}" + "**/attach_hotspot_windows.dll" + "META-INF/licenses/ASM"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "**/attach_hotspot_windows.dll"
+            excludes += "META-INF/licenses/ASM"
         }
     }
 }
@@ -68,17 +70,18 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android)
-    // test libraries
     implementation(libs.hilt.navigation.compose)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidJunit)
-    androidTestImplementation(libs.espressoCore)
-    androidTestImplementation(libs.composeUiTest)
-    androidTestImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.androidx.test.core)
-    kaptAndroidTest(libs.hilt.android.compiler)
+    kapt(libs.hilt.android.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    // test libraries
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.androidx.test.core)
 }
