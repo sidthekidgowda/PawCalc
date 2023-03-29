@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -75,9 +76,12 @@ fun DogListScreen(
 fun DogList(
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(Color.Green)) {
+    Column(
+        modifier = modifier
+            .testTag(DOG_LIST_ROUTE)
+            .fillMaxSize()
+            .background(Color.Green)
+    ) {
         Text("Dog 1")
         Spacer(Modifier.height(20.dp))
         Text("Dog 2")

@@ -6,9 +6,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.sidgowda.pawcalc.onboarding.TestTags.TAG_ADD_DOG_BUTTON
+import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PawCalcLogo
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -35,6 +38,7 @@ internal fun OnboardingScreen(
 ) {
     Column(
         modifier = modifier
+            .testTag(ONBOARDING_ROUTE)
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.Top,
@@ -55,6 +59,7 @@ internal fun OnboardingScreen(
         )
         Spacer(modifier = Modifier.height(50.dp))
         PawCalcButton(
+            modifier = Modifier.testTag(TAG_ADD_DOG_BUTTON),
             onClick = onBoarded,
             content = {
                 Text(

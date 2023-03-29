@@ -10,9 +10,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sidgowda.pawcalc.newdog.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -35,7 +37,8 @@ internal fun NewDogScreen(
     onSaveDog: () -> Unit
 ) {
     Column(
-        modifier
+        modifier = modifier
+            .testTag(NEW_DOG_SCREEN_ROUTE)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(Color.White)

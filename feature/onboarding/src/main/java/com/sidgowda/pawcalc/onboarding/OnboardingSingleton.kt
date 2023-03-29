@@ -21,4 +21,8 @@ object OnboardingSingleton {
     fun onOnboarded() {
         _onboardingState.value = OnboardingState.Onboarded
     }
+
+    fun reset() {
+        _onboardingState.value = OnboardingState.NotOnboarded
+    }
 }

@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -22,7 +23,8 @@ fun NavGraphBuilder.settingsScreenDestination() {
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
     Column(
-        modifier
+        modifier = modifier
+            .testTag(SETTINGS_ROUTE)
             .fillMaxSize()
             .background(Color.Black)) {
         Text("Settings", color = Color.Red)

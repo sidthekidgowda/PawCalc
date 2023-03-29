@@ -1,18 +1,13 @@
 package com.sidgowda.pawcalc
 
 import android.annotation.SuppressLint
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -39,9 +34,7 @@ fun PawCalcApp(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             HomeTopBar(
-                title = currentDestination.title,
-                navIcon = currentDestination.navIcon,
-                actionIcon = currentDestination.actionIcon,
+                currentDestination = currentDestination,
                 onNavIconClick = {
                     navController.popBackStack(route = DOG_LIST_ROUTE, inclusive = false)
                 },
@@ -64,26 +57,26 @@ fun PawCalcApp(
 
 @Composable
 fun HomeTopBar(
-    @StringRes title: Int,
-    navIcon: ImageVector?,
-    actionIcon: ImageVector?,
+    currentDestination: Destination,
     onNavIconClick: () -> Unit,
     onActionClick: () -> Unit
 ) {
     PawCalcTopAppBar(
         title = {
             Text(
-                text = stringResource(id = title),
+                text = stringResource(id = currentDestination.title),
                 style = PawCalcTheme.typography.h2,
                 color = PawCalcTheme.colors.onPrimarySurface()
             )
         },
         navigationIcon = {
-            if (navIcon != null) {
+            if (currentDestination.navIcon != null) {
                 IconButton(onClick = onNavIconClick) {
                     Icon(
-                        imageVector = navIcon,
-                        contentDescription = null,
+                        imageVector = currentDestination.navIcon,
+                        contentDescription = stringResource(
+                            id = currentDestination.navIconContentDescription
+                        ),
                         tint = PawCalcTheme.colors.onPrimarySurface()
                     )
                 }
@@ -92,11 +85,13 @@ fun HomeTopBar(
             }
         },
         actionIcon = {
-            if (actionIcon != null) {
+            if (currentDestination.actionIcon != null) {
                 IconButton(onClick = onActionClick) {
                     Icon(
-                        imageVector = actionIcon,
-                        contentDescription = null,
+                        imageVector = currentDestination.actionIcon,
+                        contentDescription = stringResource(
+                            id = currentDestination.actionIconContentDescription
+                        ),
                         tint = PawCalcTheme.colors.onPrimarySurface()
                     )
                 }
@@ -114,9 +109,7 @@ fun HomeTopBar(
 fun PreviewHomeTopBar() {
     PawCalcTheme {
         HomeTopBar(
-            title = R.string.title_home,
-            navIcon = Icons.Default.Close,
-            actionIcon = Icons.Default.Settings,
+            currentDestination = Destination.Onboarding,
             onNavIconClick = {},
             onActionClick = {}
         )
@@ -128,9 +121,7 @@ fun PreviewHomeTopBar() {
 fun PreviewSettingsTopBar() {
     PawCalcTheme {
         HomeTopBar(
-            title = R.string.title_settings,
-            navIcon = null,
-            actionIcon = null,
+            currentDestination = Destination.Settings,
             onNavIconClick = {},
             onActionClick = {}
         )
@@ -144,9 +135,7 @@ fun PreviewHomeScreen() {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column {
                 HomeTopBar(
-                    title = R.string.title_home,
-                    navIcon = null,
-                    actionIcon = null,
+                    currentDestination = Destination.DogList,
                     onNavIconClick = {},
                     onActionClick = {}
                 )

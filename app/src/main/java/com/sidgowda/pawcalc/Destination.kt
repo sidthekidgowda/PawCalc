@@ -2,6 +2,7 @@ package com.sidgowda.pawcalc
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -11,7 +12,9 @@ import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
 sealed class Destination(
     @StringRes val title: Int,
     val navIcon: ImageVector? = null,
-    val actionIcon: ImageVector? = null
+    @StringRes val navIconContentDescription: Int = 0,
+    val actionIcon: ImageVector? = null,
+    @StringRes val actionIconContentDescription: Int = 0
 ) {
     companion object {
         fun fromString(route: String): Destination {
@@ -24,18 +27,25 @@ sealed class Destination(
         }
     }
     object Onboarding: Destination(
-        title = R.string.title_home,
-        actionIcon = Icons.Default.Settings
+        title = R.string.title_home
     )
-    object Settings: Destination(title = R.string.title_settings)
+
+    object Settings: Destination(
+        title = R.string.title_settings,
+        navIcon = Icons.Default.ArrowBack,
+        navIconContentDescription = R.string.cd_press_back
+    )
     object DogList: Destination(
         title = R.string.title_home,
-        actionIcon = Icons.Default.Settings
+        actionIcon = Icons.Default.Settings,
+        actionIconContentDescription = R.string.cd_settings_action_icon
     )
 
     object NewDog: Destination(
         title = R.string.title_add_dog,
         navIcon = Icons.Default.Close,
-        actionIcon = Icons.Default.Settings
+        navIconContentDescription = R.string.cd_close_nav_icon,
+        actionIcon = Icons.Default.Settings,
+        actionIconContentDescription = R.string.cd_settings_action_icon
     )
 }
