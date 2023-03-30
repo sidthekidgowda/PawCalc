@@ -39,21 +39,21 @@ class NewDogViewModel @Inject constructor(
     private fun updateName(name: String) {
         // do validations
         _inputState.update {
-            it.copy(nameInput = name)
+            it.copy(name = name)
         }
     }
 
     private fun updateBirthDate(birthDate: String) {
         //do validations
         _inputState.update {
-            it.copy(birthDateInput = birthDate)
+            it.copy(birthDate = birthDate)
         }
     }
 
     private fun updateWeight(weight: String) {
         // do validations
         _inputState.update {
-            it.copy(weightInput = weight)
+            it.copy(weight = weight)
         }
     }
 

@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.ui.theme.Grey200
-import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
@@ -156,60 +155,60 @@ fun GreyBox(
 
 //-----Preview--------------------------------------------------------------------------------------
 
-@LightDarkPreview
-@Composable
-fun PreviewNewDogScreen() {
-    PawCalcTheme {
-        DogInputScreen(
-            modifier = Modifier.fillMaxSize(),
-            dogInputMode = DogInputMode.NEW_DOG,
-            onSaveDog = {}
-        )
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun PreviewEditDogScreen() {
-    PawCalcTheme {
-        DogInputScreen(
-            modifier = Modifier.fillMaxSize(),
-            dogInputMode = DogInputMode.EDIT_DOG,
-            onSaveDog = {}
-        )
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun PreviewNameInput() {
-    PawCalcTheme {
-        Column(Modifier.fillMaxWidth()) {
-            NameInput(name = "Mowgli")
-        }
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun PreviewWeightInput() {
-    PawCalcTheme {
-        Column(Modifier.fillMaxWidth()) {
-            WeightInput(
-                weight = "87.0"
-            )
-        }
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun PreviewBirthDateInput() {
-    PawCalcTheme {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            BirthDateInput(
-                date = "07/30/2019"
-            )
-        }
-    }
-}
+//@LightDarkPreview
+//@Composable
+//fun PreviewNewDogScreen() {
+//    PawCalcTheme {
+//        DogInputScreen(
+//            modifier = Modifier.fillMaxSize(),
+//            dogInputMode = DogInputMode.NEW_DOG,
+//            onSaveDog = {}
+//        )
+//    }
+//}
+//
+//@LightDarkPreview
+//@Composable
+//fun PreviewEditDogScreen() {
+//    PawCalcTheme {
+//        DogInputScreen(
+//            modifier = Modifier.fillMaxSize(),
+//            dogInputMode = DogInputMode.EDIT_DOG,
+//            onSaveDog = {}
+//        )
+//    }
+//}
+//
+//@LightDarkPreview
+//@Composable
+//fun PreviewNameInput() {
+//    PawCalcTheme {
+//        Column(Modifier.fillMaxWidth()) {
+//            NameInput(name = "Mowgli")
+//        }
+//    }
+//}
+//
+//@LightDarkPreview
+//@Composable
+//fun PreviewWeightInput() {
+//    PawCalcTheme {
+//        Column(Modifier.fillMaxWidth()) {
+//            WeightInput(
+//                weight = "87.0"
+//            )
+//        }
+//    }
+//}
+//
+//@LightDarkPreview
+//@Composable
+//fun PreviewBirthDateInput() {
+//    PawCalcTheme {
+//        Column(modifier = Modifier.fillMaxWidth()) {
+//            BirthDateInput(
+//                date = "07/30/2019"
+//            )
+//        }
+//    }
+//}
