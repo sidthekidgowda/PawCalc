@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material.icons)
     implementation(libs.navigation.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

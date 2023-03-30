@@ -37,6 +37,11 @@ object PawCalcTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold
     )
+    val h5 = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Normal
+    )
 
     val body1 = TextStyle(
         fontFamily = OpenSans,

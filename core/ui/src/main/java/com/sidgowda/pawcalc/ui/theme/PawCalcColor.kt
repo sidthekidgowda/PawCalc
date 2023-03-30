@@ -6,15 +6,18 @@ import androidx.compose.ui.graphics.Color
 
 //-----Light Colors
 val Green500 = Color(0xFF30C77E) // primary
+// Black is onPrimary
 val Blue400 = Color(0xFF30C4C7) // secondary
+// Black is onSecondary
 val Green700 = Color(0xFF009F46) // status
 val Grey50 = Color(0xFFF9F4F4) // surface
 val Grey700 = Color(0xFF555555) // onSurface
+val Grey200 = Color(0xFFD9D9D9) // text field component color
 
 //------Dark Colors
 val Green200 = Color(0xFF63D68F) // primary
 val Blue200 = Color(0xFF30C4C7) // secondary
-val Grey200 = Color(0xFF646868) // surface
+val Grey600 = Color(0xFF646868) // surface
 val Grey500 = Color(0xFF8C9090) // background
 val Grey900 = Color(0xFF121212) // background
 val White = Color(0xFFFFFFFF) // onSurface

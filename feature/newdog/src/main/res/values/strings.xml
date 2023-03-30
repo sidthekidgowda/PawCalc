@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name_text_input">Name</string>
+    <string name="weight_text_input">Weight</string>
+    <string name="birth_date_input">Birth Date</string>
+</resources>
