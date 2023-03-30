@@ -23,3 +23,4 @@ include(":feature:onboarding")
 include(":feature:newdog")
 include(":core:ui")
 
+include(":common:doginput")

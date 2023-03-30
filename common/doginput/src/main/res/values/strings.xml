@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name_text_input">Name</string>
+    <string name="weight_text_input">Weight</string>
+    <string name="birth_date_input">Birth Date</string>
+    <string name="profile_picture_requirements">To continue, we require a profile picture of your dog.</string>
+    <string name="name_input_requirements">Your dog\'s name has to have at least 1 character.</string>
+    <string name="weight_input_requirements">Your dog has to weigh more than 0 %s</string>
+    <string name="date_input_requirements">Your dog cannot be born after today.</string>
+</resources>

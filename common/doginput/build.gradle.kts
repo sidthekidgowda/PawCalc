@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sidgowda.pawcalc.newdog"
+    namespace = "com.sidgowda.pawcalc.doginput"
     compileSdk = 33
 
     defaultConfig {
@@ -48,7 +48,6 @@ android {
 
 dependencies {
     implementation(projects.core.ui)
-    implementation(projects.common.doginput)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -62,9 +61,9 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
+    // test libraries
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    // test libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

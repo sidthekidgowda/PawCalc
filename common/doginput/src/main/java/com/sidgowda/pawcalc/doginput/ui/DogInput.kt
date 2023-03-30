@@ -1,10 +1,8 @@
-package com.sidgowda.pawcalc.newdog
+package com.sidgowda.pawcalc.doginput.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -14,71 +12,19 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.sidgowda.pawcalc.newdog.navigation.NEW_DOG_SCREEN_ROUTE
-import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
-import com.sidgowda.pawcalc.ui.component.EmptyCameraLogo
-import com.sidgowda.pawcalc.ui.component.PawCalcButton
+import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.ui.theme.Grey200
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-fun NewDog(
-    onSaveDog: () -> Unit
-) {
-    NewDogScreen(
-        modifier = Modifier.fillMaxSize(),
-        viewModel = hiltViewModel(),
-        onSaveDog = onSaveDog
-    )
-}
-
-@Composable
-internal fun NewDogScreen(
+fun DogInputScreen(
     modifier: Modifier = Modifier,
-    viewModel: NewDogViewModel,
+    dogInputMode: DogInputMode,
     onSaveDog: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .testTag(NEW_DOG_SCREEN_ROUTE)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(PawCalcTheme.colors.background)
-            .padding(
-                vertical = 16.dp,
-                horizontal = 48.dp
-            ),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(2.dp))
-        EmptyCameraLogo()
-        NameInput(name = viewModel.name)
-        WeightInput(weight = viewModel.weight)
-        BirthDateInput(date = viewModel.date)
-        Column {
-            Spacer(
-                modifier = Modifier.
-                fillMaxWidth()
-                .height(20.dp)
-            )
-            PawCalcButton(
-                onClick = onSaveDog,
-                content = {
-                    Text(
-                        text = "Save",
-                        style = PawCalcTheme.typography.h3,
-                        color = PawCalcTheme.colors.onPrimary
-                    )
-                }
-            )
-        }
-    }
+
 }
 
 @Composable
@@ -88,7 +34,7 @@ fun NameInput(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(id = R.string.name_text_input),
+            text = "",
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.onBackground
         )
@@ -115,7 +61,7 @@ fun WeightInput(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(id = R.string.weight_text_input),
+            text = "",
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.onBackground
         )
@@ -156,7 +102,7 @@ fun BirthDateInput(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(id = R.string.birth_date_input),
+            text = "",
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.onBackground
         )
@@ -208,15 +154,29 @@ fun GreyBox(
     }
 }
 
-//--------Preview-----------------------------------------------------------------------------------
+//-----Preview--------------------------------------------------------------------------------------
 
 @LightDarkPreview
 @Composable
 fun PreviewNewDogScreen() {
     PawCalcTheme {
-        NewDog {
+        DogInputScreen(
+            modifier = Modifier.fillMaxSize(),
+            dogInputMode = DogInputMode.NEW_DOG,
+            onSaveDog = {}
+        )
+    }
+}
 
-        }
+@LightDarkPreview
+@Composable
+fun PreviewEditDogScreen() {
+    PawCalcTheme {
+        DogInputScreen(
+            modifier = Modifier.fillMaxSize(),
+            dogInputMode = DogInputMode.EDIT_DOG,
+            onSaveDog = {}
+        )
     }
 }
 
