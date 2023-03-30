@@ -28,7 +28,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
 fun NewDog(
-    onSaveDog: () -> Unit
+    onSaveDog: () -> Unit,
 ) {
     NewDogScreen(
         modifier = Modifier.fillMaxSize(),

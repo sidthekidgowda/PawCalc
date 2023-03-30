@@ -1,51 +1,78 @@
 package com.sidgowda.pawcalc.newdog.ui
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.sidgowda.pawcalc.doginput.model.DogInputEvent
+import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
+import com.sidgowda.pawcalc.doginput.model.DogInputState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class NewDogViewModel @Inject constructor() : ViewModel() {
+class NewDogViewModel @Inject constructor(
 
-    private val nameInput = MutableStateFlow("")
-    private val dateInput = MutableStateFlow("")
-    private val weightInput = MutableStateFlow("")
+) : ViewModel() {
 
-    var name by mutableStateOf("")
-        private set
+    private val _inputState = MutableStateFlow(DogInputState())
+    val inputState = _inputState.asStateFlow()
 
-    val nameHasError by derivedStateOf {
-        // check if name is empty
+
+    fun handleEvent(dogInputEvent: DogInputEvent) {
+        when (dogInputEvent) {
+            is DogInputEvent.PicChanged -> updatePicture(dogInputEvent.pictureUrl)
+            is DogInputEvent.NameChanged -> updateName(dogInputEvent.name)
+            is DogInputEvent.WeightChanged -> updateWeight(dogInputEvent.weight)
+            is DogInputEvent.BirthDateChanged -> updateBirthDate(dogInputEvent.birthDate)
+            is DogInputEvent.ErrorDismissed -> dismissError()
+            is DogInputEvent.SavingInfo -> saveDogInfo()
+        }
     }
 
-    var date by mutableStateOf("")
-        private set
-
-    val dateHasError by derivedStateOf {
-        // check if date is correct
+    private fun updatePicture(url: String) {
+        _inputState.update {
+            it.copy(profilePicInput = url)
+        }
     }
 
-    var weight by mutableStateOf("")
-        private set
-
-    val weightHasError by derivedStateOf {
-        // check if weight has error
+    private fun updateName(name: String) {
+        // do validations
+        _inputState.update {
+            it.copy(nameInput = name)
+        }
     }
 
-    fun updateName(input: String) {
-        this.name = input
+    private fun updateBirthDate(birthDate: String) {
+        //do validations
+        _inputState.update {
+            it.copy(birthDateInput = birthDate)
+        }
     }
 
-    fun updateDate(input: String) {
-        this.date = input
+    private fun updateWeight(weight: String) {
+        // do validations
+        _inputState.update {
+            it.copy(weightInput = weight)
+        }
     }
 
-    fun updateWeight(input: String) {
-        this.weight = input
+    private fun dismissError() {
+        _inputState.update {
+            it.copy(isError = false)
+        }
+    }
+
+    private fun saveDogInfo() {
+        // save use case here if all requirements are met and close screen
+        // otherwise showcase error and show what requirements are met
+        if (_inputState.value.inputRequirements == DogInputRequirements.values().toList()) {
+
+        } else {
+            _inputState.update {
+                it.copy(isError = true)
+            }
+        }
+
     }
 }
