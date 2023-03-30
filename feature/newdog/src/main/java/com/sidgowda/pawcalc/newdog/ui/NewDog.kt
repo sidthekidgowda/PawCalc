@@ -50,17 +50,20 @@ internal fun NewDogScreen(
             .verticalScroll(rememberScrollState())
             .background(PawCalcTheme.colors.background)
             .padding(vertical = 16.dp, horizontal = 48.dp),
-        verticalArrangement = Arrangement.spacedBy(40.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(2.dp))
         EmptyCameraLogo()
         NameInput(name = viewModel.name)
         WeightInput(weight = viewModel.weight)
         BirthDateInput(date = viewModel.date)
         Column {
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp))
+            Spacer(
+                modifier = Modifier.
+                fillMaxWidth()
+                .height(20.dp)
+            )
             PawCalcButton(
                 onClick = onSaveDog,
                 content = {
