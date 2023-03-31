@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.doginput
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -51,13 +52,25 @@ fun DogInput(
     )
     val coroutineScope = rememberCoroutineScope()
 
+    // add back handler to dismiss bottom sheet
+    BackHandler(bottomSheetState.isVisible) {
+        coroutineScope.launch { bottomSheetState.hide() }
+    }
+
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContent = {
             UpdatePhotoBottomSheetContent(
-                onTakePhoto = {},
-                onChoosePhoto = {},
-                onCancel = {}
+                onTakePhoto = {
+                              // take photo from library
+                },
+                onChoosePhoto = {
+                                // choose photos from media
+                },
+                onCancel = {
+                    coroutineScope.launch { bottomSheetState.hide() }
+                }
             )
         }
     ) {
@@ -166,8 +179,10 @@ internal fun CameraInput(
     EmptyDogPictureWithCamera(
         modifier = modifier.clickable {
             // open bottom sheet
-            coroutineScope.launch {
-                bottomSheetState.show()
+            if (!bottomSheetState.isVisible) {
+                coroutineScope.launch {
+                    bottomSheetState.show()
+                }
             }
         }
     )

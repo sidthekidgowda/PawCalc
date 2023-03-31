@@ -3,11 +3,13 @@ package com.sidgowda.pawcalc.doginput.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,9 +26,10 @@ fun UpdatePhotoBottomSheetContent(
     onChoosePhoto: () -> Unit,
     onCancel: () -> Unit
 ) {
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .background(PawCalcTheme.colors.surface)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(PawCalcTheme.colors.surface)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         PictureItem {
@@ -51,9 +54,11 @@ fun PictureItem(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Surface(modifier = modifier
-        .fillMaxWidth()
-        .height(64.dp)) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(64.dp)
+    ) {
         content()
     }
 }
@@ -63,7 +68,7 @@ fun TakePhotoFromCamera(
     modifier: Modifier = Modifier,
     onTakePhoto: () -> Unit
 ) {
-    PictureItem() {
+    PictureItem(modifier = modifier) {
         Row(
             modifier = Modifier
                 .clickable(
@@ -94,7 +99,7 @@ fun ChoosePhotoFromMedia(
     modifier: Modifier = Modifier,
     onChoosePhoto: () -> Unit
 ) {
-    PictureItem() {
+    PictureItem(modifier = modifier) {
         Row(
             modifier = Modifier
                 .clickable(
@@ -121,8 +126,6 @@ fun ChoosePhotoFromMedia(
 }
 
 //------Preview-------------------------------------------------------------------------------------
-
-@OptIn(ExperimentalMaterialApi::class)
 @LightDarkPreview
 @Composable
 fun PreviewChangePictureBottomSheet() {
