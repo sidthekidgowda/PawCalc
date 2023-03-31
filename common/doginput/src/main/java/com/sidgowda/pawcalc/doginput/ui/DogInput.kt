@@ -124,9 +124,9 @@ internal fun DogInputScreen(
         val birthDateFocusRequester = FocusRequester()
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(
-                    vertical = 16.dp,
-                    horizontal = 48.dp
+                    vertical = 16.dp
                 ),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -138,21 +138,26 @@ internal fun DogInputScreen(
                 onPictureChanged = onPictureChanged
             )
             NameInput(
+                modifier = Modifier.padding(horizontal = 48.dp),
                 name = dogInputState.name,
                 onNameChanged = onNameChanged,
                 weightFocusRequester = weightFocusRequester
             )
             WeightInput(
+                modifier = Modifier.padding(horizontal = 48.dp),
                 weight = dogInputState.weight,
                 onWeightChanged = onWeightChanged,
                 weightFocusRequester = weightFocusRequester,
                 birthDateFocusRequester = birthDateFocusRequester
             )
             BirthDateInput(
+                modifier = Modifier.padding(horizontal = 48.dp),
                 date = dogInputState.birthDate,
                 birthDateFocusRequester = birthDateFocusRequester
             )
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()

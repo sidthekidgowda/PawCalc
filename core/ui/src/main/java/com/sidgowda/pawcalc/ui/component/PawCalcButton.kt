@@ -19,7 +19,7 @@ fun PawCalcButton(
     onClick: () -> Unit
 ) {
     Button(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(.8f),
         shape = PawCalcTheme.shapes.mediumRoundedCornerShape,
         onClick = onClick,
         colors = buttonColors(),

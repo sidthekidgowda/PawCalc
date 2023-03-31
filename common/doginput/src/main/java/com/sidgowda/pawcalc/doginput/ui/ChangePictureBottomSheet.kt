@@ -29,7 +29,8 @@ fun UpdatePhotoBottomSheetContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(PawCalcTheme.colors.surface)
+            .background(PawCalcTheme.colors.surface),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         PictureItem {
@@ -41,7 +42,6 @@ fun UpdatePhotoBottomSheetContent(
         }
         Spacer(modifier = Modifier.height(20.dp))
         PawCalcButton(
-            modifier = Modifier.padding(horizontal = 16.dp),
             text = stringResource(id = R.string.cancel),
             onClick = onCancel
         )

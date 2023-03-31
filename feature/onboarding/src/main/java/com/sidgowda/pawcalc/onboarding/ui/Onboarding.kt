@@ -39,8 +39,7 @@ internal fun OnboardingScreen(
     Column(
         modifier = modifier
             .testTag(ONBOARDING_ROUTE)
-            .fillMaxSize()
-            .padding(24.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
