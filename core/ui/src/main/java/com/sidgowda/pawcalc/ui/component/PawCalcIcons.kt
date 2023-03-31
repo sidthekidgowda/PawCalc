@@ -87,6 +87,24 @@ fun EmptyDogPictureWithCamera(
     modifier: Modifier = Modifier,
     contentDescription: String? = null
 ) {
+    PictureWithCameraIcon() {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_paw),
+            contentDescription = contentDescription,
+            modifier = Modifier
+                .size(200.dp)
+                .border(2.dp, Color.Black, CircleShape)
+                .padding(30.dp),
+            tint = Color.Black
+        )
+    }
+}
+
+@Composable
+fun SampleDogPictureWithCamera(
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null
+) {
     Box(
         modifier = modifier
             .size(200.dp)
@@ -108,18 +126,6 @@ fun EmptyDogPictureWithCamera(
             contentDescription = contentDescription,
             tint = Color.Black,
         )
-//        Icon(
-//            modifier = Modifier
-//                .size(60.dp)
-//                .clip(CircleShape)
-//                .background(Green500)
-//                .border(2.dp, Color.White, CircleShape)
-//                .align(Alignment.BottomEnd)
-//                .wrapContentSize(),
-//            imageVector = Icons.Default.AddAPhoto,
-//            contentDescription = contentDescription,
-//            tint = Color.Black,
-//        )
     }
 }
 
@@ -162,6 +168,7 @@ fun PreviewDogPictureWithCamera() {
                 contentDescription = null
             )
         }
+        EmptyDogPictureWithCamera()
     }
 }
 
@@ -176,7 +183,8 @@ fun PreviewEmptyDogPictureWithCamera() {
                 modifier = Modifier
                     .size(200.dp)
                     .border(2.dp, Color.Black, CircleShape)
-                    .padding(30.dp)
+                    .padding(30.dp),
+                tint = Color.Black
             )
         }
     }

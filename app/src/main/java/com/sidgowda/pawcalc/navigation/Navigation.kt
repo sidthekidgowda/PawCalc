@@ -3,6 +3,7 @@ package com.sidgowda.pawcalc
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.sidgowda.pawcalc.editdog.editDogScreenDestination
 import com.sidgowda.pawcalc.newdog.navigation.navigateToNewDogScreen
 import com.sidgowda.pawcalc.newdog.navigation.newDogScreenDestination
 import com.sidgowda.pawcalc.onboarding.OnboardingResult
@@ -41,6 +42,11 @@ fun PawCalcNavGraph(
         )
         settingsScreenDestination()
         newDogScreenDestination(
+            onSaveDog = {
+                navController.popBackStack()
+            }
+        )
+        editDogScreenDestination(
             onSaveDog = {
                 navController.popBackStack()
             }

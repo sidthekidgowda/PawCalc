@@ -19,11 +19,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.model.DogInputUnit
-import com.sidgowda.pawcalc.ui.component.EmptyCameraButton
+import com.sidgowda.pawcalc.doginput.ui.cameraPermissions
+import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.Grey200
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -115,6 +117,7 @@ internal fun DogInputScreen(
                 )
                 PawCalcButton(
                     onClick = onSaveDog,
+                    enabled = false,
                     content = {
                         Text(
                             text = stringResource(id = R.string.save_input),
@@ -128,10 +131,19 @@ internal fun DogInputScreen(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-internal fun CameraInput(modifier: Modifier = Modifier) {
-    EmptyCameraButton()
+internal fun CameraInput(
+    modifier: Modifier = Modifier,
+    onPictureChanged: (picUrl: String) -> Unit
+) {
+
+    val permissionState = cameraPermissions()
+
+    EmptyDogPictureWithCamera()
 }
+
+
 
 @Composable
 internal fun NameInput(

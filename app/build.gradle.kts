@@ -57,6 +57,7 @@ kapt {
 
 dependencies {
     implementation(projects.feature.newdog)
+    implementation(projects.feature.editdog)
     implementation(projects.feature.onboarding)
     implementation(projects.core.ui)
     implementation(libs.androidx.core.ktx)

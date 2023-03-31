@@ -16,7 +16,7 @@ import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-fun NewDog(
+internal fun NewDog(
     onSaveDog: () -> Unit,
 ) {
     NewDogScreen(

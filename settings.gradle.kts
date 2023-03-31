@@ -24,3 +24,4 @@ include(":feature:newdog")
 include(":core:ui")
 
 include(":common:doginput")
+include(":feature:editdog")
