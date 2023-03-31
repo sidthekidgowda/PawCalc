@@ -8,7 +8,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun cameraPermissions(): PermissionState {
+internal fun cameraPermissions(): PermissionState {
    return if (
         android.os.Build.VERSION.SDK_INT >=
         android.os.Build.VERSION_CODES.TIRAMISU
@@ -22,7 +22,7 @@ fun cameraPermissions(): PermissionState {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun mediaPermissions(): PermissionState {
+internal fun mediaPermissions(): PermissionState {
    return if (
         android.os.Build.VERSION.SDK_INT >=
         android.os.Build.VERSION_CODES.TIRAMISU
@@ -31,4 +31,14 @@ fun mediaPermissions(): PermissionState {
     } else {
         rememberPermissionState(permission = Manifest.permission.READ_EXTERNAL_STORAGE)
     }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun Permission(
+    permission: String = android.Manifest.permission.CAMERA,
+    rationale: String = "This permission is important for this app. Please grant this permission.",
+    content: @Composable () -> Unit
+) {
+    val permissionState = rememberPermissionState(permission = permission)
 }

@@ -21,6 +21,7 @@
             android:name=".PawCalcActivity"
             android:exported="true"
             android:label="@string/title_home"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.PawCalc">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

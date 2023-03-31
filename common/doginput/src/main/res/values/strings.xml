@@ -8,4 +8,9 @@
     <string name="weight_input_requirements">Your dog has to weigh more than 0 %s</string>
     <string name="date_input_requirements">Your dog cannot be born after today.</string>
     <string name="save_input">Save</string>
+    <string name="bottom_sheet_take_photo">Take photo</string>
+    <string name="cd_bottom_sheet_take_photo">Take photo with your camera</string>
+    <string name="bottom_sheet_choose_photo">Choose photo</string>
+    <string name="cd_bottom_sheet_choose_photo">Choose a photo from your media</string>
+    <string name="cancel">Cancel</string>
 </resources>

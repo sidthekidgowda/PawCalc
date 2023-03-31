@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.doginput
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -24,14 +26,17 @@ import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.model.DogInputUnit
-import com.sidgowda.pawcalc.doginput.ui.cameraPermissions
+import com.sidgowda.pawcalc.doginput.ui.UpdatePhotoBottomSheetContent
 import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.Grey200
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DogInput(
     modifier: Modifier = Modifier,
@@ -41,30 +46,51 @@ fun DogInput(
     handleEvent: (event: DogInputEvent) -> Unit,
     onSaveDog: () -> Unit
 ) {
-   DogInputScreen(
-       modifier = modifier,
-       dogInputState = dogInputState,
-       dogInputMode = dogInputMode,
-       dogInputUnit = unit,
-       onPictureChanged = { pictureUrl ->
-           handleEvent(DogInputEvent.PicChanged(pictureUrl))
-       },
-       onNameChanged = { name ->
-           handleEvent(DogInputEvent.NameChanged(name))
-       },
-       onWeightChanged = { weight ->
-           handleEvent(DogInputEvent.WeightChanged(weight))
-       },
-       onBirthDateChanged = { date ->
-           handleEvent(DogInputEvent.BirthDateChanged(date))
-       },
-       onSaveDog = onSaveDog
-   )
+    val bottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        sheetContent = {
+            UpdatePhotoBottomSheetContent(
+                onTakePhoto = {},
+                onChoosePhoto = {},
+                onCancel = {}
+            )
+        }
+    ) {
+        DogInputScreen(
+            modifier = modifier,
+            bottomSheetState = bottomSheetState,
+            coroutineScope = coroutineScope,
+            dogInputState = dogInputState,
+            dogInputMode = dogInputMode,
+            dogInputUnit = unit,
+            onPictureChanged = { pictureUrl ->
+                handleEvent(DogInputEvent.PicChanged(pictureUrl))
+            },
+            onNameChanged = { name ->
+                handleEvent(DogInputEvent.NameChanged(name))
+            },
+            onWeightChanged = { weight ->
+                handleEvent(DogInputEvent.WeightChanged(weight))
+            },
+            onBirthDateChanged = { date ->
+                handleEvent(DogInputEvent.BirthDateChanged(date))
+            },
+            onSaveDog = onSaveDog
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun DogInputScreen(
     modifier: Modifier = Modifier,
+    bottomSheetState: ModalBottomSheetState,
+    coroutineScope: CoroutineScope,
     dogInputState: DogInputState,
     dogInputMode: DogInputMode,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
@@ -93,7 +119,11 @@ internal fun DogInputScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(2.dp))
-            CameraInput()
+            CameraInput(
+                bottomSheetState = bottomSheetState,
+                coroutineScope = coroutineScope,
+                onPictureChanged = onPictureChanged
+            )
             NameInput(
                 name = dogInputState.name,
                 onNameChanged = onNameChanged,
@@ -116,33 +146,37 @@ internal fun DogInputScreen(
                         .height(20.dp)
                 )
                 PawCalcButton(
-                    onClick = onSaveDog,
                     enabled = false,
-                    content = {
-                        Text(
-                            text = stringResource(id = R.string.save_input),
-                            style = PawCalcTheme.typography.h3,
-                            color = PawCalcTheme.colors.onPrimary
-                        )
-                    }
+                    text = stringResource(id = R.string.save_input),
+                    onClick = onSaveDog
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterialApi::class)
 @Composable
 internal fun CameraInput(
     modifier: Modifier = Modifier,
+    bottomSheetState: ModalBottomSheetState,
+    coroutineScope: CoroutineScope,
     onPictureChanged: (picUrl: String) -> Unit
 ) {
-
-    val permissionState = cameraPermissions()
-
-    EmptyDogPictureWithCamera()
+    EmptyDogPictureWithCamera(
+        modifier = modifier.clickable {
+            // open bottom sheet
+            coroutineScope.launch {
+                bottomSheetState.show()
+            }
+        }
+    )
 }
 
+@Composable
+fun OpenPictureBottomSheet() {
+
+}
 
 
 @Composable
@@ -320,6 +354,7 @@ internal fun GreyBox(
 
 //-----Preview--------------------------------------------------------------------------------------
 
+@OptIn(ExperimentalMaterialApi::class)
 @LightDarkPreview
 @Composable
 fun PreviewNewDogScreen() {
@@ -332,11 +367,14 @@ fun PreviewNewDogScreen() {
             onWeightChanged = {},
             onNameChanged = {},
             onPictureChanged = {},
-            onBirthDateChanged = {}
+            onBirthDateChanged = {},
+            bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+            coroutineScope = rememberCoroutineScope()
         )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @LightDarkPreview
 @Composable
 fun PreviewEditDogScreen() {
@@ -349,7 +387,9 @@ fun PreviewEditDogScreen() {
             onWeightChanged = {},
             onNameChanged = {},
             onPictureChanged = {},
-            onBirthDateChanged = {}
+            onBirthDateChanged = {},
+            bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+            coroutineScope = rememberCoroutineScope()
         )
     }
 }

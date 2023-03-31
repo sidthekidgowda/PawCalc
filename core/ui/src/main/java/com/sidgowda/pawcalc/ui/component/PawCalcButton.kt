@@ -1,6 +1,5 @@
 package com.sidgowda.pawcalc.ui.component
 
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -16,8 +15,8 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 fun PawCalcButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onClick: () -> Unit,
-    content: @Composable RowScope.() -> Unit
+    text: String,
+    onClick: () -> Unit
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
@@ -26,7 +25,11 @@ fun PawCalcButton(
         colors = buttonColors(),
         enabled = enabled
     ) {
-        content()
+        Text(
+            text = text,
+            style = PawCalcTheme.typography.h3,
+            color = PawCalcTheme.colors.onPrimary
+        )
     }
 }
 
@@ -43,8 +46,6 @@ fun buttonColors() = ButtonDefaults.buttonColors(
 @Composable
 fun PreviewPawCalcButton() {
     PawCalcTheme {
-        PawCalcButton(onClick = {}) {
-            Text("Save")
-        }
+        PawCalcButton(text = "Save", onClick = {}, )
     }
 }

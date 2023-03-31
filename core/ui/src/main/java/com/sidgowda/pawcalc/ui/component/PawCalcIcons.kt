@@ -68,14 +68,14 @@ fun EmptyCameraButton(
 @Composable
 fun PictureWithCameraIcon(
     modifier: Modifier = Modifier,
-    dogImage: @Composable () -> Unit
+    image: @Composable () -> Unit
 ) {
     Box(
         modifier = modifier
             .size(200.dp),
         contentAlignment = Alignment.Center
     ) {
-        dogImage()
+        image()
         EmptyCameraButton(
             modifier = Modifier.align(Alignment.BottomEnd)
         )
@@ -87,7 +87,7 @@ fun EmptyDogPictureWithCamera(
     modifier: Modifier = Modifier,
     contentDescription: String? = null
 ) {
-    PictureWithCameraIcon() {
+    PictureWithCameraIcon(modifier = modifier) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_paw),
             contentDescription = contentDescription,
@@ -168,7 +168,6 @@ fun PreviewDogPictureWithCamera() {
                 contentDescription = null
             )
         }
-        EmptyDogPictureWithCamera()
     }
 }
 

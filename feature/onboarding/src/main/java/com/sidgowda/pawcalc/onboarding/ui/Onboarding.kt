@@ -60,14 +60,8 @@ internal fun OnboardingScreen(
         Spacer(modifier = Modifier.height(50.dp))
         PawCalcButton(
             modifier = Modifier.testTag(TAG_ADD_DOG_BUTTON),
-            onClick = onBoarded,
-            content = {
-                Text(
-                    stringResource(id = R.string.add_dog),
-                    style = PawCalcTheme.typography.h3,
-                    color = PawCalcTheme.colors.onPrimary
-                )
-            }
+            text = stringResource(id = R.string.add_dog),
+            onClick = onBoarded
         )
     }
 }
