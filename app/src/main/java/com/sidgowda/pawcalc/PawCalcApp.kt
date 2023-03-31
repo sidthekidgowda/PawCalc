@@ -33,6 +33,7 @@ fun PawCalcApp(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
+            // todo - fix top bar for onboarding
             HomeTopBar(
                 currentDestination = currentDestination,
                 onNavIconClick = {

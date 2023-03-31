@@ -7,4 +7,5 @@
     <string name="name_input_requirements">Your dog\'s name has to have at least 1 character.</string>
     <string name="weight_input_requirements">Your dog has to weigh more than 0 %s</string>
     <string name="date_input_requirements">Your dog cannot be born after today.</string>
+    <string name="save_input">Save</string>
 </resources>
