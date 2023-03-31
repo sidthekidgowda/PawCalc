@@ -72,7 +72,8 @@ fun PictureWithCameraIcon(
 ) {
     Box(
         modifier = modifier
-            .size(200.dp)
+            .size(200.dp),
+        contentAlignment = Alignment.Center
     ) {
         dogImage()
         EmptyCameraButton(
@@ -168,6 +169,15 @@ fun PreviewDogPictureWithCamera() {
 @Composable
 fun PreviewEmptyDogPictureWithCamera() {
     PawCalcTheme {
-        EmptyDogPictureWithCamera()
+        PictureWithCameraIcon() {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_paw),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(200.dp)
+                    .border(2.dp, Color.Black, CircleShape)
+                    .padding(30.dp)
+            )
+        }
     }
 }
