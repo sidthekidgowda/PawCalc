@@ -42,10 +42,14 @@ object PawCalcTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.Normal
     )
-
     val body1 = TextStyle(
         fontFamily = OpenSans,
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal
+    )
+    val error = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Bold
     )
 }

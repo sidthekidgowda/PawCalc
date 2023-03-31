@@ -7,10 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.Composable
@@ -26,7 +23,7 @@ import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.model.DogInputUnit
-import com.sidgowda.pawcalc.ui.component.EmptyCameraLogo
+import com.sidgowda.pawcalc.ui.component.EmptyCameraButton
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.Grey200
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -133,7 +130,7 @@ internal fun DogInputScreen(
 
 @Composable
 internal fun CameraInput(modifier: Modifier = Modifier) {
-    EmptyCameraLogo()
+    EmptyCameraButton()
 }
 
 @Composable
@@ -185,6 +182,9 @@ internal fun WeightInput(
     weightFocusRequester: FocusRequester,
     birthDateFocusRequester: FocusRequester
 ) {
+    // do validations to ensure weight does not have leading zero
+    // or more than 500lb
+    val isError = weight.isNotEmpty() && weight.length > 4
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(id = R.string.weight_text_input),
@@ -195,7 +195,7 @@ internal fun WeightInput(
         Box(
             modifier = Modifier
                 .fillMaxWidth(.6f)
-                .height(52.dp),
+                .height(60.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             TextField(
@@ -220,7 +220,8 @@ internal fun WeightInput(
                     onNext = {
                         birthDateFocusRequester.requestFocus()
                     }
-                )
+                ),
+                isError = isError,
             )
             GreyBox(
                 modifier = Modifier.align(Alignment.CenterEnd),
@@ -231,6 +232,14 @@ internal fun WeightInput(
                     color = PawCalcTheme.colors.onBackground
                 )
             }
+        }
+        if (isError) {
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Weight should be between 1 and 500 lb",
+                style = PawCalcTheme.typography.error,
+                color = MaterialTheme.colors.error
+            )
         }
     }
 }
@@ -285,7 +294,7 @@ internal fun GreyBox(
 ) {
     Box(
         modifier = modifier
-            .height(52.dp)
+            .height(60.dp)
             .width(42.dp)
             .background(
                 color = Grey200,
@@ -354,6 +363,21 @@ fun PreviewWeightInput() {
         Column(Modifier.fillMaxWidth()) {
             WeightInput(
                 weight = "87.0",
+                onWeightChanged = {},
+                weightFocusRequester = FocusRequester(),
+                birthDateFocusRequester = FocusRequester()
+            )
+        }
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun PreviewWeightInputError() {
+    PawCalcTheme {
+        Column(Modifier.fillMaxWidth()) {
+            WeightInput(
+                weight = "875.0",
                 onWeightChanged = {},
                 weightFocusRequester = FocusRequester(),
                 birthDateFocusRequester = FocusRequester()
