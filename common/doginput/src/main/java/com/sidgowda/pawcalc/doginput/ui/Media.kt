@@ -10,25 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-
 @Composable
-internal fun OpenCamera(
+internal fun OpenMedia(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
-            .background(Color.Red),
+        modifier = modifier.fillMaxSize().background(Color.Red),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text("Camera Open")
+        Text("Media Open")
     }
-}
-
-@Composable
-internal fun CameraView(
-    modifier: Modifier = Modifier
-) {
-    // Create Camera view
 }

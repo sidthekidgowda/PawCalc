@@ -23,7 +23,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 fun UpdatePhotoBottomSheetContent(
     modifier: Modifier = Modifier,
     onTakePhoto: () -> Unit,
-    onChoosePhoto: () -> Unit,
+    onChooseMedia: () -> Unit,
     onCancel: () -> Unit
 ) {
     Column(
@@ -38,7 +38,7 @@ fun UpdatePhotoBottomSheetContent(
         }
         Spacer(modifier = Modifier.height(10.dp))
         PictureItem {
-            ChoosePhotoFromMedia(onChoosePhoto = onChoosePhoto)
+            ChoosePhotoFromMedia(onChoosePhoto = onChooseMedia)
         }
         Spacer(modifier = Modifier.height(20.dp))
         PawCalcButton(
@@ -132,7 +132,7 @@ fun PreviewChangePictureBottomSheet() {
     PawCalcTheme {
         UpdatePhotoBottomSheetContent(
             onTakePhoto = {},
-            onChoosePhoto = {},
+            onChooseMedia = {},
             onCancel = {}
         )
     }

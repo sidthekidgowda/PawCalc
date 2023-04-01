@@ -1,5 +1,9 @@
 package com.sidgowda.pawcalc.doginput
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,18 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.model.DogInputUnit
-import com.sidgowda.pawcalc.doginput.ui.UpdatePhotoBottomSheetContent
-import com.sidgowda.pawcalc.doginput.ui.rememberCameraAndMediaPermissions
+import com.sidgowda.pawcalc.doginput.ui.*
 import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.Grey200
@@ -35,7 +39,6 @@ import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -47,25 +50,31 @@ fun DogInput(
     handleEvent: (event: DogInputEvent) -> Unit,
     onSaveDog: () -> Unit
 ) {
+    val context = LocalContext.current
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
     val scope = rememberCoroutineScope()
-    val permissions = rememberCameraAndMediaPermissions()
-    var cameraMediaFeatureRequested by remember {
+    var isCameraRequested by remember {
         mutableStateOf(false)
     }
+    var isMediaRequested by remember {
+        mutableStateOf(false)
+    }
+    val cameraPermission = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    val mediaPermission = rememberPermissionState(permission = mediaPermission())
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetContent = {
             UpdatePhotoBottomSheetContent(
                 onTakePhoto = {
-                              // take photo from Camera
-                              
+                  // take photo from Camera
+                  isCameraRequested = true
                 },
-                onChoosePhoto = {
-                                // choose photos from media
+                onChooseMedia = {
+                    // choose photos from media
+                    isMediaRequested = true
                 },
                 onCancel = {
                     scope.launch { bottomSheetState.hide() }
@@ -80,8 +89,6 @@ fun DogInput(
             dogInputState = dogInputState,
             dogInputMode = dogInputMode,
             dogInputUnit = unit,
-            cameraMediaPermissions = permissions,
-            cameraMediaFeatureRequested = cameraMediaFeatureRequested,
             onPictureChanged = { pictureUrl ->
                 handleEvent(DogInputEvent.PicChanged(pictureUrl))
             },
@@ -94,15 +101,66 @@ fun DogInput(
             onBirthDateChanged = { date ->
                 handleEvent(DogInputEvent.BirthDateChanged(date))
             },
-            onSaveDog = onSaveDog,
-            onCameraMediaFeatureRequested = {
-                cameraMediaFeatureRequested = true
-            }
+            onSaveDog = onSaveDog
         )
+        val requestPermission = {
+            context.startActivity(
+                Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:${context.packageName}")
+                )
+            )
+        }
+        if (isCameraRequested) {
+            HandlePermission(
+                permissionStatus = cameraPermission.status,
+                firstTimeRequest = {
+                    cameraPermission.launchPermissionRequest()
+                },
+                successContent = {
+                    OpenCamera()
+                    LaunchedEffect(Unit) {
+                        scope.launch {
+                            bottomSheetState.hide()
+                        }
+                    }
+                },
+                deniedContent = {
+                    PermissionDialog(
+                        permission = cameraPermission.permission,
+                        requestPermission = requestPermission,
+                        onCancel = { isCameraRequested = false }
+                    )
+                }
+            )
+        }
+        if (isMediaRequested) {
+            HandlePermission(
+                permissionStatus = mediaPermission.status,
+                firstTimeRequest = {
+                    mediaPermission.launchPermissionRequest()
+                },
+                successContent = {
+                    OpenMedia()
+                    LaunchedEffect(Unit) {
+                        scope.launch {
+                            bottomSheetState.hide()
+                        }
+                    }
+                },
+                deniedContent = {
+                    PermissionDialog(
+                        permission = mediaPermission.permission,
+                        requestPermission = requestPermission,
+                        onCancel = { isMediaRequested = false }
+                    )
+                }
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun DogInputScreen(
     modifier: Modifier = Modifier,
@@ -111,69 +169,6 @@ internal fun DogInputScreen(
     dogInputState: DogInputState,
     dogInputMode: DogInputMode,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
-    cameraMediaPermissions: MultiplePermissionsState,
-    cameraMediaFeatureRequested: Boolean = false,
-    onCameraMediaFeatureRequested: () -> Unit,
-    onPictureChanged: (picUrl: String) -> Unit,
-    onNameChanged: (name: String) -> Unit,
-    onWeightChanged: (weight: String) -> Unit,
-    onBirthDateChanged: (date: String) -> Unit,
-    onSaveDog: () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(PawCalcTheme.colors.background),
-        contentAlignment = Alignment.Center
-    ) {
-        if (cameraMediaFeatureRequested) {
-            cameraMediaPermissions.launchMultiplePermissionRequest()
-//            AlertDialog(
-//                title = {
-//                        Text("Permission request")
-//                },
-//                text = {
-//                    "We require Camera and Media permissions. Please grant this permission."
-//                },
-//                confirmButton = {
-//                          cameraMediaPermissions.launchMultiplePermissionRequest()
-//                },
-//                onDismissRequest = {
-//                        // do nothing
-//                    }
-//            )
-        }
-
-
-        DogInputContent(
-            modifier = Modifier.fillMaxSize(),
-            bottomSheetState = bottomSheetState,
-            coroutineScope = coroutineScope,
-            dogInputState = dogInputState,
-            dogInputMode = dogInputMode,
-            allPermissionsGranted = cameraMediaPermissions.allPermissionsGranted,
-            cameraMediaFeatureRequested = onCameraMediaFeatureRequested,
-            onPictureChanged = onPictureChanged,
-            onNameChanged = onNameChanged,
-            onWeightChanged = onWeightChanged,
-            onBirthDateChanged = onBirthDateChanged,
-            onSaveDog = onSaveDog
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-internal fun DogInputContent(
-    modifier: Modifier = Modifier,
-    bottomSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
-    dogInputState: DogInputState,
-    dogInputMode: DogInputMode,
-    dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
-    allPermissionsGranted: Boolean,
-    cameraMediaFeatureRequested: () -> Unit,
     onPictureChanged: (picUrl: String) -> Unit,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
@@ -182,18 +177,19 @@ internal fun DogInputContent(
 ) {
     val weightFocusRequester = FocusRequester()
     val birthDateFocusRequester = FocusRequester()
-    
+
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(top = 40.dp)
+            .background(PawCalcTheme.colors.background),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CameraInput(
             bottomSheetState = bottomSheetState,
-            coroutineScope = coroutineScope,
-            onPictureChanged = onPictureChanged,
-            allPermissionsGranted = allPermissionsGranted,
-            cameraMediaFeatureRequested = cameraMediaFeatureRequested
+            coroutineScope = coroutineScope
         )
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
@@ -230,28 +226,19 @@ internal fun DogInputContent(
     }
 }
 
-
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun CameraInput(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
-    onPictureChanged: (picUrl: String) -> Unit,
-    allPermissionsGranted: Boolean,
-    cameraMediaFeatureRequested: () -> Unit
+    coroutineScope: CoroutineScope
 ) {
     EmptyDogPictureWithCamera(
         modifier = modifier.clickable {
             // open bottom sheet
             if (!bottomSheetState.isVisible) {
-                // check for permissions
-                if (allPermissionsGranted) {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
-                } else {
-                    cameraMediaFeatureRequested()
+                coroutineScope.launch {
+                    bottomSheetState.show()
                 }
             }
         }
@@ -307,7 +294,7 @@ internal fun WeightInput(
     weightFocusRequester: FocusRequester,
     birthDateFocusRequester: FocusRequester
 ) {
-    // do validations to ensure weight does not have leading zero
+    // todo validations to ensure weight does not have leading zero
     // or more than 500lb
     val isError = weight.isNotEmpty() && weight.length > 4
     Column(modifier = modifier.fillMaxWidth()) {
@@ -448,10 +435,7 @@ fun PreviewNewDogScreen() {
             onPictureChanged = {},
             onBirthDateChanged = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope(),
-            onCameraMediaFeatureRequested = {},
-            cameraMediaFeatureRequested = false,
-            cameraMediaPermissions = rememberCameraAndMediaPermissions()
+            coroutineScope = rememberCoroutineScope()
         )
     }
 }
@@ -471,10 +455,7 @@ fun PreviewEditDogScreen() {
             onPictureChanged = {},
             onBirthDateChanged = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope(),
-            onCameraMediaFeatureRequested = {},
-            cameraMediaFeatureRequested = false,
-            cameraMediaPermissions = rememberCameraAndMediaPermissions()
+            coroutineScope = rememberCoroutineScope()
         )
     }
 }
