@@ -251,7 +251,6 @@ internal fun CameraInput(
                         bottomSheetState.show()
                     }
                 } else {
-                    cameraFeatureRequest = true
                     cameraMediaFeatureRequested()
                 }
             }
