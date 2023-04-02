@@ -31,10 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.concurrent.futures.await
 import androidx.core.net.toUri
-import androidx.core.view.WindowInsetsControllerCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -58,12 +56,6 @@ internal fun OpenCamera(
             .background(Color.Black),
         contentAlignment = Alignment.BottomCenter
     ) {
-        rememberSystemUiController().apply {
-            isSystemBarsVisible = false
-            isNavigationBarVisible = false
-            systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
         val lifecycleOwner = LocalLifecycleOwner.current
@@ -168,14 +160,13 @@ internal fun BoxScope.CapturedImage(
     onBack: () -> Unit,
     onSave: () -> Unit
 ) {
-    val context = LocalContext.current
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(context)
+            model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUri)
                 .build(),
             modifier = Modifier.weight(1.0f),

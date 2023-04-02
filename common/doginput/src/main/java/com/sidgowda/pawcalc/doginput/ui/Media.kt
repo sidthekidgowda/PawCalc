@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.doginput.ui
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,9 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 internal fun OpenMedia(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+    onSavePhoto: (Uri) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize().background(Color.Red),

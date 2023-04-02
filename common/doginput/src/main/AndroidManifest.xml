@@ -5,7 +5,7 @@
 
     <application>
         <activity
-            android:name=".CameraActivity"
+            android:name=".ui.CameraMediaActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CameraTheme" />
     </application>

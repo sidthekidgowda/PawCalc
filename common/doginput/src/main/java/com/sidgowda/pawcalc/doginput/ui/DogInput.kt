@@ -76,8 +76,8 @@ fun DogInput(
     var imageUri by rememberSaveable {
         mutableStateOf<Uri?>(null)
     }
-    val cameraImageResult = rememberLauncherForActivityResult(
-        contract = CameraActivity.TakePhoto(),
+    val cameraMediaImageResult = rememberLauncherForActivityResult(
+        contract = CameraMediaActivity.GetPhoto(),
         onResult = { uri ->
             imageUri = uri ?: imageUri
         }
@@ -140,7 +140,7 @@ fun DogInput(
                 },
                 successContent = {
                     LaunchedEffect(Unit) {
-                        cameraImageResult.launch(Unit)
+                        cameraMediaImageResult.launch(CameraMediaActivity.TAKE_PHOTO)
                         isCameraRequested = false
                         scope.launch {
                             bottomSheetState.hide()
@@ -163,7 +163,8 @@ fun DogInput(
                     mediaPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    OpenMedia()
+                    cameraMediaImageResult.launch(CameraMediaActivity.CHOOSE_MEDIA)
+                    isMediaRequested = false
                     LaunchedEffect(Unit) {
                         scope.launch {
                             bottomSheetState.hide()
