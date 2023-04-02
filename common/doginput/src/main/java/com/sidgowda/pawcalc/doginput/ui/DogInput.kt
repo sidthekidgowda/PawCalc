@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -111,6 +112,16 @@ fun DogInput(
                 )
             )
         }
+        val activity = (context as ComponentActivity)
+        val cameraIntent = {
+            activity.startActivity(
+                Intent(
+                    activity,
+                    CameraActivity::class.java
+                )
+            )
+            isCameraRequested = false
+        }
         if (isCameraRequested) {
             HandlePermission(
                 permissionStatus = cameraPermission.status,
@@ -118,8 +129,8 @@ fun DogInput(
                     cameraPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    OpenCamera()
                     LaunchedEffect(Unit) {
+                        cameraIntent()
                         scope.launch {
                             bottomSheetState.hide()
                         }
@@ -182,8 +193,8 @@ internal fun DogInputScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(top = 40.dp)
-            .background(PawCalcTheme.colors.background),
+            .background(PawCalcTheme.colors.background)
+            .padding(top = 40.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

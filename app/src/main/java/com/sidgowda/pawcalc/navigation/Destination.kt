@@ -31,7 +31,9 @@ sealed class Destination(
         }
     }
     object Onboarding : Destination(
-        title = R.string.title_home
+        title = R.string.title_home,
+        actionIcon = Icons.Default.Settings,
+        actionIconContentDescription = R.string.cd_settings_action_icon
     )
 
     object Settings : Destination(

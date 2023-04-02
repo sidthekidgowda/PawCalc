@@ -56,9 +56,12 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.icons)
     implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.extensions)
+    implementation(libs.androidx.concurrent.futures)
+    implementation("androidx.window:window:1.0.0-alpha09")
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries

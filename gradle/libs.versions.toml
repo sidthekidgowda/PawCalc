@@ -22,6 +22,7 @@ androidxTestCore = "1.5.0"
 coil = "2.2.2"
 accompanist = "0.28.0"
 cameraXVersion = "1.2.2"
+concurrentFuturesKtx = "1.1.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
@@ -55,10 +56,12 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid"}
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraXVersion" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraXVersion" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraXVersion" }
 androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraXVersion" }
+androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesKtx"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
