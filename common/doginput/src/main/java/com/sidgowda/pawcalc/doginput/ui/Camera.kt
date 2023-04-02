@@ -53,7 +53,8 @@ import java.util.concurrent.Executor
 @Composable
 internal fun OpenCamera(
     modifier: Modifier = Modifier,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onSavePhoto: (Uri) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -117,7 +118,9 @@ internal fun OpenCamera(
                 onBack = {
                     capturedImageUri = null
                 },
-                onSave = {}
+                onSave = {
+                    onSavePhoto(capturedImageUri!!)
+                }
             )
         }
     }
@@ -183,14 +186,18 @@ internal fun BoxScope.CapturedImage(
             contentDescription = null,
             contentScale = ContentScale.FillHeight
         )
-        Spacer(modifier = Modifier.height(6.dp).fillMaxWidth())
+        Spacer(modifier = Modifier
+            .height(6.dp)
+            .fillMaxWidth())
         PawCalcButton(
             modifier = Modifier
                 .fillMaxWidth(.5f),
             text = "Save",
             onClick = onSave
         )
-        Spacer(modifier = Modifier.height(10.dp).fillMaxWidth())
+        Spacer(modifier = Modifier
+            .height(10.dp)
+            .fillMaxWidth())
     }
     BackButton(
         modifier = Modifier
@@ -341,7 +348,8 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider {
 fun PreviewCamera() {
     PawCalcTheme {
         OpenCamera(
-            onClose = {}
+            onClose = {},
+            onSavePhoto = {}
         )
     }
 }

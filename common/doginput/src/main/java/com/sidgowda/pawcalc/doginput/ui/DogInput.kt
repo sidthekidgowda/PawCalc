@@ -4,11 +4,13 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,13 +21,17 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
@@ -35,12 +41,14 @@ import com.sidgowda.pawcalc.doginput.model.DogInputUnit
 import com.sidgowda.pawcalc.doginput.ui.*
 import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
+import com.sidgowda.pawcalc.ui.component.PictureWithCameraIcon
 import com.sidgowda.pawcalc.ui.theme.Grey200
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@ExperimentalZeroShutterLag
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun DogInput(
@@ -64,6 +72,16 @@ fun DogInput(
     }
     val cameraPermission = rememberPermissionState(permission = Manifest.permission.CAMERA)
     val mediaPermission = rememberPermissionState(permission = mediaPermission())
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val cameraImageResult = rememberLauncherForActivityResult(
+        contract = CameraActivity.TakePhoto(),
+        onResult = { uri ->
+            imageUri = uri
+        }
+    )
+
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -90,6 +108,7 @@ fun DogInput(
             dogInputState = dogInputState,
             dogInputMode = dogInputMode,
             dogInputUnit = unit,
+            imageUri = imageUri,
             onPictureChanged = { pictureUrl ->
                 handleEvent(DogInputEvent.PicChanged(pictureUrl))
             },
@@ -112,16 +131,6 @@ fun DogInput(
                 )
             )
         }
-        val activity = (context as ComponentActivity)
-        val cameraIntent = {
-            activity.startActivity(
-                Intent(
-                    activity,
-                    CameraActivity::class.java
-                )
-            )
-            isCameraRequested = false
-        }
         if (isCameraRequested) {
             HandlePermission(
                 permissionStatus = cameraPermission.status,
@@ -130,7 +139,8 @@ fun DogInput(
                 },
                 successContent = {
                     LaunchedEffect(Unit) {
-                        cameraIntent()
+                        cameraImageResult.launch(Unit)
+                        isCameraRequested = false
                         scope.launch {
                             bottomSheetState.hide()
                         }
@@ -180,6 +190,7 @@ internal fun DogInputScreen(
     dogInputState: DogInputState,
     dogInputMode: DogInputMode,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
+    imageUri: Uri?,
     onPictureChanged: (picUrl: String) -> Unit,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
@@ -200,7 +211,8 @@ internal fun DogInputScreen(
     ) {
         CameraInput(
             bottomSheetState = bottomSheetState,
-            coroutineScope = coroutineScope
+            coroutineScope = coroutineScope,
+            imageUri = imageUri
         )
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
@@ -242,18 +254,39 @@ internal fun DogInputScreen(
 internal fun CameraInput(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    imageUri: Uri?
 ) {
-    EmptyDogPictureWithCamera(
-        modifier = modifier.clickable {
-            // open bottom sheet
-            if (!bottomSheetState.isVisible) {
-                coroutineScope.launch {
-                    bottomSheetState.show()
+    if (imageUri == null) {
+        EmptyDogPictureWithCamera(
+            modifier = modifier.clickable {
+                // open bottom sheet
+                if (!bottomSheetState.isVisible) {
+                    coroutineScope.launch {
+                        bottomSheetState.show()
+                    }
                 }
             }
+        )
+    } else {
+        PictureWithCameraIcon(
+            modifier = modifier.clickable {
+                // open bottom sheet
+                if (!bottomSheetState.isVisible) {
+                    coroutineScope.launch {
+                        bottomSheetState.show()
+                    }
+                }
+            }
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).data(imageUri).build(),
+                modifier = Modifier.clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                contentDescription = null
+            )
         }
-    )
+    }
 }
 
 @Composable
@@ -440,6 +473,7 @@ fun PreviewNewDogScreen() {
             modifier = Modifier.fillMaxSize(),
             dogInputState = DogInputState(),
             dogInputMode = DogInputMode.NEW_DOG,
+            imageUri = null,
             onSaveDog = {},
             onWeightChanged = {},
             onNameChanged = {},
@@ -460,6 +494,7 @@ fun PreviewEditDogScreen() {
             modifier = Modifier.fillMaxSize(),
             dogInputState = DogInputState(),
             dogInputMode = DogInputMode.EDIT_DOG,
+            imageUri = null,
             onSaveDog = {},
             onWeightChanged = {},
             onNameChanged = {},
