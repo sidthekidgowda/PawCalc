@@ -16,12 +16,13 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 class CameraActivity : ComponentActivity() {
 
     class TakePhoto : ActivityResultContract<Unit, Uri?>() {
+
         override fun createIntent(context: Context, input: Unit): Intent {
             return Intent(context, CameraActivity::class.java)
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            return  if (resultCode == Activity.RESULT_OK) {
+            return if (resultCode == Activity.RESULT_OK) {
                 intent?.data
             } else {
                 null
@@ -36,6 +37,7 @@ class CameraActivity : ComponentActivity() {
             PawCalcTheme {
                 OpenCamera(
                     onClose = {
+                        setResult(Activity.RESULT_CANCELED)
                         this@CameraActivity.finish()
                     },
                     onSavePhoto = { uri ->

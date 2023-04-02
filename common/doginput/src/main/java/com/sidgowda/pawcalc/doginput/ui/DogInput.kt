@@ -19,6 +19,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,13 +73,13 @@ fun DogInput(
     }
     val cameraPermission = rememberPermissionState(permission = Manifest.permission.CAMERA)
     val mediaPermission = rememberPermissionState(permission = mediaPermission())
-    var imageUri by remember {
+    var imageUri by rememberSaveable {
         mutableStateOf<Uri?>(null)
     }
     val cameraImageResult = rememberLauncherForActivityResult(
         contract = CameraActivity.TakePhoto(),
         onResult = { uri ->
-            imageUri = uri
+            imageUri = uri ?: imageUri
         }
     )
 

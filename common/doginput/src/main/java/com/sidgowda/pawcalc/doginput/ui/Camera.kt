@@ -1,14 +1,11 @@
 package com.sidgowda.pawcalc.doginput.ui
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.view.Surface.ROTATION_0
 import android.view.ViewGroup
 import androidx.camera.core.*
-import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
@@ -46,7 +43,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import java.io.File
-import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
 @ExperimentalZeroShutterLag
@@ -270,13 +266,12 @@ internal fun BackButton(
                 .clip(CircleShape)
                 .background(Color.Black.copy(alpha = 0.5f))
                 .padding(4.dp)
-//                .wrapContentSize(Alignment.Center)
         )
     }
 }
 
 /**
- * Executor will run through Dispatchers.Default
+ * Executor will run through Dispatchers.IO
  */
 private fun ImageCapture.takePicture(
     executor: Executor,
@@ -298,43 +293,6 @@ private fun ImageCapture.takePicture(
             }
         }
     })
-}
-
-private fun ImageCapture.takePictureMemory(
-    executor: Executor,
-    coroutineScope: CoroutineScope,
-    onSuccess: (Bitmap) -> Unit,
-    onFailure: () -> Unit
-) {
-    takePicture(executor, object : OnImageCapturedCallback() {
-        override fun onCaptureSuccess(image: ImageProxy) {
-            super.onCaptureSuccess(image)
-            val buffer = image.planes[0].buffer
-            buffer.rewind()
-            val bytes = ByteArray(buffer.capacity())
-            buffer.get()
-            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            coroutineScope.launch(Dispatchers.Main.immediate) {
-                onSuccess(bitmap)
-            }
-            image.close()
-        }
-
-        override fun onError(exception: ImageCaptureException) {
-            super.onError(exception)
-            onFailure()
-        }
-    })
-}
-
-@ExperimentalGetImage
-private fun ImageProxy.imageProxyToBitmap(): Bitmap {
-    // todo fix non null
-    val planeProxy = image!!.planes[0]
-    val buffer: ByteBuffer = planeProxy.buffer
-    val bytes = ByteArray(buffer.remaining())
-    buffer.get(bytes)
-    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 }
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider {
