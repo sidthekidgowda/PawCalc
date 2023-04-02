@@ -8,20 +8,23 @@ import android.util.Log
 import android.view.Surface.ROTATION_0
 import android.view.ViewGroup
 import androidx.camera.core.*
+import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +38,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +56,9 @@ internal fun OpenCamera(
     onClose: () -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Black),
         contentAlignment = Alignment.BottomCenter
     ) {
         rememberSystemUiController().apply {
@@ -107,9 +113,12 @@ internal fun OpenCamera(
         } else {
             CapturedImage(
                 modifier = Modifier.fillMaxSize(),
-                imageUri = capturedImageUri!!
+                imageUri = capturedImageUri!!,
+                onBack = {
+                    capturedImageUri = null
+                },
+                onSave = {}
             )
-            Text("Image Captured", modifier = Modifier.align(Alignment.Center))
         }
     }
 }
@@ -156,17 +165,38 @@ internal fun BoxScope.CameraPreview(
 @Composable
 internal fun BoxScope.CapturedImage(
     modifier: Modifier = Modifier,
-    imageUri: Uri
+    imageUri: Uri,
+    onBack: () -> Unit,
+    onSave: () -> Unit
 ) {
     val context = LocalContext.current
-    AsyncImage(
-        model = ImageRequest.Builder(context)
-            .data(imageUri)
-            .build(),
+    Column(
         modifier = modifier.fillMaxSize(),
-        contentDescription = null,
-
-        contentScale = ContentScale.FillHeight
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(imageUri)
+                .build(),
+            modifier = Modifier.weight(1.0f),
+            contentDescription = null,
+            contentScale = ContentScale.FillHeight
+        )
+        Spacer(modifier = Modifier.height(6.dp).fillMaxWidth())
+        PawCalcButton(
+            modifier = Modifier
+                .fillMaxWidth(.5f),
+            text = "Save",
+            onClick = onSave
+        )
+        Spacer(modifier = Modifier.height(10.dp).fillMaxWidth())
+    }
+    BackButton(
+        modifier = Modifier
+            .align(Alignment.TopStart)
+            .padding(16.dp),
+        onBack = onBack
     )
 }
 
@@ -215,6 +245,29 @@ internal fun CloseButton(
     }
 }
 
+@Composable
+internal fun BackButton(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = onBack,
+    ) {
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            tint = Color.White,
+            contentDescription = null,
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.5f))
+                .padding(4.dp)
+//                .wrapContentSize(Alignment.Center)
+        )
+    }
+}
+
 /**
  * Executor will run through Dispatchers.Default
  */
@@ -236,6 +289,33 @@ private fun ImageCapture.takePicture(
             coroutineScope.launch {
                 onFailure()
             }
+        }
+    })
+}
+
+private fun ImageCapture.takePictureMemory(
+    executor: Executor,
+    coroutineScope: CoroutineScope,
+    onSuccess: (Bitmap) -> Unit,
+    onFailure: () -> Unit
+) {
+    takePicture(executor, object : OnImageCapturedCallback() {
+        override fun onCaptureSuccess(image: ImageProxy) {
+            super.onCaptureSuccess(image)
+            val buffer = image.planes[0].buffer
+            buffer.rewind()
+            val bytes = ByteArray(buffer.capacity())
+            buffer.get()
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            coroutineScope.launch(Dispatchers.Main.immediate) {
+                onSuccess(bitmap)
+            }
+            image.close()
+        }
+
+        override fun onError(exception: ImageCaptureException) {
+            super.onError(exception)
+            onFailure()
         }
     })
 }
