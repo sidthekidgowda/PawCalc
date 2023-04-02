@@ -1,7 +1,11 @@
 package com.sidgowda.pawcalc.doginput.ui
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
+import android.view.Surface.ROTATION_0
 import android.view.ViewGroup
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -20,21 +24,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.concurrent.futures.await
-import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
+import java.io.File
+import java.nio.ByteBuffer
 import java.util.concurrent.Executor
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 @ExperimentalZeroShutterLag
 @Composable
@@ -46,48 +55,40 @@ internal fun OpenCamera(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        val systemUiController = rememberSystemUiController()
+        rememberSystemUiController().apply {
+            isSystemBarsVisible = false
+            isNavigationBarVisible = false
+            systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
         val lifecycleOwner = LocalLifecycleOwner.current
-        systemUiController.isSystemBarsVisible = false
-        systemUiController.isNavigationBarVisible = false
-        systemUiController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
         var previewUseCase by remember { mutableStateOf<UseCase>(Preview.Builder().build()) }
         val imageCaptureUseCase =
-            ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG)
+            ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG)
+                .setTargetRotation(ROTATION_0)
                 .build()
-        var imageCaptured by remember { mutableStateOf<ImageProxy?>(null) }
+        var capturedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-        if (imageCaptured == null) {
+        if (capturedImageUri == null) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
-                useCase = { previewUseCase = it }
-            )
-            CameraShutterButton(
-                modifier = Modifier
-                    .padding(vertical = 50.dp),
+                useCase = { previewUseCase = it },
                 onShutter = {
-                    coroutineScope.launch {
-                        imageCaptureUseCase.takePicture(
-                            ContextCompat.getMainExecutor(context),
-                            onSuccess = { image ->
-                                // trigger state changes
-                                imageCaptured = image
-                            },
-                            onFailure = {
-                                Log.e("CameraPreview", "Failed to take image")
-                            }
-                        )
-                    }
-                }
-            )
-            CloseButton(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(16.dp),
+                    imageCaptureUseCase.takePicture(
+                        executor = Dispatchers.IO.asExecutor(),
+                        coroutineScope = coroutineScope,
+                        onSuccess = { uri ->
+                            capturedImageUri = uri
+                        },
+                        onFailure = {
+                            Log.e("CameraPreview", "Failed to take image")
+                        }
+                    )
+                },
                 onClose = onClose
             )
             LaunchedEffect(key1 = previewUseCase) {
@@ -104,7 +105,10 @@ internal fun OpenCamera(
                 }
             }
         } else {
-//            CapturedImage(modifier = Modifier.fillMaxSize())
+            CapturedImage(
+                modifier = Modifier.fillMaxSize(),
+                imageUri = capturedImageUri!!
+            )
             Text("Image Captured", modifier = Modifier.align(Alignment.Center))
         }
     }
@@ -112,19 +116,17 @@ internal fun OpenCamera(
 
 @ExperimentalZeroShutterLag
 @Composable
-internal fun CameraPreview(
+internal fun BoxScope.CameraPreview(
     modifier: Modifier = Modifier,
-    useCase: (UseCase) -> Unit
+    useCase: (UseCase) -> Unit,
+    onShutter: () -> Unit,
+    onClose: () -> Unit
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    val scaleType = PreviewView.ScaleType.FILL_CENTER
-
     AndroidView(
         modifier = modifier,
         factory = { context ->
             val previewView = PreviewView(context).apply {
-                this.scaleType = scaleType
+                this.scaleType = PreviewView.ScaleType.FILL_CENTER
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -137,14 +139,35 @@ internal fun CameraPreview(
             )
             previewView
     })
+    CameraShutterButton(
+        modifier = Modifier
+            .padding(vertical = 50.dp),
+        onShutter = onShutter
+    )
+    CloseButton(
+        modifier = Modifier
+            .align(Alignment.TopStart)
+            .padding(16.dp),
+        onClose = onClose
+    )
 }
 
 @ExperimentalZeroShutterLag
 @Composable
 internal fun BoxScope.CapturedImage(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageUri: Uri
 ) {
+    val context = LocalContext.current
+    AsyncImage(
+        model = ImageRequest.Builder(context)
+            .data(imageUri)
+            .build(),
+        modifier = modifier.fillMaxSize(),
+        contentDescription = null,
 
+        contentScale = ContentScale.FillHeight
+    )
 }
 
 @Composable
@@ -192,29 +215,39 @@ internal fun CloseButton(
     }
 }
 
-private suspend fun ImageCapture.takePicture(
+/**
+ * Executor will run through Dispatchers.Default
+ */
+private fun ImageCapture.takePicture(
     executor: Executor,
-    onSuccess: (ImageProxy) -> Unit,
+    coroutineScope: CoroutineScope,
+    onSuccess: (Uri) -> Unit,
     onFailure: () -> Unit
 ) {
-    suspendCoroutine { continuation ->
-        takePicture(
-            executor,
-            object : ImageCapture.OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    super.onCaptureSuccess(image)
-                    onSuccess(image)
-                    continuation.resume(Unit)
-                }
-
-                override fun onError(exception: ImageCaptureException) {
-                    super.onError(exception)
-                    onFailure()
-                    continuation.resumeWithException(exception)
-                }
+    val tempFile = File.createTempFile("image", "jpeg")
+    val outputOptions = ImageCapture.OutputFileOptions.Builder(tempFile).build()
+    takePicture(outputOptions, executor, object : ImageCapture.OnImageSavedCallback {
+        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+            coroutineScope.launch {
+                onSuccess(outputFileResults.savedUri ?: tempFile.toUri())
             }
-        )
-    }
+        }
+        override fun onError(exception: ImageCaptureException) {
+            coroutineScope.launch {
+                onFailure()
+            }
+        }
+    })
+}
+
+@ExperimentalGetImage
+private fun ImageProxy.imageProxyToBitmap(): Bitmap {
+    // todo fix non null
+    val planeProxy = image!!.planes[0]
+    val buffer: ByteBuffer = planeProxy.buffer
+    val bytes = ByteArray(buffer.remaining())
+    buffer.get(bytes)
+    return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 }
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider {
@@ -225,9 +258,11 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider {
 @ExperimentalZeroShutterLag
 @LightDarkPreview
 @Composable
-fun PreviewCameraPreview() {
+fun PreviewCamera() {
     PawCalcTheme {
-        CameraPreview(useCase = {})
+        OpenCamera(
+            onClose = {}
+        )
     }
 }
 
