@@ -4,6 +4,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun OpenMedia(
     modifier: Modifier = Modifier,
@@ -58,33 +60,36 @@ internal fun OpenMedia(
         }
         // don't show content till there are images
         if (images != null) {
-            if (chosenMediaImageUri == null) {
-                // show gallery
-                MediaGallery(
-                    modifier = Modifier.fillMaxSize(),
-                    gridState = gridState,
-                    images = images!!,
-                    onChoosePhoto = { imageUri ->
-                        chosenMediaImageUri = imageUri
-                    },
-                    onClose = onClose
-                )
-            } else {
-                // show selected image
-                // animate image from small to big
-                ExpandedImageContainer(
-                    modifier = modifier,
-                    image = chosenMediaImageUri!!,
-                    onBack = {
-                        chosenMediaImageUri = null
-                    },
-                    onSavePhoto = {
-                        onSavePhoto(chosenMediaImageUri!!)
-                    },
-                    contentScale = ContentScale.FillHeight,
-                    placeholder = R.drawable.ic_paw,
-                    fallback = R.drawable.ic_paw
-                )
+            AnimatedContent(
+                targetState = chosenMediaImageUri
+            ) { targetState ->
+                if (targetState != null) {
+                    // show selected image
+                    // animate image from small to big
+                    ExpandedImageContainer(
+                        modifier = modifier,
+                        image = targetState,
+                        onBack = {
+                            chosenMediaImageUri = null
+                        },
+                        onSavePhoto = {
+                            onSavePhoto(chosenMediaImageUri!!)
+                        },
+                        contentScale = ContentScale.FillHeight,
+                        placeholder = R.drawable.ic_paw,
+                        fallback = R.drawable.ic_paw
+                    )
+                } else {
+                    MediaGallery(
+                        modifier = Modifier.fillMaxSize(),
+                        gridState = gridState,
+                        images = images!!,
+                        onChoosePhoto = { imageUri ->
+                            chosenMediaImageUri = imageUri
+                        },
+                        onClose = onClose
+                    )
+                }
             }
         }
     }
@@ -102,12 +107,13 @@ internal fun BoxScope.MediaGallery(
         modifier = modifier.fillMaxSize(),
         state = gridState,
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(10.dp)
+        contentPadding = PaddingValues(10.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(images, key = { item -> item.id }) { image ->
+        items(images) { image ->
             Card(
                 modifier = Modifier
-                    .padding(4.dp)
                     .fillMaxWidth()
                     .aspectRatio(0.5625f)
             ) {

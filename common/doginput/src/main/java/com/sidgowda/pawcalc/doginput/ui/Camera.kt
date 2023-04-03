@@ -160,13 +160,13 @@ internal fun CameraShutterButton(
     ) {
         Icon(
             imageVector = Icons.Default.Circle,
-            tint = Color.White,
+            tint = Color.Black,
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp)
-                .border(10.dp, Color.White, CircleShape)
+                .border(10.dp, Color.White.copy(alpha = .7f), CircleShape)
                 .graphicsLayer {
-                    alpha = 0.5f
+                    alpha = 0.3f
                 }
         )
     }
