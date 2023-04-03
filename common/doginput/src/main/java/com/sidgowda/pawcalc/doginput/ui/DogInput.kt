@@ -6,25 +6,22 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.camera.core.ExperimentalZeroShutterLag
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -73,7 +70,7 @@ fun DogInput(
     }
     val cameraPermission = rememberPermissionState(permission = Manifest.permission.CAMERA)
     val mediaPermission = rememberPermissionState(permission = mediaPermission())
-    var imageUri by rememberSaveable {
+    var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
     val cameraMediaImageResult = rememberLauncherForActivityResult(
@@ -283,7 +280,9 @@ internal fun CameraInput(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(imageUri).build(),
-                modifier = Modifier.clip(CircleShape),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .border(2.dp, Color.Black, CircleShape),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )

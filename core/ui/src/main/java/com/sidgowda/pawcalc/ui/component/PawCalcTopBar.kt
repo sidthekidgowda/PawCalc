@@ -3,6 +3,7 @@ package com.sidgowda.pawcalc.ui.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
@@ -63,23 +65,25 @@ fun PreviewPawCalcTopAppBarWithBothActionIconAndNavigationIcon() {
                     color = PawCalcTheme.colors.onPrimarySurface()
                 )
             },
-            actionIcon = {
-                IconButton(
-                    onClick = {  }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = null,
-                        tint = PawCalcTheme.colors.onPrimarySurface()
-                    )
-                }
-            },
             navigationIcon = {
                 IconButton(onClick = {
 
                 }) {
                     Icon(
+                        modifier = Modifier.size(30.dp),
                         imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        tint = PawCalcTheme.colors.onPrimarySurface()
+                    )
+                }
+            },
+            actionIcon = {
+                IconButton(
+                    onClick = {  }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Default.Settings,
                         contentDescription = null,
                         tint = PawCalcTheme.colors.onPrimarySurface()
                     )
@@ -107,6 +111,7 @@ fun PreviewPawCalcTopAppBarWithNavigationIconAndWithoutAtionIcon() {
 
                 }) {
                     Icon(
+                        modifier = Modifier.size(30.dp),
                         imageVector = Icons.Default.Close,
                         contentDescription = null,
                         tint = PawCalcTheme.colors.onPrimarySurface()

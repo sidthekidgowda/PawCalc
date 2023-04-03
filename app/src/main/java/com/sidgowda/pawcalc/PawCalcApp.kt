@@ -1,14 +1,12 @@
 package com.sidgowda.pawcalc
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sidgowda.pawcalc.navigation.Destination
@@ -75,6 +73,7 @@ fun HomeTopBar(
             if (currentDestination.navIcon != null) {
                 IconButton(onClick = onNavIconClick) {
                     Icon(
+                        modifier = Modifier.size(30.dp),
                         imageVector = currentDestination.navIcon,
                         contentDescription = stringResource(
                             id = currentDestination.navIconContentDescription
@@ -90,6 +89,7 @@ fun HomeTopBar(
             if (currentDestination.actionIcon != null) {
                 IconButton(onClick = onActionClick) {
                     Icon(
+                        modifier = Modifier.size(24.dp),
                         imageVector = currentDestination.actionIcon,
                         contentDescription = stringResource(
                             id = currentDestination.actionIconContentDescription
