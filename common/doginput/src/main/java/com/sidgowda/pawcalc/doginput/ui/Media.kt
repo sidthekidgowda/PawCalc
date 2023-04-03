@@ -6,13 +6,9 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
@@ -49,6 +45,7 @@ internal fun OpenMedia(
         var images by remember {
             mutableStateOf<List<Image>?>(null)
         }
+        var gridState = rememberLazyGridState()
 
         // get media
         LaunchedEffect(key1 = Unit) {
@@ -65,6 +62,7 @@ internal fun OpenMedia(
                 // show gallery
                 MediaGallery(
                     modifier = Modifier.fillMaxSize(),
+                    gridState = gridState,
                     images = images!!,
                     onChoosePhoto = { imageUri ->
                         chosenMediaImageUri = imageUri
@@ -83,7 +81,7 @@ internal fun OpenMedia(
                     onSavePhoto = {
                         onSavePhoto(chosenMediaImageUri!!)
                     },
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.FillHeight,
                     placeholder = R.drawable.ic_paw,
                     fallback = R.drawable.ic_paw
                 )
@@ -95,24 +93,34 @@ internal fun OpenMedia(
 @Composable
 internal fun BoxScope.MediaGallery(
     modifier: Modifier = Modifier,
+    gridState: LazyGridState,
     images: List<Image>,
     onChoosePhoto: (Uri) -> Unit,
     onClose: () -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Fixed(2)
+        modifier = modifier.fillMaxSize(),
+        state = gridState,
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(10.dp)
     ) {
-        items(images) { image ->
-            PhotoImage(
-                modifier = Modifier.clickable {
-                    onChoosePhoto(image.uri)
-                },
-                image = image.uri,
-                scaleType = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.ic_paw),
-                fallback = painterResource(id = R.drawable.ic_paw)
-            )
+        items(images, key = { item -> item.id }) { image ->
+            Card(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(0.5625f)
+            ) {
+                PhotoImage(
+                    modifier = Modifier.clickable {
+                        onChoosePhoto(image.uri)
+                    },
+                    image = image.uri,
+                    scaleType = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.ic_paw),
+                    fallback = painterResource(id = R.drawable.ic_paw)
+                )
+            }
         }
     }
     MediaButton(
@@ -122,29 +130,6 @@ internal fun BoxScope.MediaGallery(
         imageVector = Icons.Default.Close,
         onAction = onClose
     )
-}
-
-@Composable
-internal fun BoxScope.ExpandedMediaImage(
-    modifier: Modifier = Modifier,
-    image: Uri,
-    onBack: () -> Unit,
-    onSavePhoto: (Uri) -> Unit
-) {
-//    ExpandedImage(
-//        modifier = modifier,
-//        image = {
-//            MediaImage(
-//                modifier = Modifier.fillMaxWidth(),
-//                image = image,
-//                scaleType = ContentScale.FillHeight
-//            )
-//        },
-//        onBack = onBack,
-//        onSavePhoto = {
-//            onSavePhoto(image)
-//        }
-//    )
 }
 
 private fun retrieveImagesFromMedia(context: Context): List<Image> {
@@ -173,7 +158,6 @@ private fun retrieveImagesFromMedia(context: Context): List<Image> {
 
 
 //---------Preview----------------------------------------------------------------------------------
-
 
 @LightDarkPreview
 @Composable

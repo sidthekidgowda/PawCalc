@@ -18,6 +18,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.sidgowda.pawcalc.doginput.R
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
+import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
 internal fun BoxScope.ExpandedImageContainer(
@@ -82,4 +84,14 @@ internal fun PhotoImage(
         error = fallback,
         contentScale = scaleType
     )
+}
+
+//---------Preview----------------------------------------------------------------------------------
+
+@LightDarkPreview
+@Composable
+fun PreviewPhotoImage() {
+    PawCalcTheme {
+
+    }
 }
