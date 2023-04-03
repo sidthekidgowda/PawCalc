@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.camera.extensions)
     implementation(libs.androidx.concurrent.futures)
     implementation(libs.coil.compose)
+    implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.window:window:1.0.0-alpha09")
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

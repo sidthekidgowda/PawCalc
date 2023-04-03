@@ -3,24 +3,22 @@ package com.sidgowda.pawcalc.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 
-//-----Light Colors
+
 val Green500 = Color(0xFF30C77E) // primary
-// Black is onPrimary
 val Blue400 = Color(0xFF30C4C7) // secondary
-// Black is onSecondary
 val Green700 = Color(0xFF009F46) // status
 val Grey50 = Color(0xFFF9F4F4) // surface
 val Grey700 = Color(0xFF555555) // onSurface
 val Grey200 = Color(0xFFD9D9D9) // text field component color
 
-//------Dark Colors
-val Green200 = Color(0xFF63D68F) // primary
-val Blue200 = Color(0xFF30C4C7) // secondary
-val Grey600 = Color(0xFF646868) // surface
-val Grey500 = Color(0xFF8C9090) // background
-val Grey900 = Color(0xFF121212) // background
-val White = Color(0xFFFFFFFF) // onSurface
+val Green200 = Color(0xFF63D68F) // dark primary
+val Blue200 = Color(0xFF30C4C7) // dark secondary
+val Grey600 = Color(0xFF646868)
+val Grey500 = Color(0xFF8C9090)
+val Grey900 = Color(0xFF121212) // dark background and surface
+
 interface PawCalcColorScheme {
     val primary: Color
     val onPrimary: Color
@@ -32,12 +30,24 @@ interface PawCalcColorScheme {
     val onBackground: Color
 
     @Composable
-    fun primarySurface(): Color =
-        if (isSystemInDarkTheme()) background else primary
-
-    @Composable
     fun onPrimarySurface(): Color =
         if (isSystemInDarkTheme()) onBackground else onPrimary
+
+    @Composable
+    fun contentColor(): Color =
+        if (isSystemInDarkTheme()) Grey200 else onBackground
+
+    @Composable
+    fun iconTint(): Color =
+        if (isSystemInDarkTheme()) Color.White else Color.Black
+
+    @Composable
+    fun surface(): Color =
+        if (isSystemInDarkTheme()) Color.White else surface
+
+    @Composable
+    fun onSurface(): Color =
+        if (isSystemInDarkTheme()) Color.Black else onSurface
 }
 
 object PawCalcColorLightScheme : PawCalcColorScheme {

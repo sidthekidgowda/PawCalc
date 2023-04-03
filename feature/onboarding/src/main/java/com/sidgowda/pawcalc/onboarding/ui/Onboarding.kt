@@ -38,8 +38,9 @@ internal fun OnboardingScreen(
 ) {
     Column(
         modifier = modifier
-            .testTag(ONBOARDING_ROUTE)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(PawCalcTheme.colors.background)
+            .testTag(ONBOARDING_ROUTE),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

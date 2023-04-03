@@ -28,8 +28,6 @@ fun PawCalcTopAppBar(
 ) {
     TopAppBar(
         modifier = modifier,
-        backgroundColor = PawCalcTheme.colors.primarySurface(),
-        contentColor = PawCalcTheme.colors.onPrimarySurface()
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -95,7 +93,7 @@ fun PreviewPawCalcTopAppBarWithBothActionIconAndNavigationIcon() {
 
 @LightDarkPreview
 @Composable
-fun PreviewPawCalcTopAppBarWithNavigationIconAndWithoutAtionIcon() {
+fun PreviewPawCalcTopAppBarWithNavigationIconAndWithoutActionIcon() {
     PawCalcTheme {
         PawCalcTopAppBar(
             title = {
