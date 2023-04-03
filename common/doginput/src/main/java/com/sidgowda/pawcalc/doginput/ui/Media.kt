@@ -117,7 +117,7 @@ internal fun BoxScope.MediaGallery(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(0.5625f)
+                    .aspectRatio(ASPECT_RATIO_9_BY_16)
             ) {
                 PhotoImage(
                     modifier = Modifier.clickable {
@@ -139,6 +139,8 @@ internal fun BoxScope.MediaGallery(
         onAction = onClose
     )
 }
+
+private const val ASPECT_RATIO_9_BY_16 = (9.0/16.0).toFloat()
 
 private fun retrieveImagesFromMedia(context: Context): List<Image> {
     val projection = arrayOf(
