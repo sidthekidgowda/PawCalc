@@ -15,25 +15,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.concurrent.futures.await
 import androidx.core.net.toUri
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.sidgowda.pawcalc.ui.component.PawCalcButton
+import com.sidgowda.pawcalc.ui.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.CoroutineScope
@@ -100,15 +95,16 @@ internal fun OpenCamera(
                 }
             }
         } else {
-            CapturedImage(
-                modifier = Modifier.fillMaxSize(),
-                imageUri = capturedImageUri!!,
-                onBack = {
+            ExpandedImageContainer(
+                modifier = modifier.fillMaxSize(),
+                image = capturedImageUri!!,
+                onBack =  {
                     capturedImageUri = null
                 },
-                onSave = {
+                onSavePhoto = {
                     onSavePhoto(capturedImageUri!!)
-                }
+                },
+                fallback = R.drawable.ic_paw
             )
         }
     }
@@ -144,53 +140,12 @@ internal fun BoxScope.CameraPreview(
             .padding(vertical = 50.dp),
         onShutter = onShutter
     )
-    CloseButton(
+    MediaButton(
         modifier = Modifier
             .align(Alignment.TopStart)
             .padding(16.dp),
-        onClose = onClose
-    )
-}
-
-@ExperimentalZeroShutterLag
-@Composable
-internal fun BoxScope.CapturedImage(
-    modifier: Modifier = Modifier,
-    imageUri: Uri,
-    onBack: () -> Unit,
-    onSave: () -> Unit
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUri)
-                .build(),
-            modifier = Modifier.weight(1.0f),
-            contentDescription = null,
-            contentScale = ContentScale.FillHeight
-        )
-        Spacer(modifier = Modifier
-            .height(6.dp)
-            .fillMaxWidth())
-        PawCalcButton(
-            modifier = Modifier
-                .fillMaxWidth(.5f),
-            text = "Save",
-            onClick = onSave
-        )
-        Spacer(modifier = Modifier
-            .height(10.dp)
-            .fillMaxWidth())
-    }
-    BackButton(
-        modifier = Modifier
-            .align(Alignment.TopStart)
-            .padding(16.dp),
-        onBack = onBack
+        imageVector = Icons.Default.Close,
+        onAction = onClose
     )
 }
 
@@ -213,50 +168,6 @@ internal fun CameraShutterButton(
                 .graphicsLayer {
                     alpha = 0.5f
                 }
-        )
-    }
-}
-
-@Composable
-internal fun CloseButton(
-    modifier: Modifier = Modifier,
-    onClose: () -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = onClose,
-    ) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            tint = Color.White,
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .graphicsLayer {
-                    alpha = 0.8f
-                }
-        )
-    }
-}
-
-@Composable
-internal fun BackButton(
-    modifier: Modifier = Modifier,
-    onBack: () -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = onBack,
-    ) {
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            tint = Color.White,
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color.Black.copy(alpha = 0.5f))
-                .padding(4.dp)
         )
     }
 }
@@ -308,16 +219,6 @@ fun PreviewCamera() {
 fun PreviewCameraShutterButton() {
     PawCalcTheme() {
         CameraShutterButton() {
-            
-        }
-    }
-}
-
-@LightDarkPreview
-@Composable
-fun PreviewCloseButton() {
-    PawCalcTheme {
-        CloseButton() {
             
         }
     }
