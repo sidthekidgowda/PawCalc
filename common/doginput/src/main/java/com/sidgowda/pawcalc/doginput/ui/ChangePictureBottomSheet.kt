@@ -65,8 +65,8 @@ internal fun PictureItem(
             .fillMaxWidth()
             .height(64.dp)
             .background(PawCalcTheme.colors.surface)
-            .padding(horizontal = 40.dp)
-            .clickable { onAction() },
+            .clickable { onAction() }
+            .padding(horizontal = 40.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -81,7 +81,7 @@ internal fun TakePhotoFromCamera() {
         contentDescription = null,
         tint = PawCalcTheme.colors.onSurface
     )
-    Spacer(modifier = Modifier.width(12.dp))
+    Spacer(modifier = Modifier.width(16.dp))
     Text(
         text = stringResource(id = R.string.bottom_sheet_take_photo),
         style = PawCalcTheme.typography.body1,
@@ -96,7 +96,7 @@ fun ChoosePhotoFromMedia() {
         contentDescription = null,
         tint = PawCalcTheme.colors.onSurface
     )
-    Spacer(modifier = Modifier.width(12.dp))
+    Spacer(modifier = Modifier.width(16.dp))
     Text(
         text = stringResource(id = R.string.bottom_sheet_choose_photo),
         style = PawCalcTheme.typography.body1,
@@ -121,9 +121,12 @@ fun PreviewChangePictureBottomSheet() {
 @Composable
 fun PreviewTakePhotoFromCamera() {
     PawCalcTheme {
-//        TakePhotoFromCamera(
-//            onTakePhoto = {}
-//        )
+        PictureItem(
+            onAction = {  },
+            content = {
+                TakePhotoFromCamera()
+            }
+        )
     }
 }
 
@@ -132,9 +135,12 @@ fun PreviewTakePhotoFromCamera() {
 @Composable
 fun PreviewChoosePhotoFromMedia() {
     PawCalcTheme {
-//        ChoosePhotoFromMedia(
-//            onChoosePhoto = {}
-//        )
+        PictureItem(
+            onAction = {  },
+            content = {
+                ChoosePhotoFromMedia()
+            }
+        )
     }
 }
 
