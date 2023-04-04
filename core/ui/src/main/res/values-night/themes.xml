@@ -2,5 +2,7 @@
 <resources>
     <style name="Theme.PawCalc" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/grey_900</item>
+        <item name="colorPrimary">@color/green_200</item>
+        <item name="colorOnPrimary">@android:color/black</item>
     </style>
 </resources>

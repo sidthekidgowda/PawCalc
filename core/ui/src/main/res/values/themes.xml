@@ -3,5 +3,7 @@
     <style name="Theme.PawCalc" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/green_500</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="colorPrimary">@color/green_500</item>
+        <item name="colorOnPrimary">@android:color/black</item>
     </style>
 </resources>
