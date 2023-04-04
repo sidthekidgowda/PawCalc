@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Photo
@@ -33,13 +32,19 @@ fun UpdatePhotoBottomSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-        PictureItem {
-            TakePhotoFromCamera(onTakePhoto = onTakePhoto)
-        }
+        PictureItem(
+            onAction = onTakePhoto,
+            content = {
+                TakePhotoFromCamera()
+            }
+        )
         Spacer(modifier = Modifier.height(10.dp))
-        PictureItem {
-            ChoosePhotoFromMedia(onChoosePhoto = onChooseMedia)
-        }
+        PictureItem(
+            onAction = onChooseMedia,
+            content = {
+                ChoosePhotoFromMedia()
+            }
+        )
         Spacer(modifier = Modifier.height(20.dp))
         PawCalcButton(
             text = stringResource(id = R.string.cancel),
@@ -50,79 +55,53 @@ fun UpdatePhotoBottomSheetContent(
 }
 
 @Composable
-fun PictureItem(
+internal fun PictureItem(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable RowScope.() -> Unit,
+    onAction: () -> Unit
 ) {
-    Surface(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
+            .background(PawCalcTheme.colors.surface)
+            .padding(horizontal = 40.dp)
+            .clickable { onAction() },
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         content()
     }
 }
 
 @Composable
-fun TakePhotoFromCamera(
-    modifier: Modifier = Modifier,
-    onTakePhoto: () -> Unit
-) {
-    PictureItem(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .clickable(
-                    onClickLabel = stringResource(id = R.string.cd_bottom_sheet_take_photo)
-                ) {
-                    onTakePhoto()
-                }
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-    ) {
-            Icon(
-                imageVector = Icons.Default.PhotoCamera,
-                contentDescription = null,
-                tint = PawCalcTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.width(24.dp))
-            Text(
-                text = stringResource(id = R.string.bottom_sheet_take_photo),
-                style = PawCalcTheme.typography.body1,
-                color = PawCalcTheme.colors.onSurface
-            )
-        }
-    }
+internal fun TakePhotoFromCamera() {
+    Icon(
+        imageVector = Icons.Default.PhotoCamera,
+        contentDescription = null,
+        tint = PawCalcTheme.colors.onSurface
+    )
+    Spacer(modifier = Modifier.width(12.dp))
+    Text(
+        text = stringResource(id = R.string.bottom_sheet_take_photo),
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.onSurface
+    )
 }
 
 @Composable
-fun ChoosePhotoFromMedia(
-    modifier: Modifier = Modifier,
-    onChoosePhoto: () -> Unit
-) {
-    PictureItem(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .clickable(
-                    onClickLabel = stringResource(id = R.string.cd_bottom_sheet_choose_photo)
-                ) {
-                    onChoosePhoto()
-                }
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Photo,
-                contentDescription = null,
-                tint = PawCalcTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.width(24.dp))
-            Text(
-                text = stringResource(id = R.string.bottom_sheet_choose_photo),
-                style = PawCalcTheme.typography.body1,
-                color = PawCalcTheme.colors.onSurface
-            )
-        }
-    }
+fun ChoosePhotoFromMedia() {
+    Icon(
+        imageVector = Icons.Default.Photo,
+        contentDescription = null,
+        tint = PawCalcTheme.colors.onSurface
+    )
+    Spacer(modifier = Modifier.width(12.dp))
+    Text(
+        text = stringResource(id = R.string.bottom_sheet_choose_photo),
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.onSurface
+    )
 }
 
 //------Preview-------------------------------------------------------------------------------------
@@ -142,9 +121,9 @@ fun PreviewChangePictureBottomSheet() {
 @Composable
 fun PreviewTakePhotoFromCamera() {
     PawCalcTheme {
-        TakePhotoFromCamera(
-            onTakePhoto = {}
-        )
+//        TakePhotoFromCamera(
+//            onTakePhoto = {}
+//        )
     }
 }
 
@@ -153,9 +132,9 @@ fun PreviewTakePhotoFromCamera() {
 @Composable
 fun PreviewChoosePhotoFromMedia() {
     PawCalcTheme {
-        ChoosePhotoFromMedia(
-            onChoosePhoto = {}
-        )
+//        ChoosePhotoFromMedia(
+//            onChoosePhoto = {}
+//        )
     }
 }
 

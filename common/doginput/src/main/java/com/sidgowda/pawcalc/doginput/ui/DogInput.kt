@@ -80,6 +80,9 @@ fun DogInput(
         contract = CameraMediaActivity.GetPhoto(),
         onResult = { uri ->
             imageUri = uri ?: imageUri
+            if (imageUri != null) {
+                scope.launch { bottomSheetState.hide() }
+            }
         }
     )
 
@@ -142,13 +145,8 @@ fun DogInput(
                     cameraPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    LaunchedEffect(Unit) {
-                        cameraMediaImageResult.launch(CameraMediaActivity.TAKE_PHOTO)
-                        isCameraRequested = false
-                        scope.launch {
-                            bottomSheetState.hide()
-                        }
-                    }
+                    cameraMediaImageResult.launch(CameraMediaActivity.TAKE_PHOTO)
+                    isCameraRequested = false
                 },
                 deniedContent = {
                     PermissionDialog(
@@ -168,11 +166,6 @@ fun DogInput(
                 successContent = {
                     cameraMediaImageResult.launch(CameraMediaActivity.CHOOSE_MEDIA)
                     isMediaRequested = false
-                    LaunchedEffect(Unit) {
-                        scope.launch {
-                            bottomSheetState.hide()
-                        }
-                    }
                 },
                 deniedContent = {
                     PermissionDialog(
@@ -357,7 +350,7 @@ internal fun WeightInput(
         Text(
             text = stringResource(id = R.string.weight_text_input),
             style = PawCalcTheme.typography.h4,
-            color = PawCalcTheme.colors.onBackground
+            color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
         Box(
@@ -423,7 +416,7 @@ internal fun BirthDateInput(
         Text(
             text = stringResource(id = R.string.birth_date_input),
             style = PawCalcTheme.typography.h4,
-            color = PawCalcTheme.colors.onBackground
+            color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
         Box(
