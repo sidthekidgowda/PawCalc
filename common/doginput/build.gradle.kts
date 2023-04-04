@@ -34,6 +34,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeUi.get()
@@ -62,8 +63,10 @@ dependencies {
     implementation(libs.androidx.camera.extensions)
     implementation(libs.androidx.concurrent.futures)
     implementation(libs.coil.compose)
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.window:window:1.0.0-alpha09")
+    implementation(libs.android.material)
+    implementation(libs.androidx.window.manager)
+    implementation(libs.androidx.compose.ui.viewbinding)
+    implementation(libs.androidx.fragment.ktx)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries

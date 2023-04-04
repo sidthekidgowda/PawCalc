@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel)
 //    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.android)

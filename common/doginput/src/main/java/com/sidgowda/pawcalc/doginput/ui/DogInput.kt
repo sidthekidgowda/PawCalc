@@ -28,10 +28,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
@@ -428,17 +430,18 @@ internal fun BirthDateInput(
                 },
             contentAlignment = Alignment.CenterStart
         ) {
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier
-                    .fillMaxWidth(.9f),
-                textStyle = PawCalcTheme.typography.h5,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = PawCalcTheme.colors.surface(),
-                    textColor = PawCalcTheme.colors.onSurface()
-                )
-            )
+//            TextField(
+//                value = "",
+//                onValueChange = {},
+//                modifier = Modifier
+//                    .fillMaxWidth(.9f),
+//                textStyle = PawCalcTheme.typography.h5,
+//                colors = TextFieldDefaults.textFieldColors(
+//                    backgroundColor = PawCalcTheme.colors.surface(),
+//                    textColor = PawCalcTheme.colors.onSurface()
+//                )
+//            )
+            Box(modifier = Modifier.fillMaxWidth(.9f).background(Color.White).height(52.dp))
             GreyBox(
                 modifier = Modifier.align(Alignment.CenterEnd),
             ) {
@@ -456,10 +459,17 @@ internal fun BirthDateInput(
 internal fun OpenDatePicker(
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    AndroidViewBinding(DatePickerDialogBinding::inflate) {
+       val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
+    }
+
+
 //    AndroidView(
 //        modifier = modifier,
 //        factory = { context ->
-//            val view = MaterialDatePicker.Builder
+//            val view = MaterialDatePicker.Builder.datePicker().setTitleText("It works").build()
+//            view.show()
 //        },
 //        update = {
 //
