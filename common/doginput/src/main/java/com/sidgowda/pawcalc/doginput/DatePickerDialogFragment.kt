@@ -1,20 +1,21 @@
 package com.sidgowda.pawcalc.doginput
 
-import android.icu.util.Calendar
-import android.icu.util.TimeZone
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import java.util.*
 
 internal class DatePickerDialogFragment : Fragment() {
+
+    var datePickerListener: DatePickerListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,32 +26,42 @@ internal class DatePickerDialogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PawCalcTheme {
-                    DatePicker()
+                    showDatePickerDialog()
                 }
             }
         }
     }
 
-    @Composable
-    fun DatePicker() {
+    private fun showDatePickerDialog() {
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-            .setTitleText("It works")
-            .setCalendarConstraints(calendarContraints())
+            .setTitleText(getString(R.string.date_picker_dialog_title))
+            .setCalendarConstraints(calendarConstraints())
             .build()
-        datePicker.show(childFragmentManager, "tag")
+            .apply {
+                // dialog canceled with back button or touching scrim view
+                addOnCancelListener {
+                    datePickerListener?.onCancel()
+                }
+                // ok button clicked
+                addOnPositiveButtonClickListener { date ->
+                    datePickerListener?.dateSelected(date.toString())
+                }
+                // cancel button clicked
+                addOnNegativeButtonClickListener {
+                    datePickerListener?.onCancel()
+                }
+            }
+        datePicker.show(childFragmentManager, DatePickerDialogFragment::class.java.simpleName)
     }
 
-    private fun calendarContraints(): CalendarConstraints {
-        // todo figure out right time and calendar library
+    private fun calendarConstraints(): CalendarConstraints{
         val today = MaterialDatePicker.todayInUtcMilliseconds()
-
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         calendar.timeInMillis = today
-
-        val constraintsBuilder =
-            CalendarConstraints.Builder()
-                .setEnd(calendar.timeInMillis)
-        return constraintsBuilder.build()
+       return CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
+            .setEnd(calendar.timeInMillis)
+            .build()
     }
 }

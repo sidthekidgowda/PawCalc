@@ -179,7 +179,11 @@ fun DogInput(
             )
         }
         if (isDatePickerRequested) {
-            OpenDatePicker()
+            OpenDatePicker(
+                onDatePickerDismissed = {
+                    isDatePickerRequested = false
+                }
+            )
         }
     }
 }
@@ -469,11 +473,30 @@ internal fun BirthDateInput(
 
 @Composable
 internal fun OpenDatePicker(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDateSelected: (String) -> Unit = {},
+    onDatePickerDismissed: () -> Unit
 ) {
-    val context = LocalContext.current
-    AndroidViewBinding(DatePickerDialogBinding::inflate) {
+    AndroidViewBinding(
+        DatePickerDialogBinding::inflate,
+        modifier = modifier.fillMaxSize()
+    ) {
         val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
+        fragment.datePickerListener = object : DatePickerListener {
+            override fun dateSelected(date: String) {
+               // update date
+                onDateSelected(date)
+                onDatePickerDismissed()
+            }
+
+            override fun onCancel() {
+                onDatePickerDismissed()
+            }
+
+            override fun onDismiss() {
+                onDatePickerDismissed()
+            }
+        }
     }
 }
 

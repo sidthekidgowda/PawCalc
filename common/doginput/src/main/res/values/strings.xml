@@ -17,4 +17,5 @@
     <string name="permission_denied_title">Permission Denied: %s</string>
     <string name="permission_denied_message">To be able to use this feature, you will need to grant this permission in settings.</string>
     <string name="media_image_save_button">Save</string>
+    <string name="date_picker_dialog_title">Select Birth Date</string>
 </resources>
