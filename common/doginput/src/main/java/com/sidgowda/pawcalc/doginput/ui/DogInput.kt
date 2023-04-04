@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -429,28 +430,22 @@ internal fun BirthDateInput(
             modifier = Modifier
                 .fillMaxWidth(.6f)
                 .height(52.dp)
-                .clickable {
-                    onDatePickerRequest()
-                },
+                .clickable { birthDateFocusRequester.requestFocus() }
+                .focusRequester(birthDateFocusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        onDatePickerRequest()
+                    }
+                }
+                .focusable(),
             contentAlignment = Alignment.CenterStart
         ) {
-//            TextField(
-//                value = "",
-//                onValueChange = {},
-//                modifier = Modifier
-//                    .fillMaxWidth(.9f),
-//                textStyle = PawCalcTheme.typography.h5,
-//                colors = TextFieldDefaults.textFieldColors(
-//                    backgroundColor = PawCalcTheme.colors.surface(),
-//                    textColor = PawCalcTheme.colors.onSurface()
-//                )
-//            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth(.9f)
                     .background(color = Color.White, shape = RoundedCornerShape(topStart = 4.dp))
-                    .padding(start = 10.dp)
-                    .height(52.dp),
+                    .height(52.dp)
+                    .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text("mm/dd/yyyy",
