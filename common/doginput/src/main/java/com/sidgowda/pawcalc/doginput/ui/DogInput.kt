@@ -441,7 +441,19 @@ internal fun BirthDateInput(
 //                    textColor = PawCalcTheme.colors.onSurface()
 //                )
 //            )
-            Box(modifier = Modifier.fillMaxWidth(.9f).background(Color.White).height(52.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(.9f)
+                    .background(color = Color.White, shape = RoundedCornerShape(topStart = 4.dp))
+                    .padding(start = 10.dp)
+                    .height(52.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text("mm/dd/yyyy",
+                    style = PawCalcTheme.typography.body1,
+                    color = PawCalcTheme.colors.onSurface()
+                    )
+            }
             GreyBox(
                 modifier = Modifier.align(Alignment.CenterEnd),
             ) {
@@ -461,20 +473,8 @@ internal fun OpenDatePicker(
 ) {
     val context = LocalContext.current
     AndroidViewBinding(DatePickerDialogBinding::inflate) {
-       val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
+        val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
     }
-
-
-//    AndroidView(
-//        modifier = modifier,
-//        factory = { context ->
-//            val view = MaterialDatePicker.Builder.datePicker().setTitleText("It works").build()
-//            view.show()
-//        },
-//        update = {
-//
-//        }
-//    )
 }
 
 @Composable
