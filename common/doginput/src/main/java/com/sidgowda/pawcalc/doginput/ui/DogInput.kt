@@ -11,6 +11,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import coil.compose.AsyncImage
@@ -44,9 +46,7 @@ import com.sidgowda.pawcalc.doginput.ui.*
 import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PictureWithCameraIcon
-import com.sidgowda.pawcalc.ui.theme.Grey200
-import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
-import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import com.sidgowda.pawcalc.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -235,7 +235,14 @@ internal fun DogInputScreen(
             onNameChanged = onNameChanged,
             weightFocusRequester = weightFocusRequester
         )
-        WeightInput(
+//        WeightInput(
+//            modifier = Modifier.padding(horizontal = 48.dp),
+//            weight = dogInputState.weight,
+//            onWeightChanged = onWeightChanged,
+//            weightFocusRequester = weightFocusRequester,
+//            birthDateFocusRequester = birthDateFocusRequester
+//        )
+        WeightInputWithDropdown(
             modifier = Modifier.padding(horizontal = 48.dp),
             weight = dogInputState.weight,
             onWeightChanged = onWeightChanged,
@@ -398,13 +405,119 @@ internal fun WeightInput(
                 )
             }
         }
-        if (isError) {
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = "Weight should be between 1 and 500 lb",
-                style = PawCalcTheme.typography.error,
-                color = MaterialTheme.colors.error
+//        if (isError) {
+//            Spacer(modifier = Modifier.height(2.dp))
+//            Text(
+//                text = "Weight should be between 1 and 500 lb",
+//                style = PawCalcTheme.typography.error,
+//                color = MaterialTheme.colors.error
+//            )
+//        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+internal fun WeightInputWithDropdown(
+    modifier: Modifier = Modifier,
+    weight: String,
+    onWeightChanged: (weight: String) -> Unit,
+    weightFocusRequester: FocusRequester,
+    birthDateFocusRequester: FocusRequester
+) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(id = R.string.weight_text_input),
+            style = PawCalcTheme.typography.h4,
+            color = PawCalcTheme.colors.contentColor()
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            }
+        ) {
+            TextField(
+                value = weight,
+                onValueChange = {
+                    onWeightChanged(it)
+                    //modifier = Modifier.size(100.dp),
+                },
+                placeholder = {
+                    Text(
+                        modifier = Modifier.fillMaxSize(),
+                        text = "0",
+                        textAlign = TextAlign.Center,
+                        color = Grey500
+                    )
+                },
+                readOnly = true,
+                modifier = Modifier
+                    .height(52.dp)
+                    .fillMaxWidth(.5f),
+                shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                    bottomStart = ZeroCornerSize,
+                    bottomEnd = ZeroCornerSize
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = PawCalcTheme.colors.surface(),
+                    textColor = PawCalcTheme.colors.onSurface()
+                ),
+                textStyle = PawCalcTheme.typography.h5.copy(textAlign = TextAlign.Center),
+                trailingIcon = {
+                    Row(
+                        modifier = Modifier
+                            .height(52.dp)
+                            .fillMaxWidth(.4f)
+                            .background(
+                                color = Grey200,
+                                shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                                    bottomStart = ZeroCornerSize,
+                                    bottomEnd = ZeroCornerSize,
+                                    topStart = ZeroCornerSize
+                                )
+                            )
+                            .padding(start = 10.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "lb",
+                            style = PawCalcTheme.typography.body1,
+                            color = Color.Black
+                        )
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                    }
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Decimal
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        birthDateFocusRequester.requestFocus()
+                    }
+                )
             )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                (1..500).forEach {
+                    DropdownMenuItem(
+                        onClick = { expanded = false}
+                    ) {
+                        Text(text = it.toString())
+                    }
+                }
+            }
         }
     }
 }
