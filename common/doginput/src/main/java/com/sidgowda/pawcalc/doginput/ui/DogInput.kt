@@ -3,6 +3,7 @@ package com.sidgowda.pawcalc.doginput
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.camera.core.ExperimentalZeroShutterLag
@@ -181,9 +182,13 @@ fun DogInput(
         }
         if (isDatePickerRequested) {
             OpenDatePicker(
+                onDateSelected = { date ->
+                    handleEvent(DogInputEvent.BirthDateChanged(date))
+                },
                 onDatePickerDismissed = {
                     isDatePickerRequested = false
-                }
+                },
+                date = dogInputState.birthDate
             )
         }
     }
@@ -208,6 +213,7 @@ internal fun DogInputScreen(
 ) {
     val weightFocusRequester = FocusRequester()
     val birthDateFocusRequester = FocusRequester()
+    val saveButtonFocusRequester = FocusRequester()
 
     Column(
         modifier = modifier
@@ -238,24 +244,15 @@ internal fun DogInputScreen(
         )
         BirthDateInput(
             modifier = Modifier.padding(horizontal = 48.dp),
-            date = dogInputState.birthDate,
+            birthDate = dogInputState.birthDate,
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(20.dp)
-            )
-            PawCalcButton(
-                enabled = false,
-                text = stringResource(id = R.string.save_input),
-                onClick = onSaveDog
-            )
-        }
+        SaveButton(
+            modifier = Modifier.fillMaxWidth(),
+            saveButtonFocusRequester = saveButtonFocusRequester,
+            onSaveDog = onSaveDog
+        )
     }
 }
 
@@ -415,7 +412,7 @@ internal fun WeightInput(
 @Composable
 internal fun BirthDateInput(
     modifier: Modifier = Modifier,
-    date: String,
+    birthDate: String?,
     birthDateFocusRequester: FocusRequester,
     onDatePickerRequest: () -> Unit
 ) {
@@ -430,7 +427,9 @@ internal fun BirthDateInput(
             modifier = Modifier
                 .fillMaxWidth(.6f)
                 .height(52.dp)
-                .clickable { birthDateFocusRequester.requestFocus() }
+                .clickable {
+                    onDatePickerRequest()
+                }
                 .focusRequester(birthDateFocusRequester)
                 .onFocusChanged {
                     if (it.isFocused) {
@@ -448,10 +447,11 @@ internal fun BirthDateInput(
                     .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
-                Text("mm/dd/yyyy",
+                Text(
+                    text = birthDate ?: "mm/dd/yyyy",
                     style = PawCalcTheme.typography.body1,
                     color = PawCalcTheme.colors.onSurface()
-                    )
+                )
             }
             GreyBox(
                 modifier = Modifier.align(Alignment.CenterEnd),
@@ -469,6 +469,7 @@ internal fun BirthDateInput(
 @Composable
 internal fun OpenDatePicker(
     modifier: Modifier = Modifier,
+    date: String,
     onDateSelected: (String) -> Unit = {},
     onDatePickerDismissed: () -> Unit
 ) {
@@ -477,6 +478,7 @@ internal fun OpenDatePicker(
         modifier = modifier.fillMaxSize()
     ) {
         val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
+        fragment.arguments = Bundle().apply { putString("Date", date) }
         fragment.datePickerListener = object : DatePickerListener {
             override fun dateSelected(date: String) {
                // update date
@@ -511,6 +513,29 @@ internal fun GreyBox(
         contentAlignment = Alignment.Center
     ) {
         content()
+    }
+}
+
+@Composable
+internal fun SaveButton(
+    modifier: Modifier = Modifier,
+    saveButtonFocusRequester: FocusRequester,
+    isEnabled: Boolean = false,
+    onSaveDog: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
+        )
+        PawCalcButton(
+            enabled = isEnabled,
+            text = stringResource(id = R.string.save_input),
+            onClick = onSaveDog
+        )
     }
 }
 
@@ -610,7 +635,7 @@ fun PreviewBirthDateInput() {
     PawCalcTheme {
         Column(modifier = Modifier.fillMaxWidth()) {
             BirthDateInput(
-                date = "07/30/2019",
+                birthDate = "07/30/2019",
                 birthDateFocusRequester = FocusRequester(),
                 onDatePickerRequest = {}
             )

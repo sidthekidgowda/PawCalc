@@ -7,10 +7,15 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.*
 
 internal class DatePickerDialogFragment : Fragment() {
@@ -26,15 +31,25 @@ internal class DatePickerDialogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PawCalcTheme {
-                    showDatePickerDialog()
+                    val birthDate = arguments?.let { bundle ->
+                        bundle.getString("Date")
+                    } ?: ""
+                    showDatePickerDialog(birthDate)
                 }
             }
         }
     }
 
-    private fun showDatePickerDialog() {
+    private fun showDatePickerDialog(birthDate: String) {
+        val date: Long = dateToLong(birthDate)
+        val selectedDate = if (date == 0L) {
+            MaterialDatePicker.todayInUtcMilliseconds()
+        } else {
+            date
+        }
+        // set selection to date sent
         val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setSelection(selectedDate)
             .setTitleText(getString(R.string.date_picker_dialog_title))
             .setCalendarConstraints(calendarConstraints())
             .build()
@@ -45,7 +60,8 @@ internal class DatePickerDialogFragment : Fragment() {
                 }
                 // ok button clicked
                 addOnPositiveButtonClickListener { date ->
-                    datePickerListener?.dateSelected(date.toString())
+                    // convert date which is in milliseconds in a coroutine
+                    convertDateFromLongAndSend(date)
                 }
                 // cancel button clicked
                 addOnNegativeButtonClickListener {
@@ -64,4 +80,40 @@ internal class DatePickerDialogFragment : Fragment() {
             .setEnd(calendar.timeInMillis)
             .build()
     }
+
+    private fun dateFromLong(date: Long): String {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.timeInMillis = date
+        val simpleDate = SimpleDateFormat("MM-dd-yyyy")
+        simpleDate.timeZone = TimeZone.getTimeZone("UTC")
+        return simpleDate.format(calendar.timeInMillis)
+    }
+
+    private fun dateToLong(date: String): Long {
+        if (date.isEmpty()) return 0
+        val simpleDate = SimpleDateFormat("MM-dd-yyyy")
+        simpleDate.timeZone = TimeZone.getTimeZone("UTC")
+        val date: Date? = try {
+            simpleDate.parse(date)
+        } catch (e: Exception) {
+            null
+        }
+        return if (date != null) {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            calendar.timeInMillis = date.time
+            calendar.timeInMillis
+        } else {
+            0
+        }
+    }
+
+    private fun convertDateFromLongAndSend(date: Long) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+            val birthDate: String = dateFromLong(date)
+            withContext(Dispatchers.Main.immediate) {
+                datePickerListener?.dateSelected(birthDate)
+            }
+        }
+    }
+
 }
