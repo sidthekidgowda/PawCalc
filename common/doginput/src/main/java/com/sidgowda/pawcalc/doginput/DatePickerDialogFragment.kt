@@ -82,6 +82,7 @@ internal class DatePickerDialogFragment : Fragment() {
     }
 
     private fun dateFromLong(date: Long): String {
+        //this works as push
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         calendar.timeInMillis = date
         val simpleDate = SimpleDateFormat("MM-dd-yyyy")
