@@ -65,6 +65,7 @@ fun DogInput(
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
+    val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     var isCameraRequested by remember {
         mutableStateOf(false)
@@ -86,12 +87,12 @@ fun DogInput(
         contract = CameraMediaActivity.GetPhoto(),
         onResult = { uri ->
             if (uri != null) {
-                // dismiss bottom sheet only when we will update UI with a new picture
+                // dismiss bottom sheet only when we update UI with a new picture
                 scope.launch { bottomSheetState.hide() }
+                imageUri = uri
+                // notify listeners image has possibly updated
+                handleEvent(DogInputEvent.PicChanged(uri))
             }
-            imageUri = uri ?: imageUri
-            // notify listeners image has changed
-            handleEvent(DogInputEvent.PicChanged(imageUri))
         }
     )
     ModalBottomSheetLayout(
@@ -115,6 +116,7 @@ fun DogInput(
     ) {
         DogInputScreen(
             modifier = modifier,
+            scrollState = scrollState,
             bottomSheetState = bottomSheetState,
             coroutineScope = scope,
             dogInputState = dogInputState,
@@ -124,9 +126,6 @@ fun DogInput(
             },
             onWeightChanged = { weight ->
                 handleEvent(DogInputEvent.WeightChanged(weight))
-            },
-            onBirthDateChanged = { date ->
-                handleEvent(DogInputEvent.BirthDateChanged(date))
             },
             onDatePickerRequest = {
                 isDatePickerRequested = true
@@ -186,6 +185,7 @@ fun DogInput(
                 },
                 onDatePickerDismissed = {
                     isDatePickerRequested = false
+                    handleEvent(DogInputEvent.BirthDateDialogShown)
                 },
                 date = dogInputState.birthDate
             )
@@ -198,23 +198,22 @@ fun DogInput(
 internal fun DogInputScreen(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
+    scrollState: ScrollState,
     coroutineScope: CoroutineScope,
     dogInputState: DogInputState,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
-    onBirthDateChanged: (date: String) -> Unit,
     onDatePickerRequest: () -> Unit,
     onSaveDog: () -> Unit
 ) {
     val weightFocusRequester = FocusRequester()
     val birthDateFocusRequester = FocusRequester()
-    val saveButtonFocusRequester = FocusRequester()
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .background(PawCalcTheme.colors.background)
             .padding(top = 40.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -228,39 +227,34 @@ internal fun DogInputScreen(
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             name = dogInputState.name,
+            isNameError = !dogInputState.nameValid,
             onNameChanged = onNameChanged,
             weightFocusRequester = weightFocusRequester
         )
         WeightInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             weight = dogInputState.weight,
+            isWeightError = !dogInputState.weightValid,
             onWeightChanged = onWeightChanged,
             weightFocusRequester = weightFocusRequester,
             birthDateFocusRequester = birthDateFocusRequester
         )
-//        WeightInputWithDropdown(
-//            modifier = Modifier.padding(horizontal = 48.dp),
-//            weight = dogInputState.weight,
-//            onWeightChanged = onWeightChanged,
-//            weightFocusRequester = weightFocusRequester,
-//            birthDateFocusRequester = birthDateFocusRequester
-//        )
-//        BirthDateInput(
-//            modifier = Modifier.padding(horizontal = 48.dp),
-//            birthDate = dogInputState.birthDate,
-//            birthDateFocusRequester = birthDateFocusRequester,
-//            onDatePickerRequest = onDatePickerRequest
-//        )
-        BirthDateTextInput(
+        BirthDateInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             birthDate = dogInputState.birthDate,
+            isBirthDateError = !dogInputState.birthDateValid,
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
         SaveButton(
             modifier = Modifier.fillMaxWidth(),
-            saveButtonFocusRequester = saveButtonFocusRequester,
+            isEnabled = dogInputState.isInputValid(),
             onSaveDog = onSaveDog
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
         )
     }
 }
@@ -311,6 +305,7 @@ internal fun CameraInput(
 internal fun NameInput(
     modifier: Modifier = Modifier,
     name: String,
+    isNameError: Boolean,
     onNameChanged: (name: String) -> Unit,
     weightFocusRequester: FocusRequester
 ) {
@@ -342,6 +337,7 @@ internal fun NameInput(
                 textColor = PawCalcTheme.colors.onSurface(),
                 placeholderColor = Grey500
             ),
+            isError = isNameError,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
@@ -353,6 +349,14 @@ internal fun NameInput(
                 }
             )
         )
+        if (isNameError) {
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Name must be at least 1 character and at most 50 characters",
+                style = PawCalcTheme.typography.error,
+                color = MaterialTheme.colors.error
+            )
+        }
     }
 }
 
@@ -360,13 +364,11 @@ internal fun NameInput(
 internal fun WeightInput(
     modifier: Modifier = Modifier,
     weight: String,
+    isWeightError: Boolean,
     onWeightChanged: (weight: String) -> Unit,
     weightFocusRequester: FocusRequester,
     birthDateFocusRequester: FocusRequester
 ) {
-    // todo validations to ensure weight does not have leading zero
-    // or more than 500lb
-    val isError = weight.isNotEmpty() && weight.length > 4
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(id = R.string.weight_text_input),
@@ -410,7 +412,7 @@ internal fun WeightInput(
                     birthDateFocusRequester.requestFocus()
                 }
             ),
-            isError = isError,
+            isError = isWeightError,
             trailingIcon = {
                 Text(
                     modifier = Modifier
@@ -432,94 +434,21 @@ internal fun WeightInput(
                 )
             }
         )
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth(.6f)
-//                .height(60.dp),
-//            contentAlignment = Alignment.CenterStart
-//        ) {
-//        }
-//            GreyBox(
-//                modifier = Modifier.align(Alignment.CenterEnd),
-//            ) {
-//                Text(
-//                    "lb",
-//                    style = PawCalcTheme.typography.h5,
-//                    color = Color.Black
-//                )
-//            }
-//        if (isError) {
-//            Spacer(modifier = Modifier.height(2.dp))
-//            Text(
-//                text = "Weight should be between 1 and 500 lb",
-//                style = PawCalcTheme.typography.error,
-//                color = MaterialTheme.colors.error
-//            )
-//        }
-    }
-}
-
-@Composable
-internal fun BirthDateInput(
-    modifier: Modifier = Modifier,
-    birthDate: String?,
-    birthDateFocusRequester: FocusRequester,
-    onDatePickerRequest: () -> Unit
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(id = R.string.birth_date_input),
-            style = PawCalcTheme.typography.h4,
-            color = PawCalcTheme.colors.contentColor()
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(.6f)
-                .height(52.dp)
-                .clickable {
-                    onDatePickerRequest()
-                }
-                .focusRequester(birthDateFocusRequester)
-                .onFocusChanged {
-                    if (it.isFocused) {
-                        onDatePickerRequest()
-                    }
-                }
-                .focusable(),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(.9f)
-                    .background(color = Color.White, shape = RoundedCornerShape(topStart = 4.dp))
-                    .height(52.dp)
-                    .padding(start = 10.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = birthDate ?: "mm/dd/yyyy",
-                    style = PawCalcTheme.typography.body1,
-                    color = PawCalcTheme.colors.onSurface()
-                )
-            }
-            GreyBox(
-                modifier = Modifier.align(Alignment.CenterEnd),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "",
-                    tint = Color.Black
-                )
-            }
+        if (isWeightError) {
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Weight must be a number and more than 0 lbs",
+                style = PawCalcTheme.typography.error,
+                color = MaterialTheme.colors.error
+            )
         }
     }
 }
-
 @Composable
-internal fun BirthDateTextInput(
+internal fun BirthDateInput(
     modifier: Modifier = Modifier,
     birthDate: String,
+    isBirthDateError: Boolean,
     birthDateFocusRequester: FocusRequester,
     onDatePickerRequest: () -> Unit
 ) {
@@ -536,7 +465,7 @@ internal fun BirthDateTextInput(
             onValueChange = {},
             placeholder = {
                 Text(
-                    text = "mm-dd-yyyy",
+                    text = "mm/dd/yyyy",
                     textAlign = TextAlign.Start,
                     style = PawCalcTheme.typography.h7,
                 )
@@ -602,6 +531,14 @@ internal fun BirthDateTextInput(
                 }
             )
         )
+        if (isBirthDateError) {
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Please select a birth date",
+                style = PawCalcTheme.typography.error,
+                color = MaterialTheme.colors.error
+            )
+        }
     }
 }
 @Composable
@@ -636,44 +573,13 @@ internal fun OpenDatePicker(
 }
 
 @Composable
-internal fun GreyBox(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-//    Modifier
-//        .height(60.dp)
-//        .width(42.dp)
-//        .background(
-//            color = Grey200,
-//            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
-//                bottomStart = ZeroCornerSize,
-//                bottomEnd = ZeroCornerSize,
-//                topStart = ZeroCornerSize
-//            )
-//        ),
-
-    Box(
-        modifier = modifier
-            .height(60.dp)
-            .width(42.dp)
-            .background(
-                color = Grey200,
-                shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        content()
-    }
-}
-
-@Composable
 internal fun SaveButton(
     modifier: Modifier = Modifier,
-    saveButtonFocusRequester: FocusRequester,
-    isEnabled: Boolean = false,
+    isEnabled: Boolean,
     onSaveDog: () -> Unit
 ) {
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(
@@ -691,7 +597,7 @@ internal fun SaveButton(
 
 //-----Preview--------------------------------------------------------------------------------------
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @LightDarkPreview
 @Composable
 fun PreviewNewDogScreen() {
@@ -702,15 +608,15 @@ fun PreviewNewDogScreen() {
             onSaveDog = {},
             onWeightChanged = {},
             onNameChanged = {},
-            onBirthDateChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope()
+            coroutineScope = rememberCoroutineScope(),
+            scrollState = rememberScrollState()
         )
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @LightDarkPreview
 @Composable
 fun PreviewEditDogScreen() {
@@ -721,10 +627,10 @@ fun PreviewEditDogScreen() {
             onSaveDog = {},
             onWeightChanged = {},
             onNameChanged = {},
-            onBirthDateChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope()
+            coroutineScope = rememberCoroutineScope(),
+            scrollState = rememberScrollState()
         )
     }
 }
@@ -737,7 +643,8 @@ fun PreviewNameInput() {
             NameInput(
                 name = "Mowgli",
                 onNameChanged = {},
-                weightFocusRequester = FocusRequester()
+                weightFocusRequester = FocusRequester(),
+                isNameError = false
             )
         }
     }
@@ -751,6 +658,7 @@ fun PreviewWeightInput() {
             WeightInput(
                 weight = "87.0",
                 onWeightChanged = {},
+                isWeightError = false,
                 weightFocusRequester = FocusRequester(),
                 birthDateFocusRequester = FocusRequester()
             )
@@ -767,7 +675,8 @@ fun PreviewWeightInputError() {
                 weight = "875.0",
                 onWeightChanged = {},
                 weightFocusRequester = FocusRequester(),
-                birthDateFocusRequester = FocusRequester()
+                birthDateFocusRequester = FocusRequester(),
+                isWeightError = false
             )
         }
     }
@@ -781,7 +690,8 @@ fun PreviewBirthDateInput() {
             BirthDateInput(
                 birthDate = "07/30/2019",
                 birthDateFocusRequester = FocusRequester(),
-                onDatePickerRequest = {}
+                onDatePickerRequest = {},
+                isBirthDateError = false
             )
         }
     }

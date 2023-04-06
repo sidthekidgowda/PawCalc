@@ -3,7 +3,6 @@ package com.sidgowda.pawcalc.editdog.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
-import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +20,17 @@ class EditDogViewModel @Inject constructor() : ViewModel() {
             is DogInputEvent.NameChanged -> updateName(dogInputEvent.name)
             is DogInputEvent.WeightChanged -> updateWeight(dogInputEvent.weight)
             is DogInputEvent.BirthDateChanged -> updateBirthDate(dogInputEvent.birthDate)
-            is DogInputEvent.ErrorDismissed -> dismissError()
+            is DogInputEvent.BirthDateDialogShown -> updateBirthDateDialogShown()
             is DogInputEvent.SavingInfo -> saveDogInfo()
+        }
+    }
+
+    private fun updateBirthDateDialogShown() {
+        _dogInputState.update {
+            it.copy(
+                hasUserClickedOnBirthDate = true,
+                birthDateValid = it.birthDateValid
+            )
         }
     }
 
@@ -54,22 +62,9 @@ class EditDogViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun dismissError() {
-        _dogInputState.update {
-            it.copy(isError = false)
-        }
-    }
-
     private fun saveDogInfo() {
         // save use case here if all requirements are met and close screen
         // otherwise showcase error and show what requirements are met
-        if (_dogInputState.value.inputRequirements == DogInputRequirements.values().toList()) {
-
-        } else {
-            _dogInputState.update {
-                it.copy(isError = true)
-            }
-        }
 
     }
 }
