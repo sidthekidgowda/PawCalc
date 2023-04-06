@@ -235,21 +235,27 @@ internal fun DogInputScreen(
             onNameChanged = onNameChanged,
             weightFocusRequester = weightFocusRequester
         )
-//        WeightInput(
-//            modifier = Modifier.padding(horizontal = 48.dp),
-//            weight = dogInputState.weight,
-//            onWeightChanged = onWeightChanged,
-//            weightFocusRequester = weightFocusRequester,
-//            birthDateFocusRequester = birthDateFocusRequester
-//        )
-        WeightInputWithDropdown(
+        WeightInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             weight = dogInputState.weight,
             onWeightChanged = onWeightChanged,
             weightFocusRequester = weightFocusRequester,
             birthDateFocusRequester = birthDateFocusRequester
         )
+//        WeightInputWithDropdown(
+//            modifier = Modifier.padding(horizontal = 48.dp),
+//            weight = dogInputState.weight,
+//            onWeightChanged = onWeightChanged,
+//            weightFocusRequester = weightFocusRequester,
+//            birthDateFocusRequester = birthDateFocusRequester
+//        )
         BirthDateInput(
+            modifier = Modifier.padding(horizontal = 48.dp),
+            birthDate = dogInputState.birthDate,
+            birthDateFocusRequester = birthDateFocusRequester,
+            onDatePickerRequest = onDatePickerRequest
+        )
+        BirthDateTextInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             birthDate = dogInputState.birthDate,
             birthDateFocusRequester = birthDateFocusRequester,
@@ -374,6 +380,9 @@ internal fun WeightInput(
                 value = weight,
                 onValueChange = {
                     onWeightChanged(it)
+                },
+                placeholder = {
+                    Text("50.0")
                 },
                 modifier = Modifier
                     .fillMaxWidth(.9f)
@@ -505,6 +514,7 @@ internal fun WeightInputWithDropdown(
                 )
             )
             ExposedDropdownMenu(
+                modifier = Modifier.height(200.dp),
                 expanded = expanded,
                 onDismissRequest = {
                     expanded = false
@@ -579,6 +589,86 @@ internal fun BirthDateInput(
     }
 }
 
+@Composable
+internal fun BirthDateTextInput(
+    modifier: Modifier = Modifier,
+    birthDate: String,
+    birthDateFocusRequester: FocusRequester,
+    onDatePickerRequest: () -> Unit
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(id = R.string.birth_date_input),
+            style = PawCalcTheme.typography.h4,
+            color = PawCalcTheme.colors.contentColor()
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(
+            value = birthDate,
+            enabled = false,
+            onValueChange = {},
+            placeholder = {
+                Text(
+                    text = "mm-dd-yyyy",
+                    textAlign = TextAlign.Start,
+                    style = PawCalcTheme.typography.h7,
+                )
+            },
+            readOnly = true,
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth(.6f)
+                .clickable {
+                    onDatePickerRequest()
+                },
+            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                bottomStart = ZeroCornerSize,
+                bottomEnd = ZeroCornerSize
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = PawCalcTheme.colors.surface(),
+                disabledTextColor = Color.Black,
+                textColor = Color.Black,
+                placeholderColor = Grey700
+            ),
+            textStyle = PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
+            trailingIcon = {
+                IconButton(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(42.dp)
+                        .background(
+                            color = Grey200,
+                            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                                bottomStart = ZeroCornerSize,
+                                bottomEnd = ZeroCornerSize,
+                                topStart = ZeroCornerSize
+                            )
+                        ),
+                    onClick = {
+                        onDatePickerRequest()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "",
+                        tint = Color.Black
+                    )
+                }
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Decimal
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    birthDateFocusRequester.requestFocus()
+                }
+            )
+        )
+    }
+}
 @Composable
 internal fun OpenDatePicker(
     modifier: Modifier = Modifier,
