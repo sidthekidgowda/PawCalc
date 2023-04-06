@@ -77,19 +77,23 @@ fun DogInput(
     }
     val cameraPermission = rememberPermissionState(permission = Manifest.permission.CAMERA)
     val mediaPermission = rememberPermissionState(permission = mediaPermission())
+    // keep a reference of imageUri since taking a photo from camera and
+    // choosing media can be cancelled
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
     val cameraMediaImageResult = rememberLauncherForActivityResult(
         contract = CameraMediaActivity.GetPhoto(),
         onResult = { uri ->
-            imageUri = uri ?: imageUri
-            if (imageUri != null) {
+            if (uri != null) {
+                // dismiss bottom sheet only when we will update UI with a new picture
                 scope.launch { bottomSheetState.hide() }
             }
+            imageUri = uri ?: imageUri
+            // notify listeners image has changed
+            handleEvent(DogInputEvent.PicChanged(imageUri))
         }
     )
-
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -114,12 +118,7 @@ fun DogInput(
             bottomSheetState = bottomSheetState,
             coroutineScope = scope,
             dogInputState = dogInputState,
-            dogInputMode = dogInputMode,
             dogInputUnit = unit,
-            imageUri = imageUri,
-            onPictureChanged = { pictureUrl ->
-                handleEvent(DogInputEvent.PicChanged(pictureUrl))
-            },
             onNameChanged = { name ->
                 handleEvent(DogInputEvent.NameChanged(name))
             },
@@ -201,10 +200,7 @@ internal fun DogInputScreen(
     bottomSheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope,
     dogInputState: DogInputState,
-    dogInputMode: DogInputMode,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
-    imageUri: Uri?,
-    onPictureChanged: (picUrl: String) -> Unit,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
     onBirthDateChanged: (date: String) -> Unit,
@@ -227,7 +223,7 @@ internal fun DogInputScreen(
         CameraInput(
             bottomSheetState = bottomSheetState,
             coroutineScope = coroutineScope,
-            imageUri = imageUri
+            imageUri = dogInputState.profilePic
         )
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
@@ -249,12 +245,12 @@ internal fun DogInputScreen(
 //            weightFocusRequester = weightFocusRequester,
 //            birthDateFocusRequester = birthDateFocusRequester
 //        )
-        BirthDateInput(
-            modifier = Modifier.padding(horizontal = 48.dp),
-            birthDate = dogInputState.birthDate,
-            birthDateFocusRequester = birthDateFocusRequester,
-            onDatePickerRequest = onDatePickerRequest
-        )
+//        BirthDateInput(
+//            modifier = Modifier.padding(horizontal = 48.dp),
+//            birthDate = dogInputState.birthDate,
+//            birthDateFocusRequester = birthDateFocusRequester,
+//            onDatePickerRequest = onDatePickerRequest
+//        )
         BirthDateTextInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             birthDate = dogInputState.birthDate,
@@ -330,13 +326,21 @@ internal fun NameInput(
                 .fillMaxWidth()
                 .heightIn(52.dp),
             value = name,
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.name_input_placeholder),
+                    textAlign = TextAlign.Start,
+                    style = PawCalcTheme.typography.h7,
+                )
+            },
             onValueChange = {
                 onNameChanged(it)
             },
             textStyle = PawCalcTheme.typography.h5,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = PawCalcTheme.colors.surface(),
-                textColor = PawCalcTheme.colors.onSurface()
+                textColor = PawCalcTheme.colors.onSurface(),
+                placeholderColor = Grey500
             ),
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -370,50 +374,80 @@ internal fun WeightInput(
             color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(.6f)
-                .height(60.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            TextField(
-                value = weight,
-                onValueChange = {
-                    onWeightChanged(it)
-                },
-                placeholder = {
-                    Text("50.0")
-                },
-                modifier = Modifier
-                    .fillMaxWidth(.9f)
-                    .focusRequester(weightFocusRequester),
-                textStyle = PawCalcTheme.typography.h5,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = PawCalcTheme.colors.surface(),
-                    textColor = PawCalcTheme.colors.onSurface()
-                ),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Decimal
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        birthDateFocusRequester.requestFocus()
-                    }
-                ),
-                isError = isError,
-            )
-            GreyBox(
-                modifier = Modifier.align(Alignment.CenterEnd),
-            ) {
+        TextField(
+            value = weight,
+            onValueChange = {
+                onWeightChanged(it)
+            },
+            placeholder = {
                 Text(
-                    "lb",
+                    stringResource(id = R.string.weight_input_placeholder),
+                    textAlign = TextAlign.Start,
+                    style = PawCalcTheme.typography.h7
+                )
+            },
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth(.6f)
+                .focusRequester(weightFocusRequester),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = PawCalcTheme.colors.surface(),
+                textColor = Color.Black,
+                placeholderColor = Grey500
+            ),
+            textStyle = PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
+            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                bottomStart = ZeroCornerSize,
+                bottomEnd = ZeroCornerSize
+            ),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Decimal
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    birthDateFocusRequester.requestFocus()
+                }
+            ),
+            isError = isError,
+            trailingIcon = {
+                Text(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(48.dp)
+                        .background(
+                            color = Grey200,
+                            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                                bottomStart = ZeroCornerSize,
+                                bottomEnd = ZeroCornerSize,
+                                topStart = ZeroCornerSize
+                            )
+                        )
+                        .wrapContentSize(),
+                    textAlign = TextAlign.Center,
+                    text = "lb",
                     style = PawCalcTheme.typography.h5,
                     color = Color.Black
                 )
             }
-        }
+        )
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth(.6f)
+//                .height(60.dp),
+//            contentAlignment = Alignment.CenterStart
+//        ) {
+//        }
+//            GreyBox(
+//                modifier = Modifier.align(Alignment.CenterEnd),
+//            ) {
+//                Text(
+//                    "lb",
+//                    style = PawCalcTheme.typography.h5,
+//                    color = Color.Black
+//                )
+//            }
 //        if (isError) {
 //            Spacer(modifier = Modifier.height(2.dp))
 //            Text(
@@ -422,113 +456,6 @@ internal fun WeightInput(
 //                color = MaterialTheme.colors.error
 //            )
 //        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-internal fun WeightInputWithDropdown(
-    modifier: Modifier = Modifier,
-    weight: String,
-    onWeightChanged: (weight: String) -> Unit,
-    weightFocusRequester: FocusRequester,
-    birthDateFocusRequester: FocusRequester
-) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(id = R.string.weight_text_input),
-            style = PawCalcTheme.typography.h4,
-            color = PawCalcTheme.colors.contentColor()
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            }
-        ) {
-            TextField(
-                value = weight,
-                onValueChange = {
-                    onWeightChanged(it)
-                    //modifier = Modifier.size(100.dp),
-                },
-                placeholder = {
-                    Text(
-                        modifier = Modifier.fillMaxSize(),
-                        text = "0",
-                        textAlign = TextAlign.Center,
-                        color = Grey500
-                    )
-                },
-                readOnly = true,
-                modifier = Modifier
-                    .height(52.dp)
-                    .fillMaxWidth(.5f),
-                shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
-                    bottomStart = ZeroCornerSize,
-                    bottomEnd = ZeroCornerSize
-                ),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = PawCalcTheme.colors.surface(),
-                    textColor = PawCalcTheme.colors.onSurface()
-                ),
-                textStyle = PawCalcTheme.typography.h5.copy(textAlign = TextAlign.Center),
-                trailingIcon = {
-                    Row(
-                        modifier = Modifier
-                            .height(52.dp)
-                            .fillMaxWidth(.4f)
-                            .background(
-                                color = Grey200,
-                                shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
-                                    bottomStart = ZeroCornerSize,
-                                    bottomEnd = ZeroCornerSize,
-                                    topStart = ZeroCornerSize
-                                )
-                            )
-                            .padding(start = 10.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "lb",
-                            style = PawCalcTheme.typography.body1,
-                            color = Color.Black
-                        )
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                    }
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Decimal
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        birthDateFocusRequester.requestFocus()
-                    }
-                )
-            )
-            ExposedDropdownMenu(
-                modifier = Modifier.height(200.dp),
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                (1..500).forEach {
-                    DropdownMenuItem(
-                        onClick = { expanded = false}
-                    ) {
-                        Text(text = it.toString())
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -620,7 +547,14 @@ internal fun BirthDateTextInput(
                 .fillMaxWidth(.6f)
                 .clickable {
                     onDatePickerRequest()
-                },
+                }
+                .focusRequester(birthDateFocusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        onDatePickerRequest()
+                    }
+                }
+                .focusable(),
             shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                 bottomStart = ZeroCornerSize,
                 bottomEnd = ZeroCornerSize
@@ -629,7 +563,8 @@ internal fun BirthDateTextInput(
                 backgroundColor = PawCalcTheme.colors.surface(),
                 disabledTextColor = Color.Black,
                 textColor = Color.Black,
-                placeholderColor = Grey700
+                placeholderColor = Grey500,
+                disabledPlaceholderColor = Grey500
             ),
             textStyle = PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
             trailingIcon = {
@@ -663,7 +598,7 @@ internal fun BirthDateTextInput(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    birthDateFocusRequester.requestFocus()
+                    // send focus to save button
                 }
             )
         )
@@ -705,6 +640,18 @@ internal fun GreyBox(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+//    Modifier
+//        .height(60.dp)
+//        .width(42.dp)
+//        .background(
+//            color = Grey200,
+//            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+//                bottomStart = ZeroCornerSize,
+//                bottomEnd = ZeroCornerSize,
+//                topStart = ZeroCornerSize
+//            )
+//        ),
+
     Box(
         modifier = modifier
             .height(60.dp)
@@ -752,12 +699,9 @@ fun PreviewNewDogScreen() {
         DogInputScreen(
             modifier = Modifier.fillMaxSize(),
             dogInputState = DogInputState(),
-            dogInputMode = DogInputMode.NEW_DOG,
-            imageUri = null,
             onSaveDog = {},
             onWeightChanged = {},
             onNameChanged = {},
-            onPictureChanged = {},
             onBirthDateChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
@@ -774,12 +718,9 @@ fun PreviewEditDogScreen() {
         DogInputScreen(
             modifier = Modifier.fillMaxSize(),
             dogInputState = DogInputState(),
-            dogInputMode = DogInputMode.EDIT_DOG,
-            imageUri = null,
             onSaveDog = {},
             onWeightChanged = {},
             onNameChanged = {},
-            onPictureChanged = {},
             onBirthDateChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),

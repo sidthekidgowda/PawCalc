@@ -1,7 +1,9 @@
 package com.sidgowda.pawcalc.doginput.model
 
+import android.net.Uri
+
 data class DogInputState(
-    val profilePicInput: String = "",
+    val profilePic: Uri? = null,
     val name: String = "",
     val weight: String = "",
     val birthDate: String = "",
@@ -13,7 +15,7 @@ data class DogInputState(
         return name.isNotEmpty() &&
                 weight.isNotEmpty() &&
                 birthDate.isNotEmpty() &&
-                profilePicInput.isNotEmpty() &&
+                profilePic != null &&
                 inputRequirements.containsAll(DogInputRequirements.values().toList())
     }
 }

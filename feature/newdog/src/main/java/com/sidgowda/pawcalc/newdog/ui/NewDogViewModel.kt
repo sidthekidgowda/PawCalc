@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.newdog.ui
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
@@ -30,9 +31,9 @@ class NewDogViewModel @Inject constructor(
         }
     }
 
-    private fun updatePicture(url: String) {
+    private fun updatePicture(picture: Uri?) {
         _inputState.update {
-            it.copy(profilePicInput = url)
+            it.copy(profilePic = picture)
         }
     }
 
