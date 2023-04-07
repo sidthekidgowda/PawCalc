@@ -2,11 +2,11 @@ package com.sidgowda.pawcalc.newdog
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sidgowda.pawcalc.doginput.DogInput
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
@@ -33,8 +33,7 @@ internal fun NewDogScreen(
     viewModel: NewDogViewModel,
     onSaveDog: () -> Unit
 ) {
-    // todo - change to collectAsStateWithLifecycle()
-    val dogInputState: DogInputState by viewModel.inputState.collectAsState()
+    val dogInputState: DogInputState by viewModel.inputState.collectAsStateWithLifecycle()
 
     DogInput(
         modifier = modifier.testTag(NEW_DOG_SCREEN_ROUTE),

@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -53,7 +52,6 @@ import com.sidgowda.pawcalc.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@ExperimentalZeroShutterLag
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun DogInput(
@@ -150,7 +148,7 @@ fun DogInput(
                     cameraPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    cameraMediaImageResult.launch(com.sidgowda.pawcalc.camera.CameraMediaActivity.TAKE_PHOTO)
+                    cameraMediaImageResult.launch(CameraMediaActivity.TAKE_PHOTO)
                     isCameraRequested = false
                 },
                 deniedContent = {
@@ -169,7 +167,7 @@ fun DogInput(
                     mediaPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    cameraMediaImageResult.launch(com.sidgowda.pawcalc.camera.CameraMediaActivity.CHOOSE_MEDIA)
+                    cameraMediaImageResult.launch(CameraMediaActivity.CHOOSE_MEDIA)
                     isMediaRequested = false
                 },
                 deniedContent = {

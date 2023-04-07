@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.Executor
 
-@ExperimentalZeroShutterLag
+@androidx.annotation.OptIn(ExperimentalZeroShutterLag::class)
 @Composable
 internal fun OpenCamera(
     modifier: Modifier = Modifier,
@@ -110,7 +110,6 @@ internal fun OpenCamera(
     }
 }
 
-@ExperimentalZeroShutterLag
 @Composable
 internal fun BoxScope.CameraPreview(
     modifier: Modifier = Modifier,

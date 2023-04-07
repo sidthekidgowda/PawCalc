@@ -8,14 +8,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidgowda.pawcalc.doginput.ui.OpenCamera
 import com.sidgowda.pawcalc.doginput.ui.OpenMedia
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
-@ExperimentalZeroShutterLag
+
 class CameraMediaActivity : ComponentActivity() {
 
     companion object {
