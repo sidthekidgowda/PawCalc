@@ -38,9 +38,7 @@ internal fun dateFromLong(date: Long): String {
         Log.e("DateUtils", "Failed to parse long: $date into a date", e)
         localDateNow()
     }
-    return LocalDateTime.of(localDate, localTimeNow())
-        .toLocalDate()
-        .format(DateTimeFormatter.ofPattern(DATE_FORMAT))
+    return localDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT))
 }
 
 internal fun dateToLong(date: String): Long {

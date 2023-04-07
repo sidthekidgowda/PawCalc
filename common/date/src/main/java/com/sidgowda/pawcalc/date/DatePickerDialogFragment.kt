@@ -66,7 +66,7 @@ class DatePickerDialogFragment : Fragment() {
             }
         datePicker.show(childFragmentManager, DatePickerDialogFragment::class.java.simpleName)
     }
-    
+
     private fun convertDateFromLongAndSend(date: Long) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
             val birthDate: String = dateFromLong(date)
