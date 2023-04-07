@@ -38,6 +38,8 @@ import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.camera.CameraMediaActivity
+import com.sidgowda.pawcalc.date.DatePickerDialogFragment
+import com.sidgowda.pawcalc.date.DatePickerListener
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
@@ -554,7 +556,9 @@ internal fun OpenDatePicker(
         modifier = modifier.fillMaxSize()
     ) {
         val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
-        fragment.arguments = Bundle().apply { putString("Date", date) }
+        fragment.arguments = Bundle().apply {
+            putString(DatePickerDialogFragment.BUNDLE_DATE_KEY, date)
+        }
         fragment.datePickerListener = object : DatePickerListener {
             override fun dateSelected(date: String) {
                // update date

@@ -14,8 +14,7 @@
     <string name="cd_bottom_sheet_choose_photo">Choose a photo from your media</string>
     <string name="go_to_settings">Go</string>
     <string name="cancel">Cancel</string>
-    <string name="media_image_save_button">Save</string>
-    <string name="date_picker_dialog_title">Select Birth Date</string>
+
     <string name="name_input_placeholder">First, Middle (Optional), Last</string>
     <string name="weight_input_placeholder">50.0</string>
     <string name="weight_input_unit_lb">lb</string>

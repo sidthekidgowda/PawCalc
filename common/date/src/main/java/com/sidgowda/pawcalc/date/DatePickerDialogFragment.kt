@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.doginput
+package com.sidgowda.pawcalc.date
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,17 +8,17 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
 
-internal class DatePickerDialogFragment : Fragment() {
+class DatePickerDialogFragment : Fragment() {
+
+    companion object {
+        const val BUNDLE_DATE_KEY = "date"
+    }
 
     var datePickerListener: DatePickerListener? = null
 
@@ -31,9 +31,7 @@ internal class DatePickerDialogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PawCalcTheme {
-                    val birthDate = arguments?.let { bundle ->
-                        bundle.getString("Date")
-                    } ?: ""
+                    val birthDate = arguments?.getString(BUNDLE_DATE_KEY) ?: ""
                     showDatePickerDialog(birthDate)
                 }
             }
@@ -41,12 +39,7 @@ internal class DatePickerDialogFragment : Fragment() {
     }
 
     private fun showDatePickerDialog(birthDate: String) {
-        val date: Long = dateToLong(birthDate)
-        val selectedDate = if (date == 0L) {
-            MaterialDatePicker.todayInUtcMilliseconds()
-        } else {
-            date
-        }
+        val selectedDate = dateToLong(birthDate)
         // set selection to date sent
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setSelection(selectedDate)
@@ -56,6 +49,9 @@ internal class DatePickerDialogFragment : Fragment() {
             .apply {
                 // dialog canceled with back button or touching scrim view
                 addOnCancelListener {
+                    datePickerListener?.onCancel()
+                }
+                addOnDismissListener {
                     datePickerListener?.onCancel()
                 }
                 // ok button clicked
@@ -70,44 +66,7 @@ internal class DatePickerDialogFragment : Fragment() {
             }
         datePicker.show(childFragmentManager, DatePickerDialogFragment::class.java.simpleName)
     }
-
-    private fun calendarConstraints(): CalendarConstraints{
-        val today = MaterialDatePicker.todayInUtcMilliseconds()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.timeInMillis = today
-       return CalendarConstraints.Builder()
-            .setValidator(DateValidatorPointBackward.now())
-            .setEnd(calendar.timeInMillis)
-            .build()
-    }
-
-    private fun dateFromLong(date: Long): String {
-        //this works as push
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.timeInMillis = date
-        val simpleDate = SimpleDateFormat("M/dd/yyyy")
-        simpleDate.timeZone = TimeZone.getTimeZone("UTC")
-        return simpleDate.format(calendar.timeInMillis)
-    }
-
-    private fun dateToLong(date: String): Long {
-        if (date.isEmpty()) return 0
-        val simpleDate = SimpleDateFormat("M/dd/yyyy")
-        simpleDate.timeZone = TimeZone.getTimeZone("UTC")
-        val date: Date? = try {
-            simpleDate.parse(date)
-        } catch (e: Exception) {
-            null
-        }
-        return if (date != null) {
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            calendar.timeInMillis = date.time
-            calendar.timeInMillis
-        } else {
-            0
-        }
-    }
-
+    
     private fun convertDateFromLongAndSend(date: Long) {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
             val birthDate: String = dateFromLong(date)

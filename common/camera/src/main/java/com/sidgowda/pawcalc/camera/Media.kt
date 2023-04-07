@@ -141,7 +141,7 @@ internal fun BoxScope.MediaGallery(
     )
 }
 
-private const val ASPECT_RATIO_9_BY_16 = (9.0/16.0).toFloat()
+private const val ASPECT_RATIO_9_BY_16 = 9F/16F
 
 private fun retrieveImagesFromMedia(context: Context): List<MediaImage> {
     val projection = arrayOf(
