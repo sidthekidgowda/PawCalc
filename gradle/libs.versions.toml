@@ -27,6 +27,7 @@ material = "1.8.0"
 windowManager = "1.0.0"
 fragmentKtx = "1.5.6"
 appCompat = "1.5.0"
+desugarJDK = "1.2.2"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
@@ -67,10 +68,11 @@ androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", versi
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraXVersion" }
 androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraXVersion" }
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesKtx"}
-android-material = { module = "com.google.android.material:material", version.ref = "material"}
+com-google-android-material = { module = "com.google.android.material:material", version.ref = "material"}
 androidx-window-manager = { module = "androidx.window:window", version.ref = "windowManager"}
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx"}
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat"}
+android-tools-desugarJdk = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJDK" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
