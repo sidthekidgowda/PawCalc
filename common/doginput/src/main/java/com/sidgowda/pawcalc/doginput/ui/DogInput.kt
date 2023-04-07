@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.sidgowda.pawcalc.camera.CameraMediaActivity
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputMode
@@ -147,7 +148,7 @@ fun DogInput(
                     cameraPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    cameraMediaImageResult.launch(CameraMediaActivity.TAKE_PHOTO)
+                    cameraMediaImageResult.launch(com.sidgowda.pawcalc.camera.CameraMediaActivity.TAKE_PHOTO)
                     isCameraRequested = false
                 },
                 deniedContent = {
@@ -166,7 +167,7 @@ fun DogInput(
                     mediaPermission.launchPermissionRequest()
                 },
                 successContent = {
-                    cameraMediaImageResult.launch(CameraMediaActivity.CHOOSE_MEDIA)
+                    cameraMediaImageResult.launch(com.sidgowda.pawcalc.camera.CameraMediaActivity.CHOOSE_MEDIA)
                     isMediaRequested = false
                 },
                 deniedContent = {

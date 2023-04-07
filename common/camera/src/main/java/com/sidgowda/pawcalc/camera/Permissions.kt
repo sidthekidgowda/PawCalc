@@ -10,13 +10,13 @@ import androidx.compose.ui.res.stringResource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.shouldShowRationale
-import com.sidgowda.pawcalc.doginput.R
+import com.sidgowda.pawcalc.camera.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import java.util.*
 
 @Composable
-internal fun mediaPermission(): String {
+fun mediaPermission(): String {
    return if (
         android.os.Build.VERSION.SDK_INT >=
         android.os.Build.VERSION_CODES.TIRAMISU
@@ -29,7 +29,7 @@ internal fun mediaPermission(): String {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-internal fun HandlePermission(
+fun HandlePermission(
     permissionStatus: PermissionStatus,
     successContent: @Composable () -> Unit,
     firstTimeRequest: () -> Unit,
@@ -52,7 +52,7 @@ internal fun HandlePermission(
 }
 
 @Composable
-internal fun PermissionDialog(
+fun PermissionDialog(
     permission: String,
     requestPermission: () -> Unit,
     onCancel: () -> Unit

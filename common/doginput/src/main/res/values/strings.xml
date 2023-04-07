@@ -14,8 +14,6 @@
     <string name="cd_bottom_sheet_choose_photo">Choose a photo from your media</string>
     <string name="go_to_settings">Go</string>
     <string name="cancel">Cancel</string>
-    <string name="permission_denied_title">Permission Denied: %s</string>
-    <string name="permission_denied_message">To be able to use this feature, you will need to grant this permission in settings.</string>
     <string name="media_image_save_button">Save</string>
     <string name="date_picker_dialog_title">Select Birth Date</string>
     <string name="name_input_placeholder">First, Middle (Optional), Last</string>

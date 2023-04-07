@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.sidgowda.pawcalc.camera.MediaImage
 import com.sidgowda.pawcalc.ui.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -46,7 +47,7 @@ internal fun OpenMedia(
             mutableStateOf<Uri?>(null)
         }
         var images by remember {
-            mutableStateOf<List<Image>?>(null)
+            mutableStateOf<List<MediaImage>?>(null)
         }
         val gridState = rememberLazyGridState()
 
@@ -101,7 +102,7 @@ internal fun OpenMedia(
 internal fun BoxScope.MediaGallery(
     modifier: Modifier = Modifier,
     gridState: LazyGridState,
-    images: List<Image>,
+    images: List<MediaImage>,
     onChoosePhoto: (Uri) -> Unit,
     onClose: () -> Unit
 ) {
@@ -142,13 +143,13 @@ internal fun BoxScope.MediaGallery(
 
 private const val ASPECT_RATIO_9_BY_16 = (9.0/16.0).toFloat()
 
-private fun retrieveImagesFromMedia(context: Context): List<Image> {
+private fun retrieveImagesFromMedia(context: Context): List<MediaImage> {
     val projection = arrayOf(
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DISPLAY_NAME,
         MediaStore.Images.Media.SIZE
     )
-    val images = mutableListOf<Image>()
+    val images = mutableListOf<MediaImage>()
     context.contentResolver.query(
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
         projection, null, null, MediaStore.Images.Media.DATE_MODIFIED + " desc"
@@ -160,7 +161,7 @@ private fun retrieveImagesFromMedia(context: Context): List<Image> {
             val id = cursor.getLong(idColumn)
             val name = cursor.getString(nameColumn)
             val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-            images.add(Image(id, contentUri, name))
+            images.add(MediaImage(id, contentUri, name))
         }
     }
     return images

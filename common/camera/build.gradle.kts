@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sidgowda.pawcalc.doginput"
+    namespace = "com.sidgowda.pawcalc.camera"
     compileSdk = 33
 
     defaultConfig {
@@ -48,7 +48,6 @@ android {
 
 dependencies {
     implementation(projects.core.ui)
-    implementation(projects.common.camera)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

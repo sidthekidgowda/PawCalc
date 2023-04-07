@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.doginput.ui
+package com.sidgowda.pawcalc.camera
 
 import android.app.Activity
 import android.content.Context
@@ -12,9 +12,11 @@ import androidx.camera.core.ExperimentalZeroShutterLag
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.sidgowda.pawcalc.doginput.ui.OpenCamera
+import com.sidgowda.pawcalc.doginput.ui.OpenMedia
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 @ExperimentalZeroShutterLag
-internal class CameraMediaActivity : ComponentActivity() {
+class CameraMediaActivity : ComponentActivity() {
 
     companion object {
         const val INTENT_EXTRA_KEY = "camera_media_key"

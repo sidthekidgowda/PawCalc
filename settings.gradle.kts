@@ -25,3 +25,4 @@ include(":core:ui")
 
 include(":common:doginput")
 include(":feature:editdog")
+include(":common:camera")
