@@ -46,7 +46,7 @@ class NewDogViewModel @Inject constructor(
         _inputState.update {
             it.copy(
                 name = name,
-                nameValid = isNameValidForTextInput,
+                isNameValid = isNameValidForTextInput,
                 inputRequirements = if (isNameValid) {
                     it.inputRequirements.plus(inputRequirements)
                 } else {
@@ -60,11 +60,11 @@ class NewDogViewModel @Inject constructor(
         val inputRequirements = listOf(DogInputRequirements.WEIGHT_MORE_THAN_ZERO_AND_VALID_NUMBER)
         val weightAsDouble: Double? = weight.toDoubleOrNull()
         val isWeightValid = weight.isNotEmpty() && weightAsDouble != null && weightAsDouble > 0.0
-        val isWeightValidForTextInput = isWeightValid || weight.isEmpty() // we don't show error until we have one character
+        val isWeightValidForTextInput = weight.isEmpty() || isWeightValid // we don't show error until we have one character
         _inputState.update {
             it.copy(
                 weight = weight,
-                weightValid = isWeightValidForTextInput,
+                isWeightValid = isWeightValidForTextInput,
                 inputRequirements = if (isWeightValid) {
                     it.inputRequirements.plus(inputRequirements)
                 } else {
@@ -78,7 +78,7 @@ class NewDogViewModel @Inject constructor(
         _inputState.update {
             it.copy(
                 birthDate = birthDate,
-                birthDateValid = true,
+                isBirthDateValid = true,
                 inputRequirements = it.inputRequirements.plus(DogInputRequirements.BIRTH_DATE)
             )
         }
@@ -88,7 +88,7 @@ class NewDogViewModel @Inject constructor(
         _inputState.update {
             it.copy(
                 hasUserClickedOnBirthDate = true,
-                birthDateValid = it.birthDate.isNotEmpty()
+                isBirthDateValid = it.birthDate.isNotEmpty()
             )
         }
     }

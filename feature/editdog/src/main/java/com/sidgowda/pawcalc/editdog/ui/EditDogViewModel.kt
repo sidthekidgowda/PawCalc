@@ -29,7 +29,7 @@ class EditDogViewModel @Inject constructor() : ViewModel() {
         _dogInputState.update {
             it.copy(
                 hasUserClickedOnBirthDate = true,
-                birthDateValid = it.birthDateValid
+                isBirthDateValid = it.isBirthDateValid
             )
         }
     }

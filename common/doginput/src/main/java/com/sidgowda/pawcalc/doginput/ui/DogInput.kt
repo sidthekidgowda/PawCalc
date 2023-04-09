@@ -228,14 +228,14 @@ internal fun DogInputScreen(
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             name = dogInputState.name,
-            isNameError = !dogInputState.nameValid,
+            isNameError = !dogInputState.isNameValid,
             onNameChanged = onNameChanged,
             weightFocusRequester = weightFocusRequester
         )
         WeightInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             weight = dogInputState.weight,
-            isWeightError = !dogInputState.weightValid,
+            isWeightError = !dogInputState.isWeightValid,
             onWeightChanged = onWeightChanged,
             weightFocusRequester = weightFocusRequester,
             birthDateFocusRequester = birthDateFocusRequester
@@ -243,7 +243,7 @@ internal fun DogInputScreen(
         BirthDateInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             birthDate = dogInputState.birthDate,
-            isBirthDateError = !dogInputState.birthDateValid,
+            isBirthDateError = !dogInputState.isBirthDateValid,
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
