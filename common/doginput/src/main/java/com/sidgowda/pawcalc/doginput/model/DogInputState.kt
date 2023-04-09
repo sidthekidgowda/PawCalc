@@ -8,7 +8,6 @@ data class DogInputState(
     val isNameValid: Boolean = true,
     val weight: String = "",
     val isWeightValid: Boolean = true,
-    val hasUserClickedOnBirthDate: Boolean = false,
     val birthDate: String = "",
     val isBirthDateValid: Boolean = true,
     val inputRequirements: Set<DogInputRequirements> = emptySet(),

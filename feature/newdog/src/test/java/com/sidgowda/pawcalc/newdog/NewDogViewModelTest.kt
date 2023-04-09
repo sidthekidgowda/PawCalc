@@ -1,9 +1,13 @@
 package com.sidgowda.pawcalc.newdog
 
+import androidx.core.net.toUri
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toCollection
@@ -12,8 +16,10 @@ import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(AndroidJUnit4::class)
 class NewDogViewModelTest {
 
     @get:Rule
@@ -213,19 +219,91 @@ class NewDogViewModelTest {
         )
     }
 
-    // check weight is a number and more than zero
-    // check weight error state
+    @Test
+    fun `given birth date is valid, then state should have birthDate being set and input requirements being updated`() {
+        val history = viewModel.createStateHistory()
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("12/20/1990"))
 
-    // test profile pic
-    // test name
-    // test weight
-    // test birth date
-    // test save button
-    // test name requirements, error
-    // test weight requirements, error
-    // test birth date requirements, error
-    // test valid to invalid state
-    // test invalid to valid state
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                birthDate = "12/20/1990",
+                inputRequirements = setOf(DogInputRequirements.BIRTH_DATE)
+            )
+        )
+    }
+
+    @Test
+    fun `given birth date dialog shown, when birth date is empty, then isBirthDateValid should be set to false`() {
+        val history = viewModel.createStateHistory()
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isBirthDateValid = false
+            )
+        )
+    }
+
+    @Test
+    fun `given birth date is invalid, when birth date is updated, then isBirthDateValid should be set to true and input requirements updated`() {
+        val history = viewModel.createStateHistory()
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isBirthDateValid = false
+            ),
+            DogInputState(
+                isBirthDateValid = true,
+                birthDate = "7/30/2019",
+                inputRequirements = setOf(DogInputRequirements.BIRTH_DATE)
+            )
+        )
+    }
+
+    @Test
+    fun `when profile pic is updated, then input requirements should be updated`() {
+        val history = viewModel.createStateHistory()
+        val uri = "http://pic".toUri()
+        viewModel.handleEvent(DogInputEvent.PicChanged(uri))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                profilePic = uri,
+                inputRequirements = setOf(DogInputRequirements.ONE_PICTURE)
+            )
+        )
+    }
+
+    @Test
+    fun `when input requirements are met, then state should be valid`() {
+        val uri = "http://pic".toUri()
+        viewModel.handleEvent(DogInputEvent.PicChanged(uri))
+        viewModel.handleEvent(DogInputEvent.NameChanged("Mowgli"))
+        viewModel.handleEvent(DogInputEvent.WeightChanged("100"))
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
+
+        viewModel.inputState.value.isInputValid().shouldBeTrue()
+    }
+
+    @Test
+    fun `given input requirements are valid, when weight is changed to make input requirements invalid, then state should be invalid`() {
+        val uri = "http://pic".toUri()
+        viewModel.handleEvent(DogInputEvent.PicChanged(uri))
+        viewModel.handleEvent(DogInputEvent.NameChanged("Mowgli"))
+        viewModel.handleEvent(DogInputEvent.WeightChanged("100"))
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
+        viewModel.inputState.value.isInputValid().shouldBeTrue()
+
+        viewModel.handleEvent(DogInputEvent.WeightChanged("100. 00 . "))
+
+        viewModel.inputState.value.isInputValid().shouldBeFalse()
+    }
 
     private fun NewDogViewModel.createStateHistory(): List<DogInputState> {
         val history = mutableListOf<DogInputState>()

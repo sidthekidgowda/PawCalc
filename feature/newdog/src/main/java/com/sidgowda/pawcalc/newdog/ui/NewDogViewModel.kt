@@ -87,7 +87,6 @@ class NewDogViewModel @Inject constructor(
     private fun updateBirthDateDialogShown() {
         _inputState.update {
             it.copy(
-                hasUserClickedOnBirthDate = true,
                 isBirthDateValid = it.birthDate.isNotEmpty()
             )
         }
