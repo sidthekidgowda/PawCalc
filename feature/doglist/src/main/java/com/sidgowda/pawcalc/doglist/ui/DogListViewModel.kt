@@ -2,8 +2,8 @@ package com.sidgowda.pawcalc.doglist.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sidgowda.pawcalc.data.OnboardingRepo
-import com.sidgowda.pawcalc.data.model.OnboardingState
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

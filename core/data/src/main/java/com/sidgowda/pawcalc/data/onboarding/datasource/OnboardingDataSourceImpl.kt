@@ -1,18 +1,22 @@
-package com.sidgowda.pawcalc.data
+package com.sidgowda.pawcalc.data.onboarding.datasource
 
-import com.sidgowda.pawcalc.data.model.OnboardingState
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 // Create Data source
-class OnboardingDataSource @Inject constructor() {
+class OnboardingDataSourceImpl @Inject constructor() : OnboardingDataSource {
 
     private val _userOnboardedState = MutableStateFlow(OnboardingState.NotOnboarded)
     val userOnboardedState = _userOnboardedState.asStateFlow()
+    override fun isUserOnboarded(): Flow<OnboardingState> {
+        return userOnboardedState
+    }
 
-    fun setUserOnboarded() {
+    override fun setUserOnboarded() {
         _userOnboardedState.update { OnboardingState.Onboarded }
     }
 }

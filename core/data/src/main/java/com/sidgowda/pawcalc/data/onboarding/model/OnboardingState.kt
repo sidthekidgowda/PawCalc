@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.model
+package com.sidgowda.pawcalc.data.onboarding.model
 
 enum class OnboardingState {
     NotOnboarded,

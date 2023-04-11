@@ -12,8 +12,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sidgowda.pawcalc.data.model.OnboardingResult
-import com.sidgowda.pawcalc.data.model.OnboardingState
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingResult
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 
 @Composable
@@ -32,7 +32,7 @@ fun DogList(
         DogListScreen(
             modifier = modifier.fillMaxSize(),
             viewModel = viewModel,
-            onNewDog = {  },
+            onNewDog = onNewDog,
             onDogDetails = onDogDetails
         )
     } else {

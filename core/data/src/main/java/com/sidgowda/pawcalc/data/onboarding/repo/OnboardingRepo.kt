@@ -1,6 +1,6 @@
-package com.sidgowda.pawcalc.data
+package com.sidgowda.pawcalc.data.onboarding.repo
 
-import com.sidgowda.pawcalc.data.model.OnboardingState
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import kotlinx.coroutines.flow.Flow
 
 interface OnboardingRepo {
