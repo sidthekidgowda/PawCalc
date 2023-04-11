@@ -5,10 +5,10 @@ import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class IsUserOnboardedUseCase @Inject constructor(
+class GetOnboardingStateUseCase @Inject constructor(
     private val onboardingRepo: OnboardingRepo
 ) {
     operator fun invoke(): Flow<OnboardingState> {
-        return onboardingRepo.hasUserOnboarded()
+        return onboardingRepo.onboardingState
     }
 }

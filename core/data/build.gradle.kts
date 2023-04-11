@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.datastore.preferences)
     // test libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

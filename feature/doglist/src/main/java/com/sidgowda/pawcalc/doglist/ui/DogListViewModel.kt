@@ -3,7 +3,7 @@ package com.sidgowda.pawcalc.doglist.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
-import com.sidgowda.pawcalc.domain.IsUserOnboardedUseCase
+import com.sidgowda.pawcalc.domain.GetOnboardingStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,13 +12,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DogListViewModel @Inject constructor(
-    private val isUserOnboarded: IsUserOnboardedUseCase
+    getOnboardingState: GetOnboardingStateUseCase
 ) : ViewModel() {
-    fun onboardingState(): StateFlow<OnboardingState> {
-        return isUserOnboarded().stateIn(
-            started = SharingStarted.WhileSubscribed(5000),
-            scope = viewModelScope,
-            initialValue = OnboardingState.NotOnboarded
-        )
-    }
+
+    val onboardingState: StateFlow<OnboardingState> = getOnboardingState().stateIn(
+        started = SharingStarted.WhileSubscribed(5000),
+        scope = viewModelScope,
+        initialValue = OnboardingState.Empty
+    )
 }

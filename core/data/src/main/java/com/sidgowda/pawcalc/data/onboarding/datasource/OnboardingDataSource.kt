@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface OnboardingDataSource {
 
-    fun isUserOnboarded(): Flow<OnboardingState>
-    fun setUserOnboarded()
+    val onboardingState: Flow<OnboardingState>
+    suspend fun setUserOnboarded()
 }

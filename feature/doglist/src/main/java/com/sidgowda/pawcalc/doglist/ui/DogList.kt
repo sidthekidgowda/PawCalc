@@ -3,7 +3,9 @@ package com.sidgowda.pawcalc.doglist.ui
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -25,9 +27,11 @@ fun DogList(
     onDogDetails: (Int) -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
-    val onboardingState = viewModel.onboardingState().collectAsStateWithLifecycle()
+    val onboardingState = viewModel.onboardingState.collectAsStateWithLifecycle()
     val onboardingResult = savedStateHandle.getLiveData<OnboardingResult>(ONBOARDING_SCREEN_ROUTE).observeAsState().value
-
+    if (onboardingState.value == OnboardingState.Empty) {
+        return
+    }
     if (onboardingState.value == OnboardingState.Onboarded) {
         DogListScreen(
             modifier = modifier.fillMaxSize(),
@@ -37,7 +41,7 @@ fun DogList(
         )
     } else {
         when (onboardingResult) {
-            null ->{
+            null -> {
                 LaunchedEffect(key1 = Unit) {
                     onNavigateToOnboarding()
                 }
@@ -77,5 +81,7 @@ internal fun DogListScreen(
     onNewDog: () -> Unit,
     onDogDetails: (Int) -> Unit
 ) {
-
+    Column(modifier = modifier.fillMaxSize()) {
+        Text("Onboarded")
+    }
 }
