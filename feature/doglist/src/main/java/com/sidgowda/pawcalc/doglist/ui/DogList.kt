@@ -25,7 +25,7 @@ fun DogList(
     onDogDetails: (Int) -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
-    val onboardingState = viewModel.isUserOnboarded().collectAsStateWithLifecycle()
+    val onboardingState = viewModel.onboardingState().collectAsStateWithLifecycle()
     val onboardingResult = savedStateHandle.getLiveData<OnboardingResult>(ONBOARDING_SCREEN_ROUTE).observeAsState().value
 
     if (onboardingState.value == OnboardingState.Onboarded) {
