@@ -47,14 +47,13 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
-//    implementation(libs.android.material)
+    implementation(libs.com.google.android.material)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.icons)
     implementation(libs.coil.compose)
