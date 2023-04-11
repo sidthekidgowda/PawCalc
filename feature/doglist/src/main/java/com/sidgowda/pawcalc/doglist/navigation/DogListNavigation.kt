@@ -5,8 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.doglist.ui.DogList
-
-const val DOG_LIST_SCREEN_ROUTE = "dog_list_screen_route"
+import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 
 fun NavController.navigateToDogListScreen(navOptions: NavOptions? = null) {
     this.navigate(DOG_LIST_SCREEN_ROUTE, navOptions)
@@ -24,6 +23,5 @@ fun NavGraphBuilder.dogListScreenDestination(
             onNewDog = onNewDog,
             onDogDetails = onDogDetails
         )
-
     }
 }

@@ -1,13 +1,25 @@
 package com.sidgowda.pawcalc.doglist.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.OnboardingRepo
+import com.sidgowda.pawcalc.data.model.OnboardingState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class DogListViewModel @Inject constructor() : ViewModel() {
-    private val _onboardingState = MutableStateFlow(false)
-    val onboardingState = _onboardingState.asStateFlow()
+class DogListViewModel @Inject constructor(
+    private val onboardingRepo: OnboardingRepo
+) : ViewModel() {
+    fun isUserOnboarded(): StateFlow<OnboardingState> {
+        return onboardingRepo.hasUserOnboarded().stateIn(
+            started = SharingStarted.WhileSubscribed(5000),
+            scope = viewModelScope,
+            initialValue = OnboardingState.NotOnboarded
+        )
+    }
+
 }

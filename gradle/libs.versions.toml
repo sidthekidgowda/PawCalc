@@ -1,7 +1,6 @@
 [versions]
 androidGradlePlugin = "7.4.2"
-kotlinAndroidPlugin = "1.8.0"
-kotlinKaptPlugin = "1.8.0"
+kotlin = "1.8.0"
 androidxCore = "1.7.0"
 androidxActivity = "1.3.1"
 androidxLifecycle = "2.3.1"
@@ -36,7 +35,7 @@ robolectric = "4.9.2"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinAndroidPlugin"}
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin"}
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore"}
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity"}
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycle"}
@@ -88,6 +87,7 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroidPlugin"}
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlinKaptPlugin"}
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin"}
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin"}
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
