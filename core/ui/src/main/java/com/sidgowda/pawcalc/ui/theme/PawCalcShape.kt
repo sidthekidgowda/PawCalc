@@ -14,4 +14,7 @@ object PawCalcShape {
     val largeRoundedCornerShape: RoundedCornerShape
         @Composable
         get() = RoundedCornerShape(12.dp)
+    val extraLargeRoundedCornerShape: RoundedCornerShape
+        @Composable
+        get() = RoundedCornerShape(16.dp)
 }

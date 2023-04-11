@@ -17,13 +17,13 @@ val OpenSans = FontFamily(
 object PawCalcTypography {
     val h1 = TextStyle(
         fontFamily = OpenSans,
-        fontSize = 40.sp,
+        fontSize = 36.sp,
         fontWeight = FontWeight.Normal
     )
 
     val h2 = TextStyle(
         fontFamily = OpenSans,
-        fontSize = 32.sp,
+        fontSize = 30.sp,
         fontWeight = FontWeight.SemiBold
     )
 
@@ -37,10 +37,34 @@ object PawCalcTypography {
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold
     )
-
+    val h5 = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Normal
+    )
+    val h6 = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold
+    )
+    val h7 = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Normal
+    )
     val body1 = TextStyle(
         fontFamily = OpenSans,
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal
+    )
+    val body2 = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Normal
+    )
+    val error = TextStyle(
+        fontFamily = OpenSans,
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Bold
     )
 }

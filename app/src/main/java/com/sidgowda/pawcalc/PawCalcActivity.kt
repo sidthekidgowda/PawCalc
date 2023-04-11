@@ -1,30 +1,31 @@
 package com.sidgowda.pawcalc
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PawCalcActivity : ComponentActivity() {
+class PawCalcActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             PawCalcTheme {
-                PawCalcApp(isNewUser = true)
+                PawCalcApp(
+                    onActivityFinish = { this@PawCalcActivity.finish() }
+                )
             }
         }
     }
 }
 
-
-@Preview(showBackground = true)
+@LightDarkPreview
 @Composable
-fun DefaultPreview() {
+fun PreviewPawCalcActivity() {
     PawCalcTheme {
-       PawCalcApp(isNewUser = true)
+        PawCalcApp(onActivityFinish = {})
     }
 }

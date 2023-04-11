@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name_text_input">Name</string>
+    <string name="weight_text_input">Weight</string>
+    <string name="birth_date_input">Birth Date</string>
+    <string name="profile_picture_requirements">We require a profile picture of your dog.</string>
+    <string name="name_input_requirements">Your dog\'s name has to have at least 1 character and be at most 50 characters.</string>
+    <string name="weight_input_requirements">Your dog has to weigh more than 0 %s</string>
+    <string name="birth_date_input_requirements">You need to enter a birth date for your dog.</string>
+    <string name="save_input">Save</string>
+    <string name="bottom_sheet_take_photo">Take photo</string>
+    <string name="cd_bottom_sheet_take_photo">Take photo with your camera</string>
+    <string name="bottom_sheet_choose_photo">Choose photo</string>
+    <string name="cd_bottom_sheet_choose_photo">Choose a photo from your media</string>
+    <string name="go_to_settings">Go</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="name_input_placeholder">First, Middle (Optional), Last</string>
+    <string name="weight_input_placeholder">50.0</string>
+    <string name="weight_input_unit_lb">lb</string>
+    <string name="weight_input_unit_kg">kg</string>
+</resources>
