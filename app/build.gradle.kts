@@ -59,6 +59,7 @@ dependencies {
     implementation(projects.feature.newdog)
     implementation(projects.feature.editdog)
     implementation(projects.feature.onboarding)
+    implementation(projects.feature.doglist)
     implementation(projects.core.ui)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

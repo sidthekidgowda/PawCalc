@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sidgowda.pawcalc.doglist"
+    namespace = "com.sidgowda.pawcalc.data"
     compileSdk = 33
 
     defaultConfig {
@@ -28,22 +28,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeUi.get()
-    }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        jvmTarget = "1.8"
     }
 }
 
@@ -69,19 +58,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
     testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.kotest.assertions.core)
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.mock.test)
-    testImplementation(libs.androidx.test.ext.junit)
-    testImplementation(libs.androidx.test.junit.ktx)
-    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit)
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
-    androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.android.compiler)
     androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(libs.androidx.test.core)
 }

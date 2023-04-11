@@ -14,9 +14,7 @@ class PawCalcActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PawCalcTheme {
-                PawCalcApp(
-                    onActivityFinish = { this@PawCalcActivity.finish() }
-                )
+                PawCalcApp()
             }
         }
     }
@@ -26,6 +24,6 @@ class PawCalcActivity : AppCompatActivity() {
 @Composable
 fun PreviewPawCalcActivity() {
     PawCalcTheme {
-        PawCalcApp(onActivityFinish = {})
+        PawCalcApp()
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.sidgowda.pawcalc.doglist.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.Destination
 import com.sidgowda.pawcalc.onboarding.Onboarding
 import com.sidgowda.pawcalc.ui.component.PawCalcTopAppBar
@@ -17,9 +18,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun PawCalcApp(
-    onActivityFinish: () -> Unit
-) {
+fun PawCalcApp() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination by derivedStateOf {
@@ -36,7 +35,7 @@ fun PawCalcApp(
             HomeTopBar(
                 currentDestination = currentDestination,
                 onNavIconClick = {
-                    navController.popBackStack(route = DOG_LIST_ROUTE, inclusive = false)
+                    navController.popBackStack(route = DOG_LIST_SCREEN_ROUTE, inclusive = false)
                 },
                 onActionClick = { navController.navigate(SETTINGS_ROUTE) }
             )
@@ -48,8 +47,7 @@ fun PawCalcApp(
                 .padding(innerPadding)
         ) {
             PawCalcNavGraph(
-                navController = navController,
-                onActivityFinish = onActivityFinish
+                navController = navController
             )
         }
     }
