@@ -181,14 +181,14 @@ fun DogInput(
         }
         if (isDatePickerRequested) {
             OpenDatePicker(
+                date = dogInputState.birthDate,
                 onDateSelected = { date ->
                     handleEvent(DogInputEvent.BirthDateChanged(date))
                 },
                 onDatePickerDismissed = {
-                    isDatePickerRequested = false
                     handleEvent(DogInputEvent.BirthDateDialogShown)
-                },
-                date = dogInputState.birthDate
+                    isDatePickerRequested = false
+                }
             )
         }
     }
@@ -251,11 +251,6 @@ internal fun DogInputScreen(
             modifier = Modifier.fillMaxWidth(),
             isEnabled = dogInputState.isInputValid(),
             onSaveDog = onSaveDog
-        )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
         )
     }
 }

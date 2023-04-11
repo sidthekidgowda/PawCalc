@@ -8,7 +8,7 @@ import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-internal const val DATE_FORMAT = "M/dd/yyyy"
+internal const val DATE_FORMAT = "M/d/yyyy"
 internal const val TIME_ZONE = "UTC"
 
 internal fun calendar(date: Long? = null): Calendar {

@@ -55,6 +55,7 @@ fun DogListScreen(
     val onboardingResult by savedStateHandle.getLiveData<OnboardingResult>(ONBOARDING_ROUTE).observeAsState()
 
     when (onboardingState) {
+        // verify user has onboarded before
         OnboardingState.Onboarded -> {
             DogList()
         }

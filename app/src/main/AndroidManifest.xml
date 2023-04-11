@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_app_launcher"
+        android:icon="@mipmap/ic_pawcalc_launcher"
         android:label="@string/title_home"
         android:supportsRtl="true"
         android:theme="@style/Theme.PawCalc"
@@ -16,6 +16,7 @@
             android:name=".PawCalcActivity"
             android:exported="true"
             android:label="@string/title_home"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PawCalc">
             <intent-filter>

@@ -51,9 +51,6 @@ class DatePickerDialogFragment : Fragment() {
                 addOnCancelListener {
                     datePickerListener?.onCancel()
                 }
-                addOnDismissListener {
-                    datePickerListener?.onCancel()
-                }
                 // ok button clicked
                 addOnPositiveButtonClickListener { date ->
                     // convert date which is in milliseconds in a coroutine
