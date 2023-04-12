@@ -3,7 +3,7 @@ package com.sidgowda.pawcalc
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.sidgowda.pawcalc.data.onboarding.model.OnboardingResult
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.doglist.navigation.dogListScreenDestination
 import com.sidgowda.pawcalc.editdog.editDogScreenDestination
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
@@ -36,7 +36,7 @@ fun PawCalcNavGraph(
             setOnboardingResult = {
                 navController.previousBackStackEntry?.savedStateHandle?.set(
                     ONBOARDING_SCREEN_ROUTE,
-                    OnboardingResult.Cancelled
+                    OnboardingProgress.Cancelled
                 )
             },
             onNavigateToNewDog = {

@@ -6,15 +6,13 @@ import android.content.ContextWrapper
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sidgowda.pawcalc.data.onboarding.model.OnboardingResult
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 
@@ -27,41 +25,40 @@ fun DogList(
     onDogDetails: (Int) -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
-    val onboardingState = viewModel.onboardingState.collectAsStateWithLifecycle()
-    val onboardingResult = savedStateHandle.getLiveData<OnboardingResult>(ONBOARDING_SCREEN_ROUTE).observeAsState().value
-    if (onboardingState.value == OnboardingState.Empty) {
-        return
+    val context = LocalContext.current
+    val onboardingProgress: OnboardingProgress =
+        savedStateHandle.getLiveData<OnboardingProgress>(ONBOARDING_SCREEN_ROUTE)
+            .observeAsState().value ?: OnboardingProgress.NotStarted
+    var isOnboarded by remember {
+        mutableStateOf(false)
     }
-    if (onboardingState.value == OnboardingState.Onboarded) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.onboardingState.collect { onboardingState ->
+            when (onboardingState) {
+                OnboardingState.Onboarded -> {
+                    isOnboarded = true
+                }
+                OnboardingState.NotOnboarded -> {
+                    when (onboardingProgress) {
+                        OnboardingProgress.NotStarted -> {
+                            onNavigateToOnboarding()
+                        }
+                        OnboardingProgress.Cancelled -> {
+                            val activity = context.findActivity()
+                            activity.finish()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (isOnboarded) {
         DogListScreen(
             modifier = modifier.fillMaxSize(),
             viewModel = viewModel,
             onNewDog = onNewDog,
             onDogDetails = onDogDetails
         )
-    } else {
-        when (onboardingResult) {
-            null -> {
-                LaunchedEffect(key1 = Unit) {
-                    onNavigateToOnboarding()
-                }
-            }
-            OnboardingResult.Completed -> {
-                DogListScreen(
-                    modifier = modifier.fillMaxSize(),
-                    viewModel = viewModel,
-                    onNewDog = onNewDog,
-                    onDogDetails = onDogDetails
-                )
-            }
-            OnboardingResult.Cancelled -> {
-                val activity = LocalContext.current.findActivity()
-                LaunchedEffect(key1 = Unit) {
-                    // finish the activity
-                    activity.finish()
-                }
-            }
-        }
     }
 }
 
