@@ -1,19 +1,22 @@
 package com.sidgowda.pawcalc.db.dog
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DogDao {
-
     @Query("SELECT * FROM dogs")
-    fun dogs(): List<Dog>
+    fun dogs(): Flow<List<Dog>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addDog(dog: Dog)
+    @Query("SELECT * FROM dogs WHERE id = :id")
+    suspend fun dogForId(id: Int): Dog
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addDog(dog: Dog)
 
     @Delete
-    fun deleteDog(dog: Dog)
+    suspend fun deleteDog(dog: Dog)
 
     @Update
-    fun updateDog(dog: Dog)
+    suspend fun updateDog(dog: Dog)
 }

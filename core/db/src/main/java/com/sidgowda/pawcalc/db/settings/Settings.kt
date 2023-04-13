@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Settings(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     val theme: Theme,
     val dateFormat: DateFormat,
     val weightFormat: WeightFormat
