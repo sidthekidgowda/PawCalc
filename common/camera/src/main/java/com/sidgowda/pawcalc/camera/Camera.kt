@@ -202,10 +202,10 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider {
 
 //---------Preview----------------------------------------------------------------------------------
 @ExperimentalZeroShutterLag
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewCamera() {
-    PawCalcTheme {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
         OpenCamera(
             onClose = {},
             onSavePhoto = {}
@@ -213,12 +213,12 @@ fun PreviewCamera() {
     }
 }
 
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewCameraShutterButton() {
-    PawCalcTheme() {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme() {
         CameraShutterButton() {
-            
+
         }
     }
 }

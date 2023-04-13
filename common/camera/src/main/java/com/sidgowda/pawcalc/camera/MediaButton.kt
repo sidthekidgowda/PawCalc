@@ -45,22 +45,22 @@ internal fun MediaButton(
 
 //-------Preview------------------------------------------------------------------------------------
 
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewBackButton() {
-    PawCalcTheme {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
         MediaButton(imageVector = Icons.Default.ArrowBack) {
 
         }
     }
 }
 
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewCloseButton() {
-    PawCalcTheme {
-       MediaButton(imageVector = Icons.Default.Close) {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+        MediaButton(imageVector = Icons.Default.Close) {
 
-       }
+        }
     }
 }

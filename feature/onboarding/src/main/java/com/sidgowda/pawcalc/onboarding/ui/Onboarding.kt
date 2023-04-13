@@ -42,7 +42,7 @@ internal fun OnboardingScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(PawCalcTheme.colors.background)
+            .background(com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.background)
             .testTag(ONBOARDING_SCREEN_ROUTE),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -57,8 +57,8 @@ internal fun OnboardingScreen(
             modifier = Modifier.padding(horizontal = 20.dp),
             textAlign = TextAlign.Center,
             text = stringResource(id = R.string.onboarding_content),
-            style = PawCalcTheme.typography.h1,
-            color = PawCalcTheme.colors.onBackground
+            style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h1,
+            color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onBackground
         )
         Spacer(modifier = Modifier.height(50.dp))
         PawCalcButton(
@@ -70,14 +70,14 @@ internal fun OnboardingScreen(
 }
 
 //-------Preview------------------------------------------------------------------------------------
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewOnboardingScreen() {
-    PawCalcTheme {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PawCalcTheme.colors.background)
+                .background(com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.background)
         ) {
             Onboarding(onNavigateToNewDog = {}, onPopBackStack = {})
         }

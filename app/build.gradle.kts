@@ -61,7 +61,7 @@ dependencies {
     implementation(projects.feature.onboarding)
     implementation(projects.feature.doglist)
     implementation(projects.common.navigation)
-    implementation(projects.core.ui)
+    implementation(projects.common.ui)
     implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(libs.androidx.core.ktx)

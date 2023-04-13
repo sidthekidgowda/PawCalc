@@ -88,10 +88,10 @@ internal fun PhotoImage(
 
 //---------Preview----------------------------------------------------------------------------------
 
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewPhotoImage() {
-    PawCalcTheme {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
 
     }
 }

@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.ui)
+    implementation(projects.common.ui)
     implementation(projects.common.doginput)
     implementation(projects.common.navigation)
     implementation(libs.androidx.core.ktx)

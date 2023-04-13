@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.ui)
+    implementation(projects.common.ui)
     implementation(projects.common.camera)
     implementation(projects.common.date)
     implementation(libs.androidx.core.ktx)

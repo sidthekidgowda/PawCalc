@@ -46,10 +46,10 @@ internal fun NewDogScreen(
 
 //--------Preview-----------------------------------------------------------------------------------
 
-@LightDarkPreview
+@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 @Composable
 fun PreviewNewDogScreen() {
-    PawCalcTheme {
+    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
         NewDog {
 
         }

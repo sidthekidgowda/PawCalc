@@ -42,7 +42,7 @@ class CameraMediaActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            PawCalcTheme {
+            com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
                 intent?.getStringExtra(INTENT_EXTRA_KEY)?.let { intentFlag ->
                     rememberSystemUiController().apply {
                         isSystemBarsVisible = false
@@ -51,13 +51,13 @@ class CameraMediaActivity : ComponentActivity() {
                             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                     }
                     val onClose = {
-                        setResult(Activity.RESULT_CANCELED)
+                        setResult(RESULT_CANCELED)
                         this@CameraMediaActivity.finish()
                     }
                     val onSavePhoto: (Uri) -> Unit = { uri ->
                         // pass image uri back to previous screen
                         val uriIntent = Intent().apply { data = uri }
-                        setResult(Activity.RESULT_OK, uriIntent)
+                        setResult(RESULT_OK, uriIntent)
                         this@CameraMediaActivity.finish()
                     }
                     if (intentFlag == TAKE_PHOTO) {
@@ -73,7 +73,7 @@ class CameraMediaActivity : ComponentActivity() {
                     }
                 } ?: run {
                     // intent flag is null, return
-                    setResult(Activity.RESULT_CANCELED)
+                    setResult(RESULT_CANCELED)
                     this@CameraMediaActivity.finish()
                 }
             }

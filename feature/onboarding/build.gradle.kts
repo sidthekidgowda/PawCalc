@@ -48,9 +48,9 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.ui)
     implementation(projects.core.data)
     implementation(projects.core.domain)
+    implementation(projects.common.ui)
     implementation(projects.common.navigation)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

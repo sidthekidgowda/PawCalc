@@ -30,7 +30,7 @@ class DatePickerDialogFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                PawCalcTheme {
+                com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
                     val birthDate = arguments?.getString(BUNDLE_DATE_KEY) ?: ""
                     showDatePickerDialog(birthDate)
                 }
