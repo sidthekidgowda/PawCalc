@@ -1,20 +1,30 @@
 package com.sidgowda.pawcalc.doglist.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
+import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
 fun DogList(
@@ -74,29 +84,103 @@ internal fun DogListScreen(
         viewModel.fetchDogs()
     }
     val dogListState: DogListState by viewModel.dogListState.collectAsStateWithLifecycle()
-    when {
-        dogListState.isLoading -> {
-            // show progress
+    val lazyColumnState = rememberLazyListState()
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        floatingActionButton = {
+            IconButton(onClick = onNewDog) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null
+                )
+            }
         }
-        dogListState.isError -> {
-            // show error dialog
-        }
-        else -> {
-            if (dogListState.dogs.isEmpty()) {
-               //show empty state
-            } else {
-                //show list with add button
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                dogListState.isLoading -> {
+                    // todo - use accompanist library to show shimmer
+                    CircularProgressIndicator()
+                }
+                else -> {
+                    if (dogListState.dogs.isEmpty()) {
+                        //show empty state
+                        Text("You have not added any dogs currently. Please add a dog to see how old they are in human years")
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyColumnState
+                        ) {
+                            items(dogListState.dogs, key = { dog -> dog.id }) {
+                                DogListItem(dog = it)
+                            }
+                        }
+                    }
+                    if (dogListState.isError) {
+                        // show error dialog
+                    }
+                }
             }
         }
     }
 }
 
-private fun Context.findActivity(): Activity {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
+
+@Composable
+internal fun DogListItem(
+    modifier: Modifier = Modifier,
+    dog: Dog
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 60.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        AsyncImage(
+            model = dog.profilePic,
+            modifier = Modifier.size(30.dp),
+            contentScale = ContentScale.Crop,
+            contentDescription = null
+        )
+        Column(modifier = Modifier.fillMaxHeight()) {
+            Text(dog.name)
+            Text(dog.weight.toString())
+            Text(dog.birthDate)
+        }
     }
-    throw IllegalStateException("no activity")
 }
 
+//-----Preview--------------------------------------------------------------------------------------
+
+@LightDarkPreview
+@Composable
+fun PreviewDogListScreen() {
+    PawCalcTheme {
+        DogListScreen(viewModel = hiltViewModel(), onNewDog = { }, onDogDetails = {})
+    }
+}
+
+@LightDarkPreview
+@Composable
+fun PreviewDogListEmptyState() {
+
+}
+
+@LightDarkPreview
+@Composable
+fun PreviewDogListFullList() {
+
+}
+
+@LightDarkPreview
+@Composable
+fun PreviewDogListItem() {
+
+}
