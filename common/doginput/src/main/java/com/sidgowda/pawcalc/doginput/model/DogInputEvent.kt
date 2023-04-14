@@ -7,7 +7,6 @@ sealed class DogInputEvent {
     class NameChanged(val name: String) : DogInputEvent()
     class WeightChanged(val weight: String) : DogInputEvent()
     class BirthDateChanged(val birthDate: String) : DogInputEvent()
-
     object BirthDateDialogShown : DogInputEvent()
     object SavingInfo : DogInputEvent()
 }

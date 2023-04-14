@@ -11,8 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,8 +19,7 @@ class DogListViewModel @Inject constructor(
     private val dogsRepo: DogsRepo
 ) : ViewModel() {
 
-    private val cachedDogList = mutableListOf<Dog>()
-    private val mutex = Mutex()
+    private val cachedDogList = MutableStateFlow<List<Dog>>(emptyList())
 
     val onboardingState: Flow<OnboardingState> = getOnboardingState()
 
@@ -34,11 +31,10 @@ class DogListViewModel @Inject constructor(
                 isError = false
             )
         }
-        .onEach {
+        .onEach { dogListState ->
             // update cache
-            mutex.withLock {
-                cachedDogList.clear()
-                cachedDogList.addAll(it.dogs)
+            cachedDogList.update {
+                dogListState.dogs
             }
         }
         .catch {
@@ -46,7 +42,7 @@ class DogListViewModel @Inject constructor(
             emit(
                 DogListState(
                     isLoading = false,
-                    dogs = cachedDogList,
+                    dogs = cachedDogList.value,
                     isError = true
                 )
             )
