@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class DiskDogsDataSource @Inject constructor(
+class DogsDiskDataSource @Inject constructor(
     private val dogsDao: DogsDao
 ) : DogsDataSource {
 

@@ -1,13 +1,10 @@
 package com.sidgowda.pawcalc.data.dogs.repo
 
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.di.DogsRepoState
+import com.sidgowda.pawcalc.data.dogs.di.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -22,63 +19,56 @@ class DogsRepoImpl @Inject constructor(
     }
 
     private val loadState = MutableStateFlow<LoadState>(LoadState.Idle)
-    private val scope = CoroutineScope(SupervisorJob())
-
-    override fun dogs(): Flow<DogsRepoState> = combine(
+    override fun dogState(): Flow<DogState> = combine(
         memory.dogs(),
         loadState
     ) { dogs, loadState ->
         when (loadState) {
-            LoadState.Loading -> DogsRepoState(
+            LoadState.Loading -> DogState(
                 isLoading = true,
                 dogs = emptyList()
             )
-            LoadState.Idle -> DogsRepoState(
+            LoadState.Idle -> DogState(
                 isLoading = false,
-                dogs = if (dogs == null) emptyList() else dogs
+                dogs = dogs ?: emptyList()
             )
         }
     }.flowOn(Dispatchers.Default)
     .distinctUntilChanged()
 
     override suspend fun fetchDogs() {
-        scope.launch {
-            // if dogs exists in memory, do nothing
-            val inMemoryDogs = memory.dogs().first()
-            if (inMemoryDogs != null) {
-
-            } else {
-                // pull from disks
-
+        // if dogs exists in memory, do nothing
+        val inMemoryDogs = memory.dogs().first()
+        if (inMemoryDogs != null) {
+            // add log statement
+        } else {
+            loadState.update { LoadState.Loading }
+            try {
+                val inDiskDogs = disk.dogs().first()
+                if (inDiskDogs != null) {
+                   memory.addDog(*inDiskDogs.toTypedArray())
+                }
+            } catch (e: Exception) {
+                // add log statement
+            } finally {
+                loadState.update { LoadState.Idle }
             }
-            // if dogs exist in disk, use disk
         }
     }
 
     override suspend fun addDog(dog: Dog) {
-        TODO("Not yet implemented")
+        memory.addDog(dog)
+        disk.addDog(dog)
     }
 
     override suspend fun deleteDog(dog: Dog) {
-        TODO("Not yet implemented")
+        memory.deleteDog(dog)
+        disk.deleteDog(dog)
     }
 
     override suspend fun updateDog(dog: Dog) {
-        TODO("Not yet implemented")
+        val updatedDog = dog.copy(isLoading = true)
+        memory.updateDog(updatedDog)
+        disk.updateDog(updatedDog)
     }
-
-    // update job
-    // delete job
-    // insert job
-
-    // VM states
-    // loading
-    // empty
-    // error
-    // data
-
-    // VM events
-    // update dog
-    // insert dog
-
 }

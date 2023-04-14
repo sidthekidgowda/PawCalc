@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class MemoryDogsDataSource @Inject constructor() : DogsDataSource {
+class DogsMemoryDataSource @Inject constructor() : DogsDataSource {
 
     private val dogs = MutableStateFlow<List<Dog>?>(null)
 
@@ -19,7 +19,7 @@ class MemoryDogsDataSource @Inject constructor() : DogsDataSource {
         dogs.update { list ->
             list?.update {
                 it.addAll(dog)
-            }
+            } ?: dog.asList()
         }
     }
 

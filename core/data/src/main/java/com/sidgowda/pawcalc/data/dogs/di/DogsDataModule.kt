@@ -1,8 +1,8 @@
 package com.sidgowda.pawcalc.data.dogs.di
 
-import com.sidgowda.pawcalc.data.dogs.datasource.DiskDogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.datasource.MemoryDogsDataSource
+import com.sidgowda.pawcalc.data.dogs.datasource.DogsDiskDataSource
+import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.db.dog.DogsDao
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ object DogsDataModule {
     @Singleton
     @Provides
     fun providesMemoryDogsDataSource(): DogsDataSource {
-        return MemoryDogsDataSource()
+        return DogsMemoryDataSource()
     }
 
     @Named("disk")
@@ -28,6 +28,6 @@ object DogsDataModule {
     fun providesDiskDogsDataSource(
         dogsDao: DogsDao
     ): DogsDataSource {
-        return DiskDogsDataSource(dogsDao)
+        return DogsDiskDataSource(dogsDao)
     }
 }

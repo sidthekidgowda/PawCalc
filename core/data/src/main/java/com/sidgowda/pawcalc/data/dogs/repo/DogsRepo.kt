@@ -1,12 +1,12 @@
 package com.sidgowda.pawcalc.data.dogs.repo
 
-import com.sidgowda.pawcalc.data.dogs.di.DogsRepoState
+import com.sidgowda.pawcalc.data.dogs.di.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import kotlinx.coroutines.flow.Flow
 
 interface DogsRepo {
 
-    fun dogs(): Flow<DogsRepoState>
+    fun dogState(): Flow<DogState>
 
     suspend fun fetchDogs()
 
