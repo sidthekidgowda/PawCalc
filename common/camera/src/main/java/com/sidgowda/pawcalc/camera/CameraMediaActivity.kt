@@ -42,7 +42,7 @@ class CameraMediaActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+            PawCalcTheme {
                 intent?.getStringExtra(INTENT_EXTRA_KEY)?.let { intentFlag ->
                     rememberSystemUiController().apply {
                         isSystemBarsVisible = false

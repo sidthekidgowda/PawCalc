@@ -13,17 +13,17 @@ class PawCalcActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+            PawCalcTheme {
                 PawCalcApp()
             }
         }
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewPawCalcActivity() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         PawCalcApp()
     }
 }

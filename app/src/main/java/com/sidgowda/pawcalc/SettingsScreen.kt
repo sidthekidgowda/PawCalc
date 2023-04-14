@@ -34,7 +34,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun PreviewSettingsScreen() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         SettingsScreen()
     }
 }

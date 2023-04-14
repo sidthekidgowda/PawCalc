@@ -63,8 +63,8 @@ fun HomeTopBar(
         title = {
             Text(
                 text = stringResource(id = currentDestination.title),
-                style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h2,
-                color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onPrimarySurface()
+                style = PawCalcTheme.typography.h2,
+                color = PawCalcTheme.colors.onPrimarySurface()
             )
         },
         navigationIcon = {
@@ -76,7 +76,7 @@ fun HomeTopBar(
                         contentDescription = stringResource(
                             id = currentDestination.navIconContentDescription
                         ),
-                        tint = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onPrimarySurface()
+                        tint = PawCalcTheme.colors.onPrimarySurface()
                     )
                 }
             } else {
@@ -92,7 +92,7 @@ fun HomeTopBar(
                         contentDescription = stringResource(
                             id = currentDestination.actionIconContentDescription
                         ),
-                        tint = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onPrimarySurface()
+                        tint = PawCalcTheme.colors.onPrimarySurface()
                     )
                 }
             } else {
@@ -104,10 +104,10 @@ fun HomeTopBar(
 
 //--------------Preview-----------------------------------------------------------------------------
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewHomeTopBar() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         HomeTopBar(
             currentDestination = Destination.Onboarding,
             onNavIconClick = {},
@@ -116,10 +116,10 @@ fun PreviewHomeTopBar() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewSettingsTopBar() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         HomeTopBar(
             currentDestination = Destination.Settings,
             onNavIconClick = {},
@@ -128,10 +128,10 @@ fun PreviewSettingsTopBar() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewHomeScreen() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Column {
                 HomeTopBar(

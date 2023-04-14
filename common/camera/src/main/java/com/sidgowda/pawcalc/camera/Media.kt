@@ -169,10 +169,10 @@ private fun retrieveImagesFromMedia(context: Context): List<MediaImage> {
 
 //---------Preview----------------------------------------------------------------------------------
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewOpenMedia() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         OpenMedia(
             onClose = { },
             onSavePhoto = {}
@@ -180,10 +180,10 @@ fun PreviewOpenMedia() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewMediaImage() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         PhotoImage(
             image = Uri.EMPTY,
             scaleType = ContentScale.Crop

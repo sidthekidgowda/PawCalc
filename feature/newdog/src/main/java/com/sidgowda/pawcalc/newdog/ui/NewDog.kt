@@ -12,6 +12,7 @@ import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
+import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
@@ -45,7 +46,7 @@ internal fun NewDogScreen(
 
 //--------Preview-----------------------------------------------------------------------------------
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewNewDogScreen() {
     PawCalcTheme {

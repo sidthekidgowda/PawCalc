@@ -215,7 +215,7 @@ internal fun DogInputScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.background)
+            .background(PawCalcTheme.colors.background)
             .padding(top = 40.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -289,7 +289,7 @@ internal fun CameraInput(
                 model = ImageRequest.Builder(LocalContext.current).data(imageUri).build(),
                 modifier = Modifier
                     .clip(CircleShape)
-                    .border(2.dp, com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onPrimarySurface(), CircleShape),
+                    .border(2.dp, PawCalcTheme.colors.onPrimarySurface(), CircleShape),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )
@@ -308,8 +308,8 @@ internal fun NameInput(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(id = R.string.name_text_input),
-            style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h4,
-            color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.contentColor()
+            style = PawCalcTheme.typography.h4,
+            color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
@@ -321,17 +321,17 @@ internal fun NameInput(
                 Text(
                     text = stringResource(id = R.string.name_input_placeholder),
                     textAlign = TextAlign.Start,
-                    style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h7,
+                    style = PawCalcTheme.typography.h7,
                 )
             },
             onValueChange = {
                 onNameChanged(it)
             },
-            textStyle = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h5,
+            textStyle = PawCalcTheme.typography.h5,
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.surface(),
-                textColor = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface(),
-                placeholderColor = com.sidgowda.pawcalc.ui.theme.Grey500
+                backgroundColor = PawCalcTheme.colors.surface(),
+                textColor = PawCalcTheme.colors.onSurface(),
+                placeholderColor = Grey500
             ),
             isError = isNameError,
             singleLine = true,
@@ -349,7 +349,7 @@ internal fun NameInput(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Name must be at least 1 character and at most 50 characters",
-                style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.error,
+                style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
         }
@@ -368,8 +368,8 @@ internal fun WeightInput(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(id = R.string.weight_text_input),
-            style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h4,
-            color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.contentColor()
+            style = PawCalcTheme.typography.h4,
+            color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
@@ -381,7 +381,7 @@ internal fun WeightInput(
                 Text(
                     stringResource(id = R.string.weight_input_placeholder),
                     textAlign = TextAlign.Start,
-                    style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h7
+                    style = PawCalcTheme.typography.h7
                 )
             },
             modifier = Modifier
@@ -389,12 +389,12 @@ internal fun WeightInput(
                 .fillMaxWidth(.6f)
                 .focusRequester(weightFocusRequester),
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.surface(),
+                backgroundColor = PawCalcTheme.colors.surface(),
                 textColor = Color.Black,
-                placeholderColor = com.sidgowda.pawcalc.ui.theme.Grey500
+                placeholderColor = Grey500
             ),
-            textStyle = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
-            shape = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+            textStyle = PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
+            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                 bottomStart = ZeroCornerSize,
                 bottomEnd = ZeroCornerSize
             ),
@@ -415,8 +415,8 @@ internal fun WeightInput(
                         .height(60.dp)
                         .width(48.dp)
                         .background(
-                            color = com.sidgowda.pawcalc.ui.theme.Grey200,
-                            shape = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                            color = Grey200,
+                            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                                 bottomStart = ZeroCornerSize,
                                 bottomEnd = ZeroCornerSize,
                                 topStart = ZeroCornerSize
@@ -425,7 +425,7 @@ internal fun WeightInput(
                         .wrapContentSize(),
                     textAlign = TextAlign.Center,
                     text = "lb",
-                    style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h5,
+                    style = PawCalcTheme.typography.h5,
                     color = Color.Black
                 )
             }
@@ -434,7 +434,7 @@ internal fun WeightInput(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Weight must be a number and more than 0 lbs",
-                style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.error,
+                style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
         }
@@ -451,8 +451,8 @@ internal fun BirthDateInput(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(id = R.string.birth_date_input),
-            style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h4,
-            color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.contentColor()
+            style = PawCalcTheme.typography.h4,
+            color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
@@ -463,7 +463,7 @@ internal fun BirthDateInput(
                 Text(
                     text = "mm/dd/yyyy",
                     textAlign = TextAlign.Start,
-                    style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h7,
+                    style = PawCalcTheme.typography.h7,
                 )
             },
             readOnly = true,
@@ -480,26 +480,26 @@ internal fun BirthDateInput(
                     }
                 }
                 .focusable(),
-            shape = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                 bottomStart = ZeroCornerSize,
                 bottomEnd = ZeroCornerSize
             ),
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.surface(),
+                backgroundColor = PawCalcTheme.colors.surface(),
                 disabledTextColor = Color.Black,
                 textColor = Color.Black,
-                placeholderColor = com.sidgowda.pawcalc.ui.theme.Grey500,
-                disabledPlaceholderColor = com.sidgowda.pawcalc.ui.theme.Grey500
+                placeholderColor = Grey500,
+                disabledPlaceholderColor = Grey500
             ),
-            textStyle = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
+            textStyle = PawCalcTheme.typography.h7.copy(textAlign = TextAlign.Start),
             trailingIcon = {
                 IconButton(
                     modifier = Modifier
                         .height(60.dp)
                         .width(42.dp)
                         .background(
-                            color = com.sidgowda.pawcalc.ui.theme.Grey200,
-                            shape = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                            color = Grey200,
+                            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                                 bottomStart = ZeroCornerSize,
                                 bottomEnd = ZeroCornerSize,
                                 topStart = ZeroCornerSize
@@ -531,7 +531,7 @@ internal fun BirthDateInput(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Please select a birth date",
-                style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.error,
+                style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
         }
@@ -596,10 +596,10 @@ internal fun SaveButton(
 //-----Preview--------------------------------------------------------------------------------------
 
 @OptIn(ExperimentalMaterialApi::class)
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewNewDogScreen() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         DogInputScreen(
             modifier = Modifier.fillMaxSize(),
             dogInputState = DogInputState(),
@@ -615,10 +615,10 @@ fun PreviewNewDogScreen() {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewEditDogScreen() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         DogInputScreen(
             modifier = Modifier.fillMaxSize(),
             dogInputState = DogInputState(),
@@ -633,10 +633,10 @@ fun PreviewEditDogScreen() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewNameInput() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         Column(Modifier.fillMaxWidth()) {
             NameInput(
                 name = "Mowgli",
@@ -648,10 +648,10 @@ fun PreviewNameInput() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewWeightInput() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         Column(Modifier.fillMaxWidth()) {
             WeightInput(
                 weight = "87.0",
@@ -664,10 +664,10 @@ fun PreviewWeightInput() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewWeightInputError() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         Column(Modifier.fillMaxWidth()) {
             WeightInput(
                 weight = "875.0",
@@ -680,10 +680,10 @@ fun PreviewWeightInputError() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewBirthDateInput() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         Column(modifier = Modifier.fillMaxWidth()) {
             BirthDateInput(
                 birthDate = "07/30/2019",

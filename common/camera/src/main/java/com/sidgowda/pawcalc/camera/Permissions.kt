@@ -64,22 +64,22 @@ fun PermissionDialog(
         title = {
             Text(
                 text = stringResource(id = R.string.permission_denied_title, permission),
-                style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h3,
-                color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface
+                style = PawCalcTheme.typography.h3,
+                color = PawCalcTheme.colors.onSurface
             )
         },
         text = {
             Text(
                 text = stringResource(id = R.string.permission_denied_message),
-                style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.body2,
-                color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface
+                style = PawCalcTheme.typography.body2,
+                color = PawCalcTheme.colors.onSurface
             )
         },
         confirmButton = {
             TextButton(onClick = requestPermission) {
                 Text(
                     text = stringResource(id = R.string.go_to_settings).uppercase(),
-                    style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h6
+                    style = PawCalcTheme.typography.h6
                 )
             }
         },
@@ -87,7 +87,7 @@ fun PermissionDialog(
             TextButton(onClick = onCancel) {
                 Text(
                     text = stringResource(id = R.string.cancel).uppercase(),
-                    style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.h6
+                    style = PawCalcTheme.typography.h6
                 )
             }
         }
@@ -96,10 +96,10 @@ fun PermissionDialog(
 
 //---------Preview----------------------------------------------------------------------------------
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewPermissionDialog() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         PermissionDialog(
             permission = "Camera",
             requestPermission = {},

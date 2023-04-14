@@ -28,7 +28,7 @@ fun UpdatePhotoBottomSheetContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.surface),
+            .background(PawCalcTheme.colors.surface),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(20.dp))
@@ -64,7 +64,7 @@ internal fun PictureItem(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.surface)
+            .background(PawCalcTheme.colors.surface)
             .clickable { onAction() }
             .padding(horizontal = 40.dp),
         horizontalArrangement = Arrangement.Start,
@@ -79,13 +79,13 @@ internal fun TakePhotoFromCamera() {
     Icon(
         imageVector = Icons.Default.PhotoCamera,
         contentDescription = null,
-        tint = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface
+        tint = PawCalcTheme.colors.onSurface
     )
     Spacer(modifier = Modifier.width(16.dp))
     Text(
         text = stringResource(id = R.string.bottom_sheet_take_photo),
-        style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.body1,
-        color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.onSurface
     )
 }
 
@@ -94,21 +94,21 @@ fun ChoosePhotoFromMedia() {
     Icon(
         imageVector = Icons.Default.Photo,
         contentDescription = null,
-        tint = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface
+        tint = PawCalcTheme.colors.onSurface
     )
     Spacer(modifier = Modifier.width(16.dp))
     Text(
         text = stringResource(id = R.string.bottom_sheet_choose_photo),
-        style = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.typography.body1,
-        color = com.sidgowda.pawcalc.ui.theme.PawCalcTheme.colors.onSurface
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.onSurface
     )
 }
 
 //------Preview-------------------------------------------------------------------------------------
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewChangePictureBottomSheet() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         UpdatePhotoBottomSheetContent(
             onTakePhoto = {},
             onChooseMedia = {},
@@ -117,10 +117,10 @@ fun PreviewChangePictureBottomSheet() {
     }
 }
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewTakePhotoFromCamera() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         PictureItem(
             onAction = { },
             content = {
@@ -131,10 +131,10 @@ fun PreviewTakePhotoFromCamera() {
 }
 
 
-@com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+@LightDarkPreview
 @Composable
 fun PreviewChoosePhotoFromMedia() {
-    com.sidgowda.pawcalc.ui.theme.PawCalcTheme {
+    PawCalcTheme {
         PictureItem(
             onAction = { },
             content = {
