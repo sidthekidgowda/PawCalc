@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SettingsDao {
     @Query("SELECT * FROM settings")
-    fun settings(): Flow<Settings>
+    fun settings(): Flow<List<Settings>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(settings: Settings)
