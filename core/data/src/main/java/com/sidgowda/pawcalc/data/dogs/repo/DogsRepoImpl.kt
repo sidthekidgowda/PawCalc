@@ -3,6 +3,9 @@ package com.sidgowda.pawcalc.data.dogs.repo
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.di.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.DogInput
+import com.sidgowda.pawcalc.data.dogs.model.toDog
+import com.sidgowda.pawcalc.db.dog.DogEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -56,7 +59,14 @@ class DogsRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun addDog(dog: Dog) {
+    override suspend fun addDog(dogInput: DogInput) {
+        // create DogEntity since Room will autogenerate primary key
+        val dog = DogEntity(
+            name = dogInput.name,
+            birthDate = dogInput.birthDate,
+            weight = dogInput.weight.toDouble(),
+            profilePic = dogInput.profilePic
+        ).toDog("", "")
         memory.addDog(dog)
         disk.addDog(dog)
     }

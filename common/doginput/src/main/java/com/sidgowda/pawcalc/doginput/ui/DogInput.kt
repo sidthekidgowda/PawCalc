@@ -131,7 +131,10 @@ fun DogInput(
             onDatePickerRequest = {
                 isDatePickerRequested = true
             },
-            onSaveDog = onSaveDog,
+            onSaveDog = {
+                handleEvent(DogInputEvent.SavingInfo)
+                onSaveDog()
+            },
         )
         val requestPermission = {
             context.startActivity(

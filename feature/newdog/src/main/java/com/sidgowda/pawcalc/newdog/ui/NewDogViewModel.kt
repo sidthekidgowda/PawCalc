@@ -2,18 +2,23 @@ package com.sidgowda.pawcalc.newdog.ui
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
+import com.sidgowda.pawcalc.domain.AddDogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewDogViewModel @Inject constructor(
-
+    private val addDogUseCase: AddDogUseCase
 ) : ViewModel() {
 
     private val _inputState = MutableStateFlow(DogInputState())
@@ -93,8 +98,16 @@ class NewDogViewModel @Inject constructor(
     }
 
     private fun saveDogInfo() {
-        // save use case here if all requirements are met and close screen
-        // otherwise showcase error and show what requirements are met
+        viewModelScope.launch(Dispatchers.Default) {
+            // room will autogenerate id
+            val dogInput = DogInput(
+                profilePic = inputState.value.profilePic!!,
+                name = inputState.value.name,
+                weight = inputState.value.weight,
+                birthDate = inputState.value.birthDate
+            )
+            addDogUseCase(dogInput)
+        }
 
     }
 }

@@ -1,9 +1,13 @@
 package com.sidgowda.pawcalc.doglist.ui
 
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,6 +15,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -88,9 +94,19 @@ internal fun DogListScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
-            IconButton(onClick = onNewDog) {
+            Card(
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(end = 20.dp, bottom = 20.dp)
+                    .clip(CircleShape)
+                    .clickable { onNewDog() },
+                shape = RoundedCornerShape(50),
+                backgroundColor = PawCalcTheme.colors.secondary
+            ) {
                 Icon(
+                    modifier = Modifier.padding(10.dp),
                     imageVector = Icons.Default.Add,
+                    tint = Color.Black,
                     contentDescription = null
                 )
             }
@@ -139,13 +155,13 @@ internal fun DogListItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 60.dp),
+            .heightIn(min = 200.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Center
     ) {
         AsyncImage(
             model = dog.profilePic,
-            modifier = Modifier.size(30.dp),
+            modifier = Modifier.size(100.dp),
             contentScale = ContentScale.Crop,
             contentDescription = null
         )
@@ -181,6 +197,39 @@ fun PreviewDogListFullList() {
 
 @LightDarkPreview
 @Composable
-fun PreviewDogListItem() {
-
+fun PreviewDogListItemNotLoading() {
+    PawCalcTheme {
+        DogListItem(
+            dog = Dog(
+                id = 1,
+                name = "Mowgli",
+                birthDate = "7/30/2019",
+                weight = 87.0,
+                profilePic = Uri.EMPTY,
+                humanYears = "26 years 4 months 10 days",
+                dogYears = "3 years 2 months 20 days",
+                isLoading = false
+            )
+        )
+    }
 }
+
+@LightDarkPreview
+@Composable
+fun PreviewDogListItemLoading() {
+    PawCalcTheme {
+        DogListItem(
+            dog = Dog(
+                id = 1,
+                name = "Mowgli",
+                birthDate = "7/30/2019",
+                weight = 87.0,
+                profilePic = Uri.EMPTY,
+                humanYears = "26 years 4 months 10 days",
+                dogYears = "3 years 2 months 20 days",
+                isLoading = true
+            )
+        )
+    }
+}
+

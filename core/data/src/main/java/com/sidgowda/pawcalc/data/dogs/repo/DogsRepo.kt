@@ -2,6 +2,7 @@ package com.sidgowda.pawcalc.data.dogs.repo
 
 import com.sidgowda.pawcalc.data.dogs.di.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import kotlinx.coroutines.flow.Flow
 
 interface DogsRepo {
@@ -10,7 +11,7 @@ interface DogsRepo {
 
     suspend fun fetchDogs()
 
-    suspend fun addDog(dog: Dog)
+    suspend fun addDog(dogInput: DogInput)
 
     suspend fun deleteDog(dog: Dog)
 
