@@ -2,7 +2,7 @@ package com.sidgowda.pawcalc
 
 import android.app.Application
 import android.util.Log
-import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataSource
+import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -13,7 +13,7 @@ import javax.inject.Inject
 class PawCalcApplication : Application() {
 
     @Inject
-    lateinit var onboardingDataSource: OnboardingDataSource
+    lateinit var onboardingRepo: OnboardingRepo
 
     private val scope = MainScope()
     override fun onCreate() {
@@ -28,7 +28,7 @@ class PawCalcApplication : Application() {
 
     private fun initializeOnboarding() {
         scope.launch(Dispatchers.Default) {
-            onboardingDataSource.onboardingState.collect {
+            onboardingRepo.onboardingState.collect {
                 Log.d("PawCalcApp", "Initialized Onboarding Datasource")
             }
         }

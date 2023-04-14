@@ -18,9 +18,9 @@ import javax.inject.Inject
 private const val DATA_STORE_KEY = "onboarding_data_store"
 private const val PREFERENCES_KEY = "onboarding_preferences"
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_KEY)
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_KEY)
 
-class OnboardingDataSourceImpl @Inject constructor(
+internal class OnboardingDataStore @Inject constructor(
     private val context: Context
 ) : OnboardingDataSource {
 

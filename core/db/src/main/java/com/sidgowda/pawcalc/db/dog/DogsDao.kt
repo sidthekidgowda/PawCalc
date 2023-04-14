@@ -4,19 +4,19 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface DogDao {
+interface DogsDao {
     @Query("SELECT * FROM dogs")
-    fun dogs(): Flow<List<Dog>>
+    fun dogs(): Flow<List<DogEntity>>
 
     @Query("SELECT * FROM dogs WHERE id = :id")
-    suspend fun dogForId(id: Int): Dog
+    suspend fun dogForId(id: Int): DogEntity
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addDog(dog: Dog)
+    suspend fun addDog(dog: DogEntity)
 
     @Delete
-    suspend fun deleteDog(dog: Dog)
+    suspend fun deleteDog(dog: DogEntity)
 
     @Update
-    suspend fun updateDog(dog: Dog)
+    suspend fun updateDog(dog: DogEntity)
 }

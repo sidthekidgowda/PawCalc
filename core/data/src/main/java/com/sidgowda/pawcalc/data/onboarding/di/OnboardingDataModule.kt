@@ -2,7 +2,7 @@ package com.sidgowda.pawcalc.data.onboarding.di
 
 import android.content.Context
 import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataSource
-import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataSourceImpl
+import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataStore
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepoImpl
 import dagger.Module
@@ -29,7 +29,7 @@ object OnboardingDataModule {
     fun providesOnboardingDataSource(
         @ApplicationContext context: Context
     ): OnboardingDataSource {
-        return OnboardingDataSourceImpl(context)
+        return OnboardingDataStore(context)
     }
 
 }

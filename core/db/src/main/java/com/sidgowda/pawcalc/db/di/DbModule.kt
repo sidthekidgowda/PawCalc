@@ -3,7 +3,7 @@ package com.sidgowda.pawcalc.db.di
 import android.content.Context
 import androidx.room.Room
 import com.sidgowda.pawcalc.db.PawCalcDatabase
-import com.sidgowda.pawcalc.db.dog.DogDao
+import com.sidgowda.pawcalc.db.dog.DogsDao
 import com.sidgowda.pawcalc.db.settings.SettingsDao
 import dagger.Module
 import dagger.Provides
@@ -32,7 +32,7 @@ object DbModule {
     @Provides
     fun providesDogDao(
         pawCalcDatabase: PawCalcDatabase
-    ): DogDao {
+    ): DogsDao {
         return pawCalcDatabase.dogDao()
     }
 
