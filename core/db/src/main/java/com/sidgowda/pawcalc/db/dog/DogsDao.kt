@@ -19,4 +19,7 @@ interface DogsDao {
 
     @Update
     suspend fun updateDog(dog: DogEntity)
+
+    @Query("DELETE FROM dogs")
+    suspend fun deleteAll()
 }

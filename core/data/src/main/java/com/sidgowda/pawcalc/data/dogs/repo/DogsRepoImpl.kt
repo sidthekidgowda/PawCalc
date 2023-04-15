@@ -60,15 +60,17 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun addDog(dogInput: DogInput) {
-        // create DogEntity since Room will autogenerate primary key
         val dog = DogEntity(
             name = dogInput.name,
             birthDate = dogInput.birthDate,
             weight = dogInput.weight.toDouble(),
             profilePic = dogInput.profilePic
         ).toDog("", "")
-        memory.addDog(dog)
+        // source of truth should be disk, since room will generate a primary key
         disk.addDog(dog)
+        val dogsFromDisk = disk.dogs().first()
+        memory.clear()
+        memory.addDog(*dogsFromDisk!!.toTypedArray())
     }
 
     override suspend fun deleteDog(dog: Dog) {

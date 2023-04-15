@@ -39,4 +39,7 @@ class DogsDiskDataSource @Inject constructor(
         dogsDao.updateDog(dog.toDogEntity())
     }
 
+    override suspend fun clear() {
+        dogsDao.deleteAll()
+    }
 }

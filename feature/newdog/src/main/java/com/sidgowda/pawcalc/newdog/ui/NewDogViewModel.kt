@@ -108,6 +108,5 @@ class NewDogViewModel @Inject constructor(
             )
             addDogUseCase(dogInput)
         }
-
     }
 }
