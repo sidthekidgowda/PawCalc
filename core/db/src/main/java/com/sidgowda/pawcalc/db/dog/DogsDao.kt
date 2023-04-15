@@ -8,9 +8,6 @@ interface DogsDao {
     @Query("SELECT * FROM dogs")
     fun dogs(): Flow<List<DogEntity>>
 
-    @Query("SELECT * FROM dogs WHERE id = :id")
-    suspend fun dogForId(id: Int): DogEntity
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addDog(dog: DogEntity)
 

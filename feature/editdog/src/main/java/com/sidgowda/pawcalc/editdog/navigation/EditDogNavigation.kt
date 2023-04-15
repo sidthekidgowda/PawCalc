@@ -1,21 +1,22 @@
 package com.sidgowda.pawcalc.editdog
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
+import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.editdog.ui.EditDog
-import com.sidgowda.pawcalc.navigation.EDIT_DOG_SCREEN_ROUTE
 
-fun NavController.navigateToEditDogScreen(navOptions: NavOptions? = null) {
-    this.navigate(EDIT_DOG_SCREEN_ROUTE, navOptions)
+fun NavController.navigateToEditDogScreen(dogId: Int, navOptions: NavOptions? = null) {
+    this.navigate("edit/$dogId", navOptions)
 }
 
 fun NavGraphBuilder.editDogScreenDestination(
     onSaveDog: () -> Unit
 ) {
-    composable(route = EDIT_DOG_SCREEN_ROUTE) {
+    composable(
+        route = "edit/{dogId}",
+        arguments = listOf(navArgument("dogId") { type = NavType.IntType })
+    ) {
         EditDog(
+            dogId = it.arguments?.getInt("dogId") ?: 0,
             onSaveDog = onSaveDog
         )
     }

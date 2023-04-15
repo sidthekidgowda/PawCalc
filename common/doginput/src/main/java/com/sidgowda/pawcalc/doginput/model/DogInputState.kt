@@ -3,6 +3,7 @@ package com.sidgowda.pawcalc.doginput.model
 import android.net.Uri
 
 data class DogInputState(
+    val isLoading: Boolean = false,
     val profilePic: Uri? = null,
     val name: String = "",
     val isNameValid: Boolean = true,

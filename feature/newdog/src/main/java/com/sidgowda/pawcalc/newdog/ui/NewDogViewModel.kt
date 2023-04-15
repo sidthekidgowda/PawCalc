@@ -99,7 +99,6 @@ class NewDogViewModel @Inject constructor(
 
     private fun saveDogInfo() {
         viewModelScope.launch(Dispatchers.Default) {
-            // room will autogenerate id
             val dogInput = DogInput(
                 profilePic = inputState.value.profilePic!!,
                 name = inputState.value.name,

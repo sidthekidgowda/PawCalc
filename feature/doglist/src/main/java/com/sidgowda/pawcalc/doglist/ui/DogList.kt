@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -56,7 +57,8 @@ fun DogList(
     savedStateHandle: SavedStateHandle,
     onNavigateToOnboarding: () -> Unit,
     onNewDog: () -> Unit,
-    onDogDetails: (Int) -> Unit
+    onEditDog: (Int) -> Unit,
+    onDogDetails: () -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -91,6 +93,7 @@ fun DogList(
             modifier = modifier.fillMaxSize(),
             viewModel = viewModel,
             onNewDog = onNewDog,
+            onEditDog = onEditDog,
             onDogDetails = onDogDetails,
         )
     }
@@ -102,7 +105,8 @@ internal fun DogListScreen(
     modifier: Modifier = Modifier,
     viewModel: DogListViewModel,
     onNewDog: () -> Unit,
-    onDogDetails: (Int) -> Unit
+    onEditDog: (Int) -> Unit,
+    onDogDetails: () -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {
         // fetch dogs to get most recent updates
@@ -184,7 +188,10 @@ internal fun DogListScreen(
                                         DogListItem(
                                             modifier = Modifier
                                                 .height(dogItemHeightAnimation)
-                                                .fillMaxWidth(),
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    onEditDog(dog.id)
+                                                },
                                             dog = dog
                                         )
                                     }

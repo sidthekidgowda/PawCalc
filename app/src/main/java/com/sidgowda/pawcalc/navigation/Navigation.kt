@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.doglist.navigation.dogListScreenDestination
 import com.sidgowda.pawcalc.editdog.editDogScreenDestination
+import com.sidgowda.pawcalc.editdog.navigateToEditDogScreen
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.newdog.navigation.navigateToNewDogScreen
@@ -30,6 +31,9 @@ fun PawCalcNavGraph(
             },
             onDogDetails = {
 
+            },
+            onEditDog = { dogId ->
+                navController.navigateToEditDogScreen(dogId)
             }
         )
         onboardingDestination(
