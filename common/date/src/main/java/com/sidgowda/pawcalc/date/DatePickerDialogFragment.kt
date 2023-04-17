@@ -10,15 +10,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Named
 
+@AndroidEntryPoint
 class DatePickerDialogFragment : Fragment() {
 
     companion object {
         const val BUNDLE_DATE_KEY = "date"
     }
+
+    @Inject
+    @Named("computation")
+    lateinit var computationDispatcher: CoroutineDispatcher
 
     var datePickerListener: DatePickerListener? = null
 
@@ -31,18 +40,16 @@ class DatePickerDialogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PawCalcTheme {
-                    val birthDate = arguments?.getString(BUNDLE_DATE_KEY) ?: ""
+                    val birthDate = arguments?.getLong(BUNDLE_DATE_KEY) ?: 0L
                     showDatePickerDialog(birthDate)
                 }
             }
         }
     }
 
-    private fun showDatePickerDialog(birthDate: String) {
-        val selectedDate = dateToLong(birthDate)
-        // set selection to date sent
+    private fun showDatePickerDialog(birthDate: Long) {
         val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setSelection(selectedDate)
+            .setSelection(birthDate)
             .setTitleText(getString(R.string.date_picker_dialog_title))
             .setCalendarConstraints(calendarConstraints())
             .build()
@@ -65,7 +72,7 @@ class DatePickerDialogFragment : Fragment() {
     }
 
     private fun convertDateFromLongAndSend(date: Long) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+        viewLifecycleOwner.lifecycleScope.launch(computationDispatcher) {
             val birthDate: String = dateFromLong(date)
             withContext(Dispatchers.Main.immediate) {
                 datePickerListener?.dateSelected(birthDate)

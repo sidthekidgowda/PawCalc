@@ -31,7 +31,7 @@ internal fun calendarConstraints(): CalendarConstraints {
         .build()
 }
 
-internal fun dateFromLong(date: Long): String {
+fun dateFromLong(date: Long): String {
     val localDate = try {
         Instant.ofEpochMilli(date).atZone(ZoneOffset.UTC).toLocalDate()
     } catch (e: Exception) {
@@ -41,7 +41,7 @@ internal fun dateFromLong(date: Long): String {
     return localDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT))
 }
 
-internal fun dateToLong(date: String): Long {
+fun dateToLong(date: String): Long {
     return try {
         LocalDateTime.of(
             LocalDate.parse(date, DateTimeFormatter.ofPattern(DATE_FORMAT)),

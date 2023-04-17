@@ -39,6 +39,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.camera.CameraMediaActivity
 import com.sidgowda.pawcalc.date.DatePickerDialogFragment
 import com.sidgowda.pawcalc.date.DatePickerListener
+import com.sidgowda.pawcalc.date.dateToLong
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputState
@@ -49,6 +50,7 @@ import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PictureWithCameraIcon
 import com.sidgowda.pawcalc.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
@@ -183,6 +185,7 @@ fun DogInput(
         if (isDatePickerRequested) {
             OpenDatePicker(
                 date = dogInputState.birthDate,
+                coroutineScope = scope,
                 onDateSelected = { date ->
                     handleEvent(DogInputEvent.BirthDateChanged(date))
                 },
@@ -541,31 +544,46 @@ internal fun BirthDateInput(
 @Composable
 internal fun OpenDatePicker(
     modifier: Modifier = Modifier,
+    coroutineScope: CoroutineScope,
     date: String,
     onDateSelected: (String) -> Unit = {},
     onDatePickerDismissed: () -> Unit
 ) {
-    AndroidViewBinding(
-        DatePickerDialogBinding::inflate,
-        modifier = modifier.fillMaxSize()
-    ) {
-        val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
-        fragment.arguments = Bundle().apply {
-            putString(DatePickerDialogFragment.BUNDLE_DATE_KEY, date)
+    var isDateReadyToShow by remember {
+        mutableStateOf(false)
+    }
+    var dateAsLong: Long by remember {
+        mutableStateOf(0L)
+    }
+    LaunchedEffect(key1 = Unit) {
+        coroutineScope.launch(Dispatchers.Default) {
+            dateAsLong = dateToLong(date)
+            isDateReadyToShow = true
         }
-        fragment.datePickerListener = object : DatePickerListener {
-            override fun dateSelected(date: String) {
-               // update date
-                onDateSelected(date)
-                onDatePickerDismissed()
+    }
+    if (isDateReadyToShow) {
+        AndroidViewBinding(
+            DatePickerDialogBinding::inflate,
+            modifier = modifier.fillMaxSize()
+        ) {
+            val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
+            fragment.arguments = Bundle().apply {
+                putLong(DatePickerDialogFragment.BUNDLE_DATE_KEY, dateAsLong)
             }
+            fragment.datePickerListener = object : DatePickerListener {
+                override fun dateSelected(date: String) {
+                    // update date
+                    onDateSelected(date)
+                    onDatePickerDismissed()
+                }
 
-            override fun onCancel() {
-                onDatePickerDismissed()
-            }
+                override fun onCancel() {
+                    onDatePickerDismissed()
+                }
 
-            override fun onDismiss() {
-                onDatePickerDismissed()
+                override fun onDismiss() {
+                    onDatePickerDismissed()
+                }
             }
         }
     }
