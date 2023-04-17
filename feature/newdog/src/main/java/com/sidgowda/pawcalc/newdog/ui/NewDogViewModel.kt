@@ -9,16 +9,18 @@ import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.AddDogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class NewDogViewModel @Inject constructor(
-    private val addDogUseCase: AddDogUseCase
+    private val addDogUseCase: AddDogUseCase,
+    @Named("io") private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _inputState = MutableStateFlow(DogInputState())
@@ -98,7 +100,7 @@ class NewDogViewModel @Inject constructor(
     }
 
     private fun saveDogInfo() {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(ioDispatcher) {
             val dogInput = DogInput(
                 profilePic = inputState.value.profilePic!!,
                 name = inputState.value.name,

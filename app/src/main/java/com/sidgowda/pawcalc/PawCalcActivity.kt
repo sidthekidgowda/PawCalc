@@ -19,12 +19,12 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PawCalcActivity : AppCompatActivity() {
-    val viewModel: MainActivityViewModel by viewModels()
+    val viewModel: PawCalcViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        var uiState: MainActivityState by mutableStateOf(MainActivityState.Loading)
+        var uiState: PawCalcActivityState by mutableStateOf(PawCalcActivityState.Loading)
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState
@@ -36,8 +36,8 @@ class PawCalcActivity : AppCompatActivity() {
 
         splashScreen.setKeepOnScreenCondition {
             when (uiState) {
-                MainActivityState.Loading -> true
-                is MainActivityState.Initialized -> false
+                PawCalcActivityState.Loading -> true
+                is PawCalcActivityState.Initialized -> false
             }
         }
         setContent {

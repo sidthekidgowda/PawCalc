@@ -10,11 +10,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Named
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(SingletonComponent::class)
 object DogsDataModule {
 
     @Named("memory")
@@ -37,8 +38,9 @@ object DogsDataModule {
     @Provides
     fun providesDogRepo(
         @Named ("memory") memoryDataSource: DogsDataSource,
-        @Named ("disk") diskDataSource: DogsDataSource
+        @Named ("disk") diskDataSource: DogsDataSource,
+        @Named ("computation") computationDispatcher: CoroutineDispatcher
     ): DogsRepo {
-        return DogsRepoImpl(memoryDataSource, diskDataSource)
+        return DogsRepoImpl(memoryDataSource, diskDataSource, computationDispatcher)
     }
 }

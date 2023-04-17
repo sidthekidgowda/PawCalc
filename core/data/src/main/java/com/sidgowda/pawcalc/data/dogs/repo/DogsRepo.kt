@@ -1,6 +1,6 @@
 package com.sidgowda.pawcalc.data.dogs.repo
 
-import com.sidgowda.pawcalc.data.dogs.di.DogState
+import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import kotlinx.coroutines.flow.Flow

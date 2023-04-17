@@ -5,32 +5,34 @@ import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.domain.GetOnboardingStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(
-    getOnboardingState: GetOnboardingStateUseCase
+class PawCalcViewModel @Inject constructor(
+    getOnboardingState: GetOnboardingStateUseCase,
+    @Named("io") ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val uiState: StateFlow<MainActivityState> =
+    val uiState: StateFlow<PawCalcActivityState> =
         getOnboardingState().map {
-            MainActivityState.Initialized(
+            PawCalcActivityState.Initialized(
                 it
             )
         }
-        .flowOn(Dispatchers.Default)
+        .flowOn(ioDispatcher)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
-            MainActivityState.Loading
+            PawCalcActivityState.Loading
         )
 }
 
-sealed interface MainActivityState {
-    object Loading : MainActivityState
+sealed interface PawCalcActivityState {
+    object Loading : PawCalcActivityState
     data class Initialized(
         val onboardingState: OnboardingState
-    ) : MainActivityState
+    ) : PawCalcActivityState
 }

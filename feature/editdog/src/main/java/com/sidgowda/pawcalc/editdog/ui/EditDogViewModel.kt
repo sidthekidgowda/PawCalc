@@ -10,15 +10,18 @@ import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.UpdateDogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class EditDogViewModel @Inject constructor(
     private val getDogForIdUseCase: GetDogForIdUseCase,
-    private val updateDogUseCase: UpdateDogUseCase
+    private val updateDogUseCase: UpdateDogUseCase,
+    @Named("io") private val ioDispatcher: CoroutineDispatcher,
+    @Named("computation") private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _inputState = MutableStateFlow(DogInputState(isLoading = true))
@@ -27,7 +30,7 @@ class EditDogViewModel @Inject constructor(
     // this is the Dog we will be editing
     private val editableDog = MutableStateFlow<Dog?>(null)
     suspend fun fetchDogForId(id: Int) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(computationDispatcher) {
             val dog = getDogForIdUseCase(id).first()
             // cache the value of the dog
             editableDog.update { dog }
@@ -119,7 +122,7 @@ class EditDogViewModel @Inject constructor(
     }
 
     private fun saveDogInfo() {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(ioDispatcher) {
             editableDog.updateAndGet { dog ->
                 val input = _inputState.value
                 dog?.copy(

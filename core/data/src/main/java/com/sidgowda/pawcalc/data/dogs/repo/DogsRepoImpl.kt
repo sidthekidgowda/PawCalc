@@ -1,19 +1,20 @@
 package com.sidgowda.pawcalc.data.dogs.repo
 
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.di.DogState
+import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.toDog
 import com.sidgowda.pawcalc.db.dog.DogEntity
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Named
 
 class DogsRepoImpl @Inject constructor(
     @Named("memory") private val memory: DogsDataSource,
-    @Named("disk") private val disk: DogsDataSource
+    @Named("disk") private val disk: DogsDataSource,
+    private val computationDispatcher: CoroutineDispatcher
 ) : DogsRepo {
 
     private sealed class LoadState {
@@ -36,7 +37,8 @@ class DogsRepoImpl @Inject constructor(
                 dogs = dogs ?: emptyList()
             )
         }
-    }.flowOn(Dispatchers.Default)
+    }
+    .flowOn(computationDispatcher)
     .distinctUntilChanged()
 
     override suspend fun fetchDogs() {
