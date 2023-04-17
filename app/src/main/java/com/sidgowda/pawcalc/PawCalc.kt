@@ -19,7 +19,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun PawCalcApp() {
+fun PawCalc() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination by derivedStateOf {

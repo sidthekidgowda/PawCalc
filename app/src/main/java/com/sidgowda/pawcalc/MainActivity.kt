@@ -42,7 +42,7 @@ class PawCalcActivity : AppCompatActivity() {
         }
         setContent {
             PawCalcTheme {
-                PawCalcApp()
+                PawCalc()
             }
         }
     }
@@ -52,6 +52,6 @@ class PawCalcActivity : AppCompatActivity() {
 @Composable
 fun PreviewPawCalcActivity() {
     PawCalcTheme {
-        PawCalcApp()
+        PawCalc()
     }
 }
