@@ -34,6 +34,7 @@ robolectric = "4.9.2"
 dataStore = "1.0.0"
 roomVersion = "2.5.1"
 constraintLayout = "1.1.0-alpha05"
+splashScreen = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore"}
@@ -71,6 +72,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
 androidx-room-coroutines = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintLayout" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 junit = { module = "junit:junit", version.ref = "junit" }
 androidJunit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit"}
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit"}

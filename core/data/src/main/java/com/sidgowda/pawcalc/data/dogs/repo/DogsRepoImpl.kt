@@ -68,9 +68,9 @@ class DogsRepoImpl @Inject constructor(
         ).toDog("", "")
         // source of truth should be disk, since room will generate a primary key
         disk.addDog(dog)
-        val dogsFromDisk = disk.dogs().first()
-        memory.clear()
-        memory.addDog(*dogsFromDisk!!.toTypedArray())
+        // disk should contain the new dog at end of list
+        val dogFromDisk: Dog = disk.dogs().first()!!.last()
+        memory.addDog(dogFromDisk)
     }
 
     override suspend fun deleteDog(dog: Dog) {

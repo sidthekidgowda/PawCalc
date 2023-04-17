@@ -42,12 +42,6 @@ class DogsMemoryDataSource @Inject constructor() : DogsDataSource {
         }
     }
 
-    override suspend fun clear() {
-        dogs.update {
-            null
-        }
-    }
-
     private fun List<Dog>.update(action: (MutableList<Dog>) -> Unit): List<Dog> {
         return toMutableList().apply {
             action(this)

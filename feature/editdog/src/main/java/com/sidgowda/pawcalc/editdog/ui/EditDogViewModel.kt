@@ -29,6 +29,7 @@ class EditDogViewModel @Inject constructor(
     suspend fun fetchDogForId(id: Int) {
         viewModelScope.launch(Dispatchers.Default) {
             val dog = getDogForIdUseCase(id).first()
+            // cache the value of the dog
             editableDog.update { dog }
             _inputState.update {
                 it.copy(

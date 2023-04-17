@@ -34,10 +34,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstrainScope
-import androidx.constraintlayout.compose.ConstrainedLayoutReference
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintLayoutScope
+import androidx.constraintlayout.compose.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -139,7 +136,7 @@ internal fun DogListScreen(
             when {
                 dogListState.isLoading -> {
                     // todo - use accompanist library to show shimmer
-                    CircularProgressIndicator()
+//                    CircularProgressIndicator()
                 }
                 else -> {
                     if (dogListState.dogs.isEmpty()) {
@@ -250,11 +247,13 @@ internal fun DogListItem(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(start = 10.dp, top = 12.dp, end = 16.dp)
                     .constrainAs(name) {
                         start.linkTo(image.end)
                         top.linkTo(parent.top)
-                    }
-                    .padding(start = 10.dp, top = 12.dp, end = 20.dp),
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    },
                 text = dog.name,
                 textAlign = TextAlign.Start,
                 style = PawCalcTheme.typography.h4,

@@ -8,7 +8,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sidgowda.pawcalc.doginput.DogInput
-import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
@@ -38,7 +37,6 @@ internal fun NewDogScreen(
     DogInput(
         modifier = modifier.testTag(NEW_DOG_SCREEN_ROUTE),
         dogInputState = dogInputState,
-        dogInputMode = DogInputMode.NEW_DOG,
         onSaveDog = onSaveDog,
         handleEvent = viewModel::handleEvent
     )

@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sidgowda.pawcalc.doginput.DogInput
-import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 
 @Composable
@@ -43,7 +42,6 @@ internal fun EditDogScreen(
         DogInput(
             modifier = modifier,
             dogInputState = dogInputState,
-            dogInputMode = DogInputMode.EDIT_DOG,
             onSaveDog = onSaveDog,
             handleEvent = viewModel::handleEvent
         )

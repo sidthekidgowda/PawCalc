@@ -64,6 +64,7 @@ dependencies {
     implementation(projects.common.ui)
     implementation(projects.core.data)
     implementation(projects.core.domain)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

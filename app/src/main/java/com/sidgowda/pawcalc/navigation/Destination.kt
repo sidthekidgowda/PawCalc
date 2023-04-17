@@ -22,8 +22,14 @@ sealed class Destination(
                 ONBOARDING_SCREEN_ROUTE -> Onboarding
                 SETTINGS_ROUTE -> Settings
                 NEW_DOG_SCREEN_ROUTE -> NewDog
-                EDIT_DOG_SCREEN_ROUTE -> EditDog
-                else -> DogList
+                DOG_LIST_SCREEN_ROUTE -> DogList
+                else -> {
+                    // edit dog has arguments
+                    if (route.contains(EDIT_DOG_SCREEN_ROUTE)) {
+                        return EditDog
+                    }
+                    throw IllegalStateException("route is invalid")
+                }
             }
         }
     }

@@ -9,7 +9,7 @@
         android:icon="@mipmap/ic_pawcalc_launcher"
         android:label="@string/title_home"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PawCalc"
+        android:theme="@style/Theme.PawCalc.SplashScreen"
         android:name=".PawCalcApplication"
         tools:targetApi="33">
         <activity
@@ -17,8 +17,7 @@
             android:exported="true"
             android:label="@string/title_home"
             android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.PawCalc">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

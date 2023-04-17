@@ -41,7 +41,6 @@ import com.sidgowda.pawcalc.date.DatePickerDialogFragment
 import com.sidgowda.pawcalc.date.DatePickerListener
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
-import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.model.DogInputUnit
 import com.sidgowda.pawcalc.doginput.ui.*
@@ -57,7 +56,6 @@ import kotlinx.coroutines.launch
 fun DogInput(
     modifier: Modifier = Modifier,
     dogInputState: DogInputState,
-    dogInputMode: DogInputMode,
     unit: DogInputUnit = DogInputUnit.IMPERIAL,
     handleEvent: (event: DogInputEvent) -> Unit,
     onSaveDog: () -> Unit
