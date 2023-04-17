@@ -1,9 +1,9 @@
 package com.sidgowda.pawcalc.editdog.ui
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
@@ -32,8 +32,6 @@ class EditDogViewModel @Inject constructor(
     suspend fun fetchDogForId(id: Int) {
         viewModelScope.launch(computationDispatcher) {
             val dog = getDogForIdUseCase(id).first()
-            // cache the value of the dog
-            editableDog.update { dog }
             _inputState.update {
                 it.copy(
                     isLoading = false,
@@ -43,97 +41,37 @@ class EditDogViewModel @Inject constructor(
                     birthDate = dog.birthDate,
                     inputRequirements = DogInputRequirements.values().toSet()
                 )
+            }.also {
+                // cache the value of the dog
+                editableDog.update { dog }
             }
         }
     }
 
     fun handleEvent(dogInputEvent: DogInputEvent) {
         when (dogInputEvent) {
-            is DogInputEvent.PicChanged -> updatePicture(dogInputEvent.pictureUrl)
-            is DogInputEvent.NameChanged -> updateName(dogInputEvent.name)
-            is DogInputEvent.WeightChanged -> updateWeight(dogInputEvent.weight)
-            is DogInputEvent.BirthDateChanged -> updateBirthDate(dogInputEvent.birthDate)
-            is DogInputEvent.BirthDateDialogShown -> updateBirthDateDialogShown()
+            is DogInputEvent.PicChanged -> _inputState.updateProfilePic(dogInputEvent.pictureUrl)
+            is DogInputEvent.NameChanged -> _inputState.updateName(dogInputEvent.name)
+            is DogInputEvent.WeightChanged -> _inputState.updateWeight(dogInputEvent.weight)
+            is DogInputEvent.BirthDateChanged -> _inputState.updateBirthDate(dogInputEvent.birthDate)
+            is DogInputEvent.BirthDateDialogShown -> _inputState.updateBirthDateDialogShown()
             is DogInputEvent.SavingInfo -> saveDogInfo()
-        }
-    }
-
-    private fun updatePicture(pictureUrl: Uri?) {
-        _inputState.update {
-            it.copy(
-                profilePic = pictureUrl,
-                inputRequirements = it.inputRequirements.plus(DogInputRequirements.ONE_PICTURE)
-            )
-        }
-    }
-
-    private fun updateName(name: String) {
-        val inputRequirements = listOf(DogInputRequirements.NAME_BETWEEN_ONE_AND_FIFTY)
-        val isNameValidForTextInput = name.length <= 50 // we don't want show error until we have one character
-        val isNameValid = name.isNotEmpty() && isNameValidForTextInput
-        _inputState.update {
-            it.copy(
-                name = name,
-                isNameValid = isNameValidForTextInput,
-                inputRequirements = if (isNameValid) {
-                    it.inputRequirements.plus(inputRequirements)
-                } else {
-                    it.inputRequirements.minus(inputRequirements)
-                }
-            )
-        }
-    }
-
-    private fun updateWeight(weight: String) {
-        val inputRequirements = listOf(DogInputRequirements.WEIGHT_MORE_THAN_ZERO_AND_VALID_NUMBER)
-        val weightAsDouble: Double? = weight.toDoubleOrNull()
-        val isWeightValid = weight.isNotEmpty() && weightAsDouble != null && weightAsDouble > 0.0
-        val isWeightValidForTextInput = weight.isEmpty() || isWeightValid // we don't show error until we have one character
-        _inputState.update {
-            it.copy(
-                weight = weight,
-                isWeightValid = isWeightValidForTextInput,
-                inputRequirements = if (isWeightValid) {
-                    it.inputRequirements.plus(inputRequirements)
-                } else {
-                    it.inputRequirements.minus(inputRequirements)
-                }
-            )
-        }
-    }
-
-    private fun updateBirthDate(birthDate: String) {
-        //do validations
-        _inputState.update {
-            it.copy(
-                birthDate = birthDate,
-                isBirthDateValid = true,
-                inputRequirements = it.inputRequirements.plus(DogInputRequirements.BIRTH_DATE)
-            )
-        }
-    }
-
-    private fun updateBirthDateDialogShown() {
-        _inputState.update {
-            it.copy(
-                isBirthDateValid = it.birthDate.isNotEmpty()
-            )
         }
     }
 
     private fun saveDogInfo() {
         viewModelScope.launch(ioDispatcher) {
-            editableDog.updateAndGet { dog ->
+            editableDog.updateAndGet { oldDog ->
                 val input = _inputState.value
-                dog?.copy(
+                oldDog?.copy(
                     name = input.name,
                     weight = input.weight.toDouble(),
                     birthDate = input.birthDate,
                     profilePic = input.profilePic!!
                 )
-            }?.let {
+            }?.let { updatedDog ->
                 updateDogUseCase(
-                    it
+                    updatedDog
                 )
             }
         }

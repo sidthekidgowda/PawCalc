@@ -40,7 +40,8 @@ class DatePickerDialogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PawCalcTheme {
-                    val birthDate = arguments?.getLong(BUNDLE_DATE_KEY) ?: 0L
+                    // date needs to be passed in to minimize delay in calculating time
+                    val birthDate = arguments?.getLong(BUNDLE_DATE_KEY) ?: MaterialDatePicker.todayInUtcMilliseconds()
                     showDatePickerDialog(birthDate)
                 }
             }
