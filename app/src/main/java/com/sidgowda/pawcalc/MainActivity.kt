@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class PawCalcActivity : AppCompatActivity() {
     val viewModel: MainActivityViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
-       val splashScreen = installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
         var uiState: MainActivityState by mutableStateOf(MainActivityState.Loading)
