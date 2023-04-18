@@ -23,52 +23,56 @@ enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextM
     }
 }
 
-fun String.toDogYears(): Age {
+fun String.toDogYears(
+    today: String = dateFromLong(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli())
+): Age {
     val dateSplit = split("/")
-    val monthsBirthDate = dateSplit.first().toInt()
-    val daysBirthDate = dateSplit[1].toInt()
-    val yearsBirthDate = dateSplit.last().toInt()
+    val monthsOfBirthDate = dateSplit.first().toInt()
+    val daysOfBirthDate = dateSplit[1].toInt()
+    val yearsOfBirthDate = dateSplit.last().toInt()
 
-    val today = dateFromLong(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli())
     val todaySplit = today.split("/")
     val monthsToday = todaySplit.first().toInt()
     val daysToday = todaySplit[1].toInt()
     val yearsToday = todaySplit.last().toInt()
 
     var totalMonthsCount = 0
-    var totalDaysCount = 0
-    var startMonth = Month from monthsBirthDate
+    var totalDaysCount: Int
+    val birthMonth = Month from monthsOfBirthDate
+    var startMonth = Month from monthsOfBirthDate
     val endMonth = Month from monthsToday
+    //edge case
+    totalDaysCount = Math.abs(daysToday - daysOfBirthDate)
 
-    // consider edge cases, May 31 to June 30
-    // consider leap year
     while (startMonth != endMonth) {
+        totalDaysCount = 0
         val nextMonth = Month from startMonth.nextMonthId
-        val daysCount = if (nextMonth != endMonth) {
+        val daysBetweenBirthDates = if (nextMonth != endMonth) {
             // Feb
             if (startMonth.hasLeapYear && yearsToday / 4 == 0 ) {
+                // edge case
                 startMonth.days + 1
-            } else if (startMonth.days > nextMonth.days){
-                startMonth.days - 1
             } else {
                 startMonth.days
             }
         } else {
-            startMonth.days - daysBirthDate + daysToday
+            if (daysOfBirthDate < daysToday) {
+                // edge case
+                totalMonthsCount++
+                Math.abs(daysOfBirthDate - daysToday)
+            } else  {
+                startMonth.days - daysOfBirthDate + daysToday
+            }
         }
-        // dec 20 to jan 5 = dec 20 to dec 31 = 11 days, jan 1 - jan 5 = 5, total = 16 days
-        // Dec 20 to Jan 5, less than 31 days = 0 months + 11 days + 5days
-        // Dec 20 to Jan 20, 31 days = 1 month
-        if (daysCount == startMonth.days) {
+        if (daysBetweenBirthDates >= startMonth.days) {
             totalMonthsCount++
         } else {
-            totalDaysCount = daysCount
+            totalDaysCount = daysBetweenBirthDates
         }
         startMonth = nextMonth
     }
-    //Dec 20, 1990 - April 17, 2023 = 33
-    var yearsCount = yearsToday - yearsBirthDate
-    if (startMonth.id > endMonth.id) {
+    var yearsCount = yearsToday - yearsOfBirthDate
+    if (birthMonth.id > endMonth.id) {
         yearsCount--
     }
     return Age(
@@ -78,8 +82,16 @@ fun String.toDogYears(): Age {
     )
 }
 
-fun String.toHumanYears(): Age {
+fun String.toHumanYears(
+    today: String = dateFromLong(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli())
+): Age {
     val dogYears = toDogYears()
+    // 7 year quanitifer
+    // if days and months are 0, 1 dog year = 7 human years
+    // 7 years/365 days or 7/366 for leap year, days/years = 365/7
+    //1 d = .0191y,
+    //1 y = 52.14 d
+    //1 month dog month = 31 days
     return dogYears.copy(
         years = dogYears.years * 7
     )
