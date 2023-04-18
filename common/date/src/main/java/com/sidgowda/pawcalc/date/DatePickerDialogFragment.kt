@@ -8,6 +8,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,12 +42,22 @@ class DatePickerDialogFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 PawCalcTheme {
-                    // date needs to be passed in to minimize delay in calculating time
+                    // date should be passed in to minimize delay in using MaterialDatePicker to
+                    // calculate time
                     val birthDate = arguments?.getLong(BUNDLE_DATE_KEY) ?: MaterialDatePicker.todayInUtcMilliseconds()
                     showDatePickerDialog(birthDate)
                 }
             }
         }
+    }
+
+    private fun calendarConstraints(): CalendarConstraints {
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val calendar = calendar(today)
+        return CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
+            .setEnd(calendar.timeInMillis)
+            .build()
     }
 
     private fun showDatePickerDialog(birthDate: Long) {

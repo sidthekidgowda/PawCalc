@@ -51,6 +51,7 @@ dependencies {
     implementation(projects.common.ui)
     implementation(projects.common.camera)
     implementation(projects.common.date)
+    implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -30,7 +30,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -51,6 +50,7 @@ android {
 
 dependencies {
     implementation(projects.common.ui)
+    implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    coreLibraryDesugaring(libs.android.tools.desugarJdk)
     // test libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

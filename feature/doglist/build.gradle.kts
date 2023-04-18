@@ -51,6 +51,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(projects.common.ui)
+    implementation(projects.common.date)
     implementation(projects.common.navigation)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.core.ktx)

@@ -39,6 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.sidgowda.pawcalc.data.date.toDogYears
+import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
@@ -323,7 +325,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = "3y 6m 20d"
+                        text = ""
                     )
                 }
             )
@@ -431,8 +433,8 @@ fun PreviewDogListItemNotLoading() {
                 weight = 80.0,
                 birthDate = "7/30/2019",
                 profilePic = Uri.EMPTY,
-                dogYears = "",
-                humanYears = "",
+                dogYears = "7/30/2019".toDogYears(),
+                humanYears = "7/30/2019".toHumanYears(),
                 isLoading = false
             )
         )

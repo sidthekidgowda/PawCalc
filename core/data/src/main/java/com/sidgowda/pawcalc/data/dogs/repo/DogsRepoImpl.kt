@@ -1,11 +1,11 @@
 package com.sidgowda.pawcalc.data.dogs.repo
 
+import com.sidgowda.pawcalc.data.date.toDogYears
+import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
-import com.sidgowda.pawcalc.data.dogs.model.toDog
-import com.sidgowda.pawcalc.db.dog.DogEntity
+import com.sidgowda.pawcalc.data.dogs.model.DogState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -51,6 +51,7 @@ class DogsRepoImpl @Inject constructor(
             try {
                 val inDiskDogs = disk.dogs().first()
                 if (inDiskDogs != null) {
+                   memory.clear()
                    memory.addDog(*inDiskDogs.toTypedArray())
                 }
             } catch (e: Exception) {
@@ -62,17 +63,20 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun addDog(dogInput: DogInput) {
-        val dog = DogEntity(
+        // start with 1 if no dogs have been added, other wise increment
+        val id = (memory.dogs().first()?.size?.plus(1)) ?: 1
+        val dog = Dog(
+            id = id,
+            isLoading = false,
             name = dogInput.name,
             birthDate = dogInput.birthDate,
             weight = dogInput.weight.toDouble(),
+            dogYears = dogInput.birthDate.toDogYears(),
+            humanYears = dogInput.birthDate.toHumanYears(),
             profilePic = dogInput.profilePic
-        ).toDog("", "")
-        // source of truth should be disk, since room will generate a primary key
+        )
+        memory.addDog(dog)
         disk.addDog(dog)
-        // disk should contain the new dog at end of list
-        val dogFromDisk: Dog = disk.dogs().first()!!.last()
-        memory.addDog(dogFromDisk)
     }
 
     override suspend fun deleteDog(dog: Dog) {
@@ -84,5 +88,10 @@ class DogsRepoImpl @Inject constructor(
         val updatedDog = dog.copy(isLoading = true)
         memory.updateDog(updatedDog)
         disk.updateDog(updatedDog)
+    }
+
+    override suspend fun clear() {
+        memory.clear()
+        disk.clear()
     }
 }

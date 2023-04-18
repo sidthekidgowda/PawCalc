@@ -30,6 +30,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -42,6 +43,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.datastore.preferences)
+    coreLibraryDesugaring(libs.android.tools.desugarJdk)
     // test libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

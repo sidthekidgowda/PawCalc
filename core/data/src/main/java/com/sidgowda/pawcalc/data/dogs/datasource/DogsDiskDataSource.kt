@@ -6,8 +6,10 @@ import com.sidgowda.pawcalc.data.dogs.model.toDogEntity
 import com.sidgowda.pawcalc.db.dog.DogsDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import javax.inject.Inject
 
 class DogsDiskDataSource @Inject constructor(
@@ -15,14 +17,19 @@ class DogsDiskDataSource @Inject constructor(
 ) : DogsDataSource {
 
     override fun dogs(): Flow<List<Dog>?> {
-        return dogsDao.dogs().map { list ->
-            list.map {
-                it.toDog(
-                    dogYears = "",
-                    humanYears = ""
-                )
+        return dogsDao.dogs()
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyList())
+                } else {
+                    throw exception
+                }
             }
-        }.flowOn(Dispatchers.Default)
+            .map { list ->
+                list.map {
+                    it.toDog()
+                }
+            }.flowOn(Dispatchers.Default)
     }
 
     override suspend fun addDog(vararg dog: Dog) {
@@ -37,5 +44,9 @@ class DogsDiskDataSource @Inject constructor(
 
     override suspend fun updateDog(dog: Dog) {
         dogsDao.updateDog(dog.toDogEntity())
+    }
+
+    override suspend fun clear() {
+        dogsDao.deleteAll()
     }
 }

@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.update
 fun MutableStateFlow<DogInputState>.updateName(name: String) {
     val inputRequirements = listOf(DogInputRequirements.NAME_BETWEEN_ONE_AND_FIFTY)
     // we don't want show error until we have one character
-    val isNameValidForTextInput = this.value.name.length <= 50
-    val isNameValid = this.value.name.isNotEmpty() && isNameValidForTextInput
+    val isNameValidForTextInput = name.length <= 50
+    val isNameValid = name.isNotEmpty() && isNameValidForTextInput
     update {
         it.copy(
             name = name,
