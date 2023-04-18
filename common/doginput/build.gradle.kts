@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -50,7 +51,6 @@ android {
 dependencies {
     implementation(projects.common.ui)
     implementation(projects.common.camera)
-    implementation(projects.common.date)
     implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -64,6 +64,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.com.google.android.material)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries

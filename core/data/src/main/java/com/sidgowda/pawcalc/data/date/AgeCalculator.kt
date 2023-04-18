@@ -92,6 +92,20 @@ fun String.toHumanYears(
     //1 d = .0191y,
     //1 y = 52.14 d
     //1 month dog month = 31 days
+    // 1 day = .0194 y
+    // 30 days = .5833
+    // 1 month = .5833 years
+    // 1.5 months = .875 years
+    // 3 months = 1.75 years
+    // 6 months = 3.5 years
+    // 12 months = 7 years
+    // 3 years 1 month 19 days = 3 * 12 = 3 * 7, 21 years + .5833 y  + .37 y = 21.9533 years or
+
+
+    // calculate years * 7
+    // convert months to years
+    // multiply the fraction by 12 to get months
+    // use leftover for days
     return dogYears.copy(
         years = dogYears.years * 7
     )

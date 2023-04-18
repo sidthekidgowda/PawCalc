@@ -12,6 +12,7 @@
     <string name="cd_bottom_sheet_take_photo">Take photo with your camera</string>
     <string name="bottom_sheet_choose_photo">Choose photo</string>
     <string name="cd_bottom_sheet_choose_photo">Choose a photo from your media</string>
+    <string name="date_picker_dialog_title">Select Birth Date</string>
     <string name="go_to_settings">Go</string>
     <string name="cancel">Cancel</string>
 
