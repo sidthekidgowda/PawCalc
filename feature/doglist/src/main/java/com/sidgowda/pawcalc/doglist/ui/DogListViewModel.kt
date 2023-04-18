@@ -27,8 +27,7 @@ class DogListViewModel @Inject constructor(
         dogsRepo.dogState().map {
             DogListState(
                 isLoading = it.isLoading,
-                dogs = it.dogs,
-                isError = false
+                dogs = it.dogs
             )
         }
         .onEach { dogListState ->
@@ -42,8 +41,7 @@ class DogListViewModel @Inject constructor(
             emit(
                 DogListState(
                     isLoading = false,
-                    dogs = cachedDogList.value,
-                    isError = true
+                    dogs = cachedDogList.value
                 )
             )
         }

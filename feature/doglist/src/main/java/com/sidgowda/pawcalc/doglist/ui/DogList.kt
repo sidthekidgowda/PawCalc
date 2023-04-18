@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -30,15 +31,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
@@ -46,9 +52,9 @@ import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
-import com.sidgowda.pawcalc.ui.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import com.sidgowda.pawcalc.ui.R as UiR
 
 @Composable
 fun DogList(
@@ -112,12 +118,13 @@ internal fun DogListScreen(
         viewModel.fetchDogs()
     }
     val dogListState: DogListState by viewModel.dogListState.collectAsStateWithLifecycle()
-    val lazyColumnState = rememberLazyListState()
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp).size(64.dp),
+                modifier = Modifier
+                    .padding(end = 8.dp, bottom = 8.dp)
+                    .size(64.dp),
                 onClick = onNewDog
             ) {
                 Icon(
@@ -128,26 +135,32 @@ internal fun DogListScreen(
                 )
             }
         }
-    ) {
+    ) { contentPadding ->
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             when {
                 dogListState.isLoading -> {
-                    // todo - use accompanist library to show shimmer
-//                    CircularProgressIndicator()
+                    Shimmer(contentPadding = contentPadding)
                 }
                 else -> {
                     if (dogListState.dogs.isEmpty()) {
-                        //show empty state
-                        //todo update
-                        Text("You have not added any dogs currently. Please add a dog to see how old they are in human years")
+                        Text(
+                            text = stringResource(id = com.sidgowda.pawcalc.doglist.R.string.dog_list_empty),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 40.dp),
+                            style = PawCalcTheme.typography.h5.copy(fontSize = 24.sp),
+                            color = PawCalcTheme.colors.onSurface,
+                            textAlign = TextAlign.Center
+                        )
                     } else {
+                        val lazyColumnState = rememberLazyListState()
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
+                            contentPadding = contentPadding,
                             state = lazyColumnState
                         ) {
                             items(dogListState.dogs, key = { dog -> dog.id }) { dog ->
@@ -208,15 +221,56 @@ internal fun DogListScreen(
                             }
                         }
                     }
-                    if (dogListState.isError) {
-                        // show error dialog
-                    }
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+internal fun Shimmer(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = contentPadding
+    ) {
+        items(10) {
+            ListItem(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Circle,
+                        modifier = Modifier
+                            .placeholder(
+                                visible = true,
+                                highlight = PlaceholderHighlight.fade(),
+                                shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                                    CornerSize(50)
+                                )
+                            )
+                            .clip(CircleShape)
+                            .size(80.dp),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(
+                        "",
+                        modifier = Modifier
+                            .placeholder(
+                                visible = true,
+                                highlight = PlaceholderHighlight.fade(),
+                            )
+                            .height(60.dp)
+                            .fillMaxWidth()
+                    )
+                }
+            )
+        }
+    }
+}
 
 @Composable
 internal fun DogListItem(
@@ -318,7 +372,7 @@ internal fun DogListItem(
                         modifier = Modifier
                             .size(18.dp)
                             .padding(top = 2.dp),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_paw),
+                        imageVector = ImageVector.vectorResource(id = UiR.drawable.ic_paw),
                         contentDescription = null
                     )
                 },
@@ -454,7 +508,7 @@ fun PreviewDogListItemLoading() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.dog_puppy),
+                painter = painterResource(id = UiR.drawable.dog_puppy),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clip(CircleShape)

@@ -18,7 +18,7 @@ mockitoKotlin = "3.2.0"
 mockitoAndroid = "3.12.4"
 androidxTestCore = "1.5.0"
 coil = "2.2.2"
-accompanist = "0.28.0"
+accompanist = "0.30.0"
 cameraXVersion = "1.2.2"
 concurrentFuturesKtx = "1.1.0"
 material = "1.8.0"
@@ -57,6 +57,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-placeholder-material = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist"}
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraXVersion" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraXVersion" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraXVersion" }
