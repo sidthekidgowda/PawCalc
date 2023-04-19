@@ -1,8 +1,8 @@
 package com.sidgowda.pawcalc.data.date
 
 import com.sidgowda.pawcalc.date.dateFromLong
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
+import kotlin.math.round
 
 enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextMonthId: Int) {
     JAN(1, 31, false, 2),
@@ -31,14 +31,26 @@ fun Age.toText(): String {
     if (months > 1) {
         stringBuilder.append("${months}m ")
     }
-    if (days > 1) {
-        stringBuilder.append("${days}d")
-    }
+    stringBuilder.append("${days}d")
    return stringBuilder.toString()
 }
 
+/**
+ * Algorithm to calculate number of years, months, and days from a birth date given till today:
+ * years = Today(years) - BirthDate(years), subtract 1 if birth month is past today's month
+ * months = loop from start of given birth month till end month
+ *          if the next month is not the end month, calculate number of days between birth dates of
+ *          each month. Ex Jan 15 - Feb 15 is 31 days. Increment total month count
+ *          if the next month is end month, and if the birth date happens before today,
+ *              Increment total month count and calculate difference of Today from birth date.
+ *              Ex If birth date is April 15 and today is April 18. Difference is 3 for total days
+ *              and we increment total month count.
+ *              otherwise, if birth date happens after today, calculate difference from
+ *               current month total days - birth date days + days today. This difference is total days
+ * days = Absolute difference remaining when there is leftover from birth date till today.
+ */
 fun String.toDogYears(
-    today: String = dateFromLong(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli())
+    today: String = dateFromLong(localDateTimeInMilliseconds())
 ): Age {
     val dateSplit = split("/")
     val monthsOfBirthDate = dateSplit.first().toInt()
@@ -96,33 +108,33 @@ fun String.toDogYears(
     )
 }
 
+/**
+ * Algorithm to convert Birth Date of a dog to human years:
+ * convert months and days to years, using 7 years to 12 months and 7 year to 365/366 days
+ * years = round(dogYears * 7 + convertedDogMonths + convertedDogDaysToYears)
+ * months = round(decimalPortionOfYears * 12)
+ * days = round(decimalPortionOfMonths * 30) (Averaging 30 days per month)
+ */
 fun String.toHumanYears(
-    today: String = dateFromLong(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli())
+    today: String = dateFromLong(localDateTimeInMilliseconds())
 ): Age {
     val dogYears = toDogYears()
-    // 7 year quanitifer
-    // if days and months are 0, 1 dog year = 7 human years
-    // 7 years/365 days or 7/366 for leap year, days/years = 365/7
-    //1 d = .0191y,
-    //1 y = 52.14 d
-    //1 month dog month = 31 days
-    // 1 day = .0194 y
-    // 30 days = .5833
-    // 1 month = .5833 years
-    // 1.5 months = .875 years
-    // 3 months = 1.75 years
-    // 6 months = 3.5 years
-    // 12 months = 7 years
-    // 3 years 1 month 19 days = 3 * 12 = 3 * 7, 21 years + .5833 y  + .37 y = 21.9533 years or
-    val humanYearsToMonthsRatio: Double = (7/12).toDouble()
+    val yearsToday = today.split("/").last().toInt()
+    val humanYearsToMonthsRatio = 7.0 / 12.0
+    val numberOfDaysInYear = if (yearsToday / 4 == 0) 366 else 365
+    val humanYearsToDaysRatio = 7.0 / numberOfDaysInYear
+    val monthsToYears = dogYears.months * humanYearsToMonthsRatio
+    val daysToYears = dogYears.days * humanYearsToDaysRatio
+    val numberOfYearsDecimal = dogYears.years * 7 + monthsToYears + daysToYears
+    val numberOfYears = numberOfYearsDecimal.toInt()
+    val numberOfMonthsDecimal = (numberOfYearsDecimal - numberOfYears) * 12.0
+    val numberOfMonths = numberOfMonthsDecimal.toInt()
+    val numberOfDaysDecimal = (numberOfMonthsDecimal - numberOfMonths) * 30.0
+    val numberOfDays = round(numberOfDaysDecimal).toInt()
 
-    // calculate years * 7
-    // convert months to years
-    // multiply the fraction by 12 to get months
-    // use leftover for days
-    val monthsToYears: Double = dogYears.months.toDouble() * humanYearsToMonthsRatio
     return dogYears.copy(
-        years = dogYears.years * 7,
-        months = dogYears.months
+        years = numberOfYears,
+        months = numberOfMonths,
+        days = numberOfDays
     )
 }

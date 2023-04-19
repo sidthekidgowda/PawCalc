@@ -6,6 +6,7 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
+import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -51,7 +52,6 @@ class DogsRepoImpl @Inject constructor(
             try {
                 val inDiskDogs = disk.dogs().first()
                 if (inDiskDogs != null) {
-                   memory.clear()
                    memory.addDog(*inDiskDogs.toTypedArray())
                 }
             } catch (e: Exception) {
@@ -63,8 +63,8 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun addDog(dogInput: DogInput) {
-        // start with 1 if no dogs have been added, other wise increment
-        val id = (memory.dogs().first()?.size?.plus(1)) ?: 1
+        // use timestamp as id since it will always be unique
+        val id = localDateTimeInMilliseconds()
         val dog = Dog(
             id = id,
             name = dogInput.name,

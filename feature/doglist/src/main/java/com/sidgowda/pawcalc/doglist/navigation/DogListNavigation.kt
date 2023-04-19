@@ -14,7 +14,7 @@ fun NavController.navigateToDogListScreen(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.dogListScreenDestination(
     onNavigateToOnboarding: () -> Unit,
     onNewDog: () -> Unit,
-    onEditDog: (Int) -> Unit,
+    onEditDog: (Long) -> Unit,
     onDogDetails: () -> Unit
 ) {
     composable(route = DOG_LIST_SCREEN_ROUTE) { backStackEntry ->

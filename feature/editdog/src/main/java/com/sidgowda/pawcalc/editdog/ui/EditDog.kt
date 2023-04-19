@@ -13,7 +13,7 @@ import com.sidgowda.pawcalc.doginput.model.DogInputState
 
 @Composable
 internal fun EditDog(
-    dogId: Int,
+    dogId: Long,
     onSaveDog: () -> Unit
 ) {
     EditDogScreen(
@@ -28,7 +28,7 @@ internal fun EditDog(
 internal fun EditDogScreen(
     modifier: Modifier = Modifier,
     viewModel: EditDogViewModel,
-    dogId: Int,
+    dogId: Long,
     onSaveDog: () -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {

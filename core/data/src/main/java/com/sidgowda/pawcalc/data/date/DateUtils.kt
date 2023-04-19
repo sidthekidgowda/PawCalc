@@ -19,6 +19,9 @@ fun calendar(date: Long? = null): Calendar {
 internal fun localDateNow() = LocalDate.now(ZoneOffset.UTC)
 internal fun localTimeNow() = LocalTime.now(ZoneOffset.UTC)
 
+internal fun localDateTimeInMilliseconds() =
+    LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()
+
 fun dateFromLong(date: Long): String {
     val localDate = try {
         Instant.ofEpochMilli(date).atZone(ZoneOffset.UTC).toLocalDate()

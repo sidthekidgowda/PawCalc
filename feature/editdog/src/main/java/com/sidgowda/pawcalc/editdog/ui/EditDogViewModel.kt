@@ -29,7 +29,7 @@ class EditDogViewModel @Inject constructor(
 
     // this is the Dog we will be editing
     private val editableDog = MutableStateFlow<Dog?>(null)
-    suspend fun fetchDogForId(id: Int) {
+    suspend fun fetchDogForId(id: Long) {
         viewModelScope.launch(computationDispatcher) {
             val dog = getDogForIdUseCase(id).first()
             _inputState.update {

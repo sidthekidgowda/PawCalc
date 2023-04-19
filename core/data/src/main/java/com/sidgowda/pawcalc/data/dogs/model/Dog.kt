@@ -4,7 +4,7 @@ import android.net.Uri
 import com.sidgowda.pawcalc.data.date.Age
 
 data class Dog(
-    val id: Int,
+    val id: Long,
     val profilePic: Uri,
     val name: String,
     val weight: Double,
