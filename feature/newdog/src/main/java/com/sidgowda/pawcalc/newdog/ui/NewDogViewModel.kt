@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.doginput.*
-import com.sidgowda.pawcalc.doginput.model.DogInputEvent
-import com.sidgowda.pawcalc.doginput.model.DogInputState
+import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.AddDogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher

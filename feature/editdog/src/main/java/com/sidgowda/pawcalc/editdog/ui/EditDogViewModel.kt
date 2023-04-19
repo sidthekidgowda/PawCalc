@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.doginput.*
-import com.sidgowda.pawcalc.doginput.model.DogInputEvent
-import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
-import com.sidgowda.pawcalc.doginput.model.DogInputState
+import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.UpdateDogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

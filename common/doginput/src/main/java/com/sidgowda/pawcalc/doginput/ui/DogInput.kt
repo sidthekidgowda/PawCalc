@@ -221,7 +221,7 @@ internal fun DogInputScreen(
             .verticalScroll(scrollState)
             .background(PawCalcTheme.colors.background)
             .padding(top = 40.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CameraInput(
