@@ -219,8 +219,7 @@ internal fun DogInputScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(PawCalcTheme.colors.background)
-            .padding(top = 40.dp),
+            .background(PawCalcTheme.colors.background),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -251,10 +250,10 @@ internal fun DogInputScreen(
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
-        SaveButton(
-            modifier = Modifier.fillMaxWidth(),
-            isEnabled = dogInputState.isInputValid(),
-            onSaveDog = onSaveDog
+        PawCalcButton(
+            enabled = dogInputState.isInputValid(),
+            text = stringResource(id = R.string.save_input),
+            onClick = onSaveDog
         )
     }
 }
@@ -331,6 +330,10 @@ internal fun NameInput(
             onValueChange = {
                 onNameChanged(it)
             },
+            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                bottomStart = ZeroCornerSize,
+                bottomEnd = ZeroCornerSize
+            ),
             textStyle = PawCalcTheme.typography.h5,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = PawCalcTheme.colors.surface(),
@@ -352,7 +355,7 @@ internal fun NameInput(
         if (isNameError) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Name must be at least 1 character and at most 50 characters",
+                text = stringResource(id = R.string.name_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -437,7 +440,7 @@ internal fun WeightInput(
         if (isWeightError) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Weight must be a number and more than 0 lbs",
+                text = stringResource(id = R.string.weight_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -465,7 +468,7 @@ internal fun BirthDateInput(
             onValueChange = {},
             placeholder = {
                 Text(
-                    text = "mm/dd/yyyy",
+                    text = stringResource(id = R.string.birth_date_american_placeholder),
                     textAlign = TextAlign.Start,
                     style = PawCalcTheme.typography.h7,
                 )
@@ -534,7 +537,7 @@ internal fun BirthDateInput(
         if (isBirthDateError) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Please select a birth date",
+                text = stringResource(id = R.string.birth_date_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -586,29 +589,6 @@ internal fun OpenDatePicker(
                 }
             }
         }
-    }
-}
-
-@Composable
-internal fun SaveButton(
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean,
-    onSaveDog: () -> Unit
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-        )
-        PawCalcButton(
-            enabled = isEnabled,
-            text = stringResource(id = R.string.save_input),
-            onClick = onSaveDog
-        )
     }
 }
 

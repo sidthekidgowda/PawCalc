@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.update
 enum class DogInputRequirements {
     ONE_PICTURE,
     NAME_BETWEEN_ONE_AND_FIFTY,
-    WEIGHT_MORE_THAN_ZERO_AND_VALID_NUMBER,
+    WEIGHT_MORE_THAN_ZERO_AND_VALID_NUMBER_BELOW_500,
     BIRTH_DATE
 }
 
@@ -30,9 +30,9 @@ fun MutableStateFlow<DogInputState>.updateName(name: String) {
 }
 
 fun MutableStateFlow<DogInputState>.updateWeight(weight: String) {
-    val inputRequirements = listOf(DogInputRequirements.WEIGHT_MORE_THAN_ZERO_AND_VALID_NUMBER)
+    val inputRequirements = listOf(DogInputRequirements.WEIGHT_MORE_THAN_ZERO_AND_VALID_NUMBER_BELOW_500)
     val weightAsDouble: Double? = weight.toDoubleOrNull()
-    val isWeightValid = weight.isNotEmpty() && weightAsDouble != null && weightAsDouble > 0.0
+    val isWeightValid = weight.isNotEmpty() && weightAsDouble != null && weightAsDouble > 0.0 && weightAsDouble < 500
     // we don't show error until we have one character
     val isWeightValidForTextInput = weight.isEmpty() || isWeightValid
     update {
