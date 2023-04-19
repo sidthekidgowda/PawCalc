@@ -23,6 +23,20 @@ enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextM
     }
 }
 
+fun Age.toText(): String {
+    val stringBuilder = StringBuilder()
+    if (years > 1) {
+        stringBuilder.append("${years}y ")
+    }
+    if (months > 1) {
+        stringBuilder.append("${months}m ")
+    }
+    if (days > 1) {
+        stringBuilder.append("${days}d")
+    }
+   return stringBuilder.toString()
+}
+
 fun String.toDogYears(
     today: String = dateFromLong(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli())
 ): Age {
@@ -100,13 +114,15 @@ fun String.toHumanYears(
     // 6 months = 3.5 years
     // 12 months = 7 years
     // 3 years 1 month 19 days = 3 * 12 = 3 * 7, 21 years + .5833 y  + .37 y = 21.9533 years or
-
+    val humanYearsToMonthsRatio: Double = (7/12).toDouble()
 
     // calculate years * 7
     // convert months to years
     // multiply the fraction by 12 to get months
     // use leftover for days
+    val monthsToYears: Double = dogYears.months.toDouble() * humanYearsToMonthsRatio
     return dogYears.copy(
-        years = dogYears.years * 7
+        years = dogYears.years * 7,
+        months = dogYears.months
     )
 }

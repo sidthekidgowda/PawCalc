@@ -47,6 +47,7 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
+import com.sidgowda.pawcalc.data.date.toText
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
@@ -152,7 +153,7 @@ internal fun DogListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 40.dp),
-                            style = PawCalcTheme.typography.h5.copy(fontSize = 24.sp),
+                            style = PawCalcTheme.typography.h5.copy(fontSize = 30.sp),
                             color = PawCalcTheme.colors.onSurface,
                             textAlign = TextAlign.Center
                         )
@@ -379,7 +380,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = ""
+                        text = dog.dogYears.toText()
                     )
                 }
             )

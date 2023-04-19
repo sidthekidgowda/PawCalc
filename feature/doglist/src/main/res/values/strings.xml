@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="dog_list_empty">You have not added any dogs currently. Please add a dog to see how old they are in human years.</string>
+    <string name="dog_list_empty">You have not added your dog(s). Please add your dog(s) to see how old they are in human years.</string>
 </resources>
