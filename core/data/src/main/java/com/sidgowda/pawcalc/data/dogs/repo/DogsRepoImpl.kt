@@ -67,7 +67,6 @@ class DogsRepoImpl @Inject constructor(
         val id = (memory.dogs().first()?.size?.plus(1)) ?: 1
         val dog = Dog(
             id = id,
-            isLoading = false,
             name = dogInput.name,
             birthDate = dogInput.birthDate,
             weight = dogInput.weight.toDouble(),
@@ -85,9 +84,8 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun updateDog(dog: Dog) {
-        val updatedDog = dog.copy(isLoading = true)
-        memory.updateDog(updatedDog)
-        disk.updateDog(updatedDog)
+        memory.updateDog(dog)
+        disk.updateDog(dog)
     }
 
     override suspend fun clear() {

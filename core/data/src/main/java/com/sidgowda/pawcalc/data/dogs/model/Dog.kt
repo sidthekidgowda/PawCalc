@@ -10,6 +10,5 @@ data class Dog(
     val weight: Double,
     val birthDate: String,
     val dogYears: Age,
-    val humanYears: Age,
-    val isLoading: Boolean
+    val humanYears: Age
 )

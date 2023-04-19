@@ -43,8 +43,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import com.google.accompanist.placeholder.material.shimmer
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.date.toText
@@ -238,7 +238,7 @@ internal fun Shimmer(
         modifier = modifier.fillMaxSize(),
         contentPadding = contentPadding
     ) {
-        items(10) {
+        items(50) {
             ListItem(
                 icon = {
                     Icon(
@@ -246,7 +246,7 @@ internal fun Shimmer(
                         modifier = Modifier
                             .placeholder(
                                 visible = true,
-                                highlight = PlaceholderHighlight.fade(),
+                                highlight = PlaceholderHighlight.shimmer(),
                                 shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                                     CornerSize(50)
                                 )
@@ -262,7 +262,7 @@ internal fun Shimmer(
                         modifier = Modifier
                             .placeholder(
                                 visible = true,
-                                highlight = PlaceholderHighlight.fade(),
+                                highlight = PlaceholderHighlight.shimmer(),
                             )
                             .height(60.dp)
                             .fillMaxWidth()
@@ -340,10 +340,10 @@ internal fun DogListItem(
                 }
             )
             IconText(
-                modifier = Modifier.padding(end = 20.dp, top = 10.dp),
+                modifier = Modifier.padding(end = 54.dp, top = 10.dp),
                 constraintName = birthdate,
                 constrainBlock = {
-                    start.linkTo(humanYears.start)
+                    end.linkTo(parent.end)
                     top.linkTo(name.bottom)
                     baseline.linkTo(weight.baseline)
                 },
@@ -388,7 +388,7 @@ internal fun DogListItem(
                 modifier = Modifier.padding(end = 20.dp, top = 10.dp),
                 constraintName = humanYears,
                 constrainBlock = {
-                    end.linkTo(parent.end)
+                    start.linkTo(birthdate.start)
                     top.linkTo(birthdate.bottom)
                     baseline.linkTo(dogYears.baseline)
                 },
@@ -402,7 +402,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = "28y 4m 20d"
+                        text = dog.humanYears.toText()
                     )
                 }
             )
@@ -489,8 +489,7 @@ fun PreviewDogListItemNotLoading() {
                 birthDate = "7/30/2019",
                 profilePic = Uri.EMPTY,
                 dogYears = "7/30/2019".toDogYears(),
-                humanYears = "7/30/2019".toHumanYears(),
-                isLoading = false
+                humanYears = "7/30/2019".toHumanYears()
             )
         )
     }

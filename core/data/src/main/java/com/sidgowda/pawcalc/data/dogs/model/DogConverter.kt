@@ -12,8 +12,7 @@ fun DogEntity.toDog(): Dog {
         weight = weight,
         birthDate = birthDate,
         dogYears = birthDate.toDogYears(),
-        humanYears = birthDate.toHumanYears(),
-        isLoading = false
+        humanYears = birthDate.toHumanYears()
     )
 }
 

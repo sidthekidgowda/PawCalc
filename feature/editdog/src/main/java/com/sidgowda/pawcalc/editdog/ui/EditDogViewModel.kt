@@ -2,6 +2,8 @@ package com.sidgowda.pawcalc.editdog.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.date.toDogYears
+import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
@@ -65,7 +67,9 @@ class EditDogViewModel @Inject constructor(
                     name = input.name,
                     weight = input.weight.toDouble(),
                     birthDate = input.birthDate,
-                    profilePic = input.profilePic!!
+                    profilePic = input.profilePic!!,
+                    dogYears = input.birthDate.toDogYears(),
+                    humanYears = input.birthDate.toHumanYears()
                 )
             }?.let { updatedDog ->
                 updateDogUseCase(
