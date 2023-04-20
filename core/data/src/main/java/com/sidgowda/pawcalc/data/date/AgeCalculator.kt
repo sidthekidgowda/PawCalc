@@ -129,19 +129,22 @@ fun String.toDogYears(
 /**
  * Algorithm to convert Birth Date of a dog to human years:
  * convert months and days to years, using 7 years to 12 months and 7 years to 365/366 days
- * years = round(dogYears * 7 + convertedDogMonths + convertedDogDaysToYears)
- * months = round(decimalPortionOfYears * 12)
+ * years = toInt(dogYears * 7 + convertedDogMonths + convertedDogDaysToYears)
+ * months = toInt(decimalPortionOfYears * 12)
  * days = round(decimalPortionOfMonths * 30) (Averaging 30 days per month)
  */
 fun String.toHumanYears(
     today: String = dateFromLong(localDateTimeInMilliseconds())
 ): Age {
-    val dogYears = toDogYears()
+    val dateSplit = split("/")
+    val monthsOfBirthDate = dateSplit.first().toInt()
+    val daysOfBirthDate = dateSplit[1].toInt()
+    val dogYears = toDogYears(today)
     val yearsToday = today.split("/").last().toInt()
     val humanYearsToMonthsRatio = 7.0 / 12.0
     val numberOfDaysInYear =
-        if (yearsToday / 4 == 0 &&
-            (dogYears.months > 2 || (dogYears.months == 2 && dogYears.days == 29))
+        if (yearsToday % 4 == 0 &&
+            (monthsOfBirthDate > 2 || (monthsOfBirthDate == 2 && daysOfBirthDate == 29))
         ) {
             366
         } else {
@@ -150,7 +153,7 @@ fun String.toHumanYears(
     val humanYearsToDaysRatio = 7.0 / numberOfDaysInYear
     val monthsToYears = dogYears.months * humanYearsToMonthsRatio
     val daysToYears = dogYears.days * humanYearsToDaysRatio
-    val numberOfYearsDecimal = dogYears.years * 7 + monthsToYears + daysToYears
+    val numberOfYearsDecimal = dogYears.years * 7.0 + monthsToYears + daysToYears
     val numberOfYears = numberOfYearsDecimal.toInt()
     val numberOfMonthsDecimal = (numberOfYearsDecimal - numberOfYears) * 12.0
     val numberOfMonths = numberOfMonthsDecimal.toInt()
