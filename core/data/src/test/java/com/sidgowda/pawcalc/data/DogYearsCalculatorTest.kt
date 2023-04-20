@@ -7,6 +7,28 @@ import org.junit.Test
 
 class DogYearsCalculatorTest {
 
+    @Test(expected = IllegalStateException::class)
+    fun `should throw IllegalStateException if birth date 12-20-2024 is after today 4-15-2023`() {
+        val age = "12/20/2024".toDogYears(today = "4/15/2023")
+    }
+
+
+    @Test(expected = IllegalStateException::class)
+    fun `should throw IllegalStateException if birth date 11-10-2023 is after today 4-15-2023`() {
+        val age = "11/17/2023".toDogYears(today = "4/15/2023")
+    }
+
+
+    @Test(expected = IllegalStateException::class)
+    fun `should throw IllegalStateException if birth date 4-17-2023 is after today 4-15-2023`() {
+        val age = "4/17/2023".toDogYears(today = "4/15/2023")
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `should throw IllegalStateException if birth date is 4-18-2023 and today is 3-20-2023`() {
+        val age = "4/18/2023".toDogYears(today = "3/20/2023")
+    }
+
     @Test
     fun `age should be zero if birth date is same as today at 4-19-2023`() {
         val age = "4/19/2023".toDogYears(today = "4/19/2023")

@@ -25,13 +25,19 @@ enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextM
 
 fun Age.toText(): String {
     val stringBuilder = StringBuilder()
-    if (years > 1) {
-        stringBuilder.append("${years}y ")
+    if (years > 0) {
+        stringBuilder.append("${years}y")
+        if (months > 0 || days > 0) {
+            stringBuilder.append(" ")
+        }
     }
-    if (months > 1) {
-        stringBuilder.append("${months}m ")
+    if (months > 0) {
+        stringBuilder.append("${months}m")
+        if (days > 0) {
+            stringBuilder.append(" ")
+        }
     }
-    if (years == 0 && months == 0 || days > 1) {
+    if (years == 0 && months == 0 || days > 0) {
         stringBuilder.append("${days}d")
     }
    return stringBuilder.toString()
@@ -64,7 +70,14 @@ fun String.toDogYears(
     val daysToday = todaySplit[1].toInt()
     val yearsToday = todaySplit.last().toInt()
     // make sure birth date is not after today
-//    check(yearsOfBirthDate <= yearsToday && monthsOfBirthDate <= monthsToday && daysOfBirthDate <= daysToday)
+    check(
+        yearsOfBirthDate < yearsToday ||
+                monthsOfBirthDate <= monthsToday &&
+                (
+                    daysOfBirthDate >= daysToday && monthsOfBirthDate < monthsToday ||
+                    daysOfBirthDate <= daysToday
+                )
+    )
 
     var totalMonthsCount = 0
     var totalDaysCount: Int
