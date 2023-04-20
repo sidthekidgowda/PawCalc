@@ -4,7 +4,7 @@ import com.sidgowda.pawcalc.date.dateFromLong
 import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import kotlin.math.round
 
-enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextMonthId: Int) {
+internal enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextMonthId: Int) {
     JAN(1, 31, false, 2),
     FEB(2,28, hasLeapYear = true, 3),
     MARCH(3,31, hasLeapYear = false, 4),
