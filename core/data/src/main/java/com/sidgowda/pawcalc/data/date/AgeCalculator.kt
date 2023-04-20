@@ -31,7 +31,9 @@ fun Age.toText(): String {
     if (months > 1) {
         stringBuilder.append("${months}m ")
     }
-    stringBuilder.append("${days}d")
+    if (years == 0 && months == 0 || days > 1) {
+        stringBuilder.append("${days}d")
+    }
    return stringBuilder.toString()
 }
 
@@ -110,7 +112,7 @@ fun String.toDogYears(
 
 /**
  * Algorithm to convert Birth Date of a dog to human years:
- * convert months and days to years, using 7 years to 12 months and 7 year to 365/366 days
+ * convert months and days to years, using 7 years to 12 months and 7 years to 365/366 days
  * years = round(dogYears * 7 + convertedDogMonths + convertedDogDaysToYears)
  * months = round(decimalPortionOfYears * 12)
  * days = round(decimalPortionOfMonths * 30) (Averaging 30 days per month)
