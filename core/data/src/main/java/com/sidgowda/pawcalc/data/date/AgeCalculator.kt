@@ -82,25 +82,26 @@ fun String.toDogYears(
     var totalMonthsCount = 0
     var totalDaysCount: Int
     val birthMonth = Month from monthsOfBirthDate
-    var startMonth = Month from monthsOfBirthDate
+    var startMonth = birthMonth
     val endMonth = Month from monthsToday
-    //edge case
-    totalDaysCount = Math.abs(daysToday - daysOfBirthDate)
+    //edge case if birth month = end month
+    totalDaysCount = daysToday - daysOfBirthDate
 
     while (startMonth != endMonth) {
         totalDaysCount = 0
         val nextMonth = Month from startMonth.nextMonthId
         val daysBetweenBirthDates = if (nextMonth != endMonth) {
-            // Feb
             if (startMonth.hasLeapYear && yearsToday / 4 == 0 ) {
-                // edge case
+                // edge case for feb having 29 days
                 startMonth.days + 1
             } else {
                 startMonth.days
             }
         } else {
             if (daysOfBirthDate < daysToday) {
-                // edge case
+                // edge case if next month bday date is less than today
+                // ex: bday is 4/4/2023 and start month is March, next and end month is April
+                // and today is 4/20/2023
                 totalMonthsCount++
                 Math.abs(daysOfBirthDate - daysToday)
             } else  {
@@ -138,7 +139,14 @@ fun String.toHumanYears(
     val dogYears = toDogYears()
     val yearsToday = today.split("/").last().toInt()
     val humanYearsToMonthsRatio = 7.0 / 12.0
-    val numberOfDaysInYear = if (yearsToday / 4 == 0) 366 else 365
+    val numberOfDaysInYear =
+        if (yearsToday / 4 == 0 &&
+            (dogYears.months > 2 || (dogYears.months == 2 && dogYears.days == 29))
+        ) {
+            366
+        } else {
+            365
+        }
     val humanYearsToDaysRatio = 7.0 / numberOfDaysInYear
     val monthsToYears = dogYears.months * humanYearsToMonthsRatio
     val daysToYears = dogYears.days * humanYearsToDaysRatio
