@@ -30,6 +30,17 @@ class DogYearsCalculatorTest {
     }
 
     @Test
+    fun `age should be 20 days if born on 3-31-2023 and today is 4-20-23`() {
+        val age = "3/31/2023".toDogYears(today = "4/20/2023")
+
+        age shouldBe Age(
+            years = 0,
+            months = 0,
+            days = 20
+        )
+    }
+
+    @Test
     fun `age should be 1 month if birth date is 3-20-2023 and today is 4-20-2023`() {
         val age = "3/20/2023".toDogYears(today = "4/20/2023")
 
@@ -116,4 +127,27 @@ class DogYearsCalculatorTest {
             20
         )
     }
+
+    @Test
+    fun `age should be 30 years 0 months and 21 days if born on 3-30-1993 and today is 4-20-2023`() {
+        val age = "3/30/1993".toDogYears(today = "4/20/2023")
+
+        age shouldBe Age(
+            30,
+            0,
+            21
+        )
+    }
+
+    @Test
+    fun `age should be 19 years 2 months and 14 days if born on 2-6-2024 and today is 4-20-2004`() {
+        val age = "2/6/2004".toDogYears(today = "4/20/2023")
+
+        age shouldBe Age(
+            19,
+            2,
+            14
+        )
+    }
+
 }
