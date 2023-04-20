@@ -13,7 +13,7 @@ class GetDogForIdUseCase @Inject constructor(
     private val dogsRepo: DogsRepo,
     @Named ("computation") private val computationDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke(id: Long): Flow<Dog> {
+    operator fun invoke(id: Int): Flow<Dog> {
         return dogsRepo.dogState()
             .map { it.dogs }
             .flatMapConcat { it.asFlow() }

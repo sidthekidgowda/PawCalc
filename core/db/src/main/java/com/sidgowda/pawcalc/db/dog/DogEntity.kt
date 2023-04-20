@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "dogs")
 data class DogEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: Int,
     val name: String,
     val weight: Double,
     val birthDate: String,

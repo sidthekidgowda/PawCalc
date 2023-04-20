@@ -6,7 +6,6 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
-import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -63,8 +62,7 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun addDog(dogInput: DogInput) {
-        // use timestamp as id since it will always be unique
-        val id = localDateTimeInMilliseconds()
+        val id = memory.dogs().first()?.maxOf { it.id }?.plus(1) ?: 1
         val dog = Dog(
             id = id,
             name = dogInput.name,

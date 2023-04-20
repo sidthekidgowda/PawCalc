@@ -60,7 +60,7 @@ fun DogList(
     savedStateHandle: SavedStateHandle,
     onNavigateToOnboarding: () -> Unit,
     onNewDog: () -> Unit,
-    onEditDog: (Long) -> Unit,
+    onEditDog: (Int) -> Unit,
     onDogDetails: () -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
@@ -108,7 +108,7 @@ internal fun DogListScreen(
     modifier: Modifier = Modifier,
     viewModel: DogListViewModel,
     onNewDog: () -> Unit,
-    onEditDog: (Long) -> Unit,
+    onEditDog: (Int) -> Unit,
     onDogDetails: () -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {
@@ -161,10 +161,10 @@ internal fun DogListScreen(
                             contentPadding = contentPadding,
                             state = lazyColumnState
                         ) {
-                            // Use unique id since these dogs can be added and removed
-                            // if there are 4 dogs and we remove dog of index 2 with id = 3
-                            // and add a new dog. This new dog will have id 4 and the app
-                            // will crash since there are conflicting ids.
+                            // Make sure ids are unique since these dogs can be added and removed
+                            // Ex: if there are 4 dogs and we remove dog of index 2 with id = 3
+                            // and add a new dog. Ensure next dog added will have id = 5 since
+                            // the previous item will have id = 4 with index = 2 now.
                             items(dogListState.dogs, key = { dog -> dog.id }) { dog ->
                                 var isDogItemDismissed by remember {
                                     mutableStateOf(false)

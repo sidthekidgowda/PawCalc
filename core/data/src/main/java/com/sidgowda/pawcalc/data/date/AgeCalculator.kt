@@ -38,7 +38,7 @@ fun Age.toText(): String {
 }
 
 /**
- * Algorithm to calculate number of years, months, and days from a birth date given till today:
+ * Algorithm to calculate number of years, months, and days from a birth date till today:
  * years = Today(years) - BirthDate(years), subtract 1 if birth month is past today's month
  * months = loop from start of given birth month till end month
  *          if the next month is not the end month, calculate number of days between birth dates of
@@ -63,6 +63,8 @@ fun String.toDogYears(
     val monthsToday = todaySplit.first().toInt()
     val daysToday = todaySplit[1].toInt()
     val yearsToday = todaySplit.last().toInt()
+    // make sure birth date is not after today
+//    check(yearsOfBirthDate <= yearsToday && monthsOfBirthDate <= monthsToday && daysOfBirthDate <= daysToday)
 
     var totalMonthsCount = 0
     var totalDaysCount: Int
