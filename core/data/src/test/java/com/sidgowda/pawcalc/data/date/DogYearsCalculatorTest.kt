@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data
+package com.sidgowda.pawcalc.data.date
 
 import com.sidgowda.pawcalc.data.date.Age
 import com.sidgowda.pawcalc.data.date.toDogYears
