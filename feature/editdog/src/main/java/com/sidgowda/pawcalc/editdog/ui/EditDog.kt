@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.editdog.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,14 +37,30 @@ internal fun EditDogScreen(
     }
 
     val dogInputState: DogInputState by viewModel.dogInputState.collectAsStateWithLifecycle()
-    if (dogInputState.isLoading) {
-        CircularProgressIndicator()
-    } else {
-        DogInput(
-            modifier = modifier,
-            dogInputState = dogInputState,
-            onSaveDog = onSaveDog,
-            handleEvent = viewModel::handleEvent
-        )
+    when {
+        dogInputState.isLoading -> CircularProgressIndicator()
+        dogInputState.isError ->
+            AlertDialog(
+                onDismissRequest = onSaveDog,
+                title = {
+                    // Error
+                    // could not load dog
+
+                },
+                text = {
+                    //could not load dog
+                    // please try again later
+                },
+                confirmButton = {
+                    // ok
+                }
+            )
+        else ->
+            DogInput(
+                modifier = modifier,
+                dogInputState = dogInputState,
+                onSaveDog = onSaveDog,
+                handleEvent = viewModel::handleEvent
+            )
     }
 }

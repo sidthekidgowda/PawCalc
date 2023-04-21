@@ -29,21 +29,31 @@ class EditDogViewModel @Inject constructor(
 
     // this is the Dog we will be editing
     private val editableDog = MutableStateFlow<Dog?>(null)
-    suspend fun fetchDogForId(id: Int) {
+    fun fetchDogForId(id: Int) {
         viewModelScope.launch(computationDispatcher) {
-            val dog = getDogForIdUseCase(id).first()
-            _inputState.update {
-                it.copy(
-                    isLoading = false,
-                    profilePic = dog.profilePic,
-                    name = dog.name,
-                    weight = dog.weight.toString(),
-                    birthDate = dog.birthDate,
-                    inputRequirements = DogInputRequirements.values().toSet()
-                )
-            }.also {
-                // cache the value of the dog
-                editableDog.update { dog }
+            try {
+                val dog = getDogForIdUseCase(id).first()
+                _inputState.update {
+                    it.copy(
+                        isLoading = false,
+                        profilePic = dog.profilePic,
+                        name = dog.name,
+                        weight = dog.weight.toString(),
+                        birthDate = dog.birthDate,
+                        inputRequirements = DogInputRequirements.values().toSet()
+                    )
+                }.also {
+                    // cache the value of the dog
+                    editableDog.update { dog }
+                }
+            } catch (e: Exception) {
+                // add logs
+                _inputState.update {
+                    it.copy(
+                        isLoading = false,
+                        isError = true
+                    )
+                }
             }
         }
     }

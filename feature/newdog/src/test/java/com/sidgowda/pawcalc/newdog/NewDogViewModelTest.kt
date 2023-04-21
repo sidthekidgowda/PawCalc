@@ -323,7 +323,7 @@ class NewDogViewModelTest {
 
         // all input is valid
         viewModel.handleEvent(DogInputEvent.SavingInfo)
-        testDispatcher.scheduler.advanceUntilIdle()
+        advanceUntilIdle()
 
         coVerify { addDogUseCase.invoke(dogInput) }
         capturedDog.captured shouldBe dogInput

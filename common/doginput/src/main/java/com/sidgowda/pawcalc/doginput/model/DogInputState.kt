@@ -4,6 +4,7 @@ import android.net.Uri
 
 data class DogInputState(
     val isLoading: Boolean = false,
+    val isError: Boolean = false,
     val profilePic: Uri? = null,
     val name: String = "",
     val isNameValid: Boolean = true,
