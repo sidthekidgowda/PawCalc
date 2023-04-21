@@ -346,7 +346,7 @@ class NewDogViewModelTest {
 
     private fun NewDogViewModel.createStateHistory(): List<DogInputState> {
         val history = mutableListOf<DogInputState>()
-        scope.backgroundScope.launch(UnconfinedTestDispatcher()) {
+        scope.backgroundScope.launch(mainDispatcherRule.testDispatcher) {
             inputState.toCollection(history)
         }
         return history
