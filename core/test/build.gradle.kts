@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.junit)
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.kotest.assertions.core)
+    implementation(libs.androidx.test.espresso.idlingResource)
     implementation(libs.androidx.test.core)
     implementation(libs.mock.test)
     implementation(libs.androidx.test.ext.junit)

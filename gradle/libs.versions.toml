@@ -9,7 +9,7 @@ lifecycleViewModelCompose = "2.5.1"
 compose-compiler = "1.4.0"
 junit = "4.13.2"
 androidxJunit = "1.1.5"
-espressoCore = "3.4.0"
+espresso = "3.4.0"
 navVersion = "2.5.3"
 hilt = "2.44.2"
 hiltNavigationCompose = "1.0.0"
@@ -77,11 +77,11 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 junit = { module = "junit:junit", version.ref = "junit" }
 androidJunit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit"}
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit"}
-espressoCore = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin"}
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid"}
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
-androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+androidx-test-espresso-idlingResource = { module = "androidx.test.espresso:espresso-idling-resource", version.ref = "espresso" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt"}
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navVersion"}
 androidx-compose-ui-test-junit = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidxComposeUi" }
