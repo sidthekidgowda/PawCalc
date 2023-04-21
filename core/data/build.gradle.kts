@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     coreLibraryDesugaring(libs.android.tools.desugarJdk)
     // test libraries
+    testImplementation(projects.core.test)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotest.assertions.core)

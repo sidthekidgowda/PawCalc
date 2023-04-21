@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.newdog
+package com.sidgowda.pawcalc.test
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

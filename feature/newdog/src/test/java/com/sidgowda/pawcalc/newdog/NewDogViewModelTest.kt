@@ -8,6 +8,7 @@ import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.AddDogUseCase
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
+import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainExactly
