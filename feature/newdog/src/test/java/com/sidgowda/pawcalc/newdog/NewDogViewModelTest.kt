@@ -30,6 +30,7 @@ class NewDogViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var scope: TestScope
+    private lateinit var testDispatcher: TestDispatcher
     private lateinit var viewModel: NewDogViewModel
     private lateinit var addDogUseCase: AddDogUseCase
     private lateinit var capturedDog: CapturingSlot<DogInput>
@@ -39,12 +40,13 @@ class NewDogViewModelTest {
         addDogUseCase = mockk()
         capturedDog = slot()
         coEvery { addDogUseCase.invoke(capture(capturedDog)) } returns Unit
-        viewModel = NewDogViewModel(addDogUseCase, mainDispatcherRule.testDispatcher)
+        testDispatcher = StandardTestDispatcher()
+        viewModel = NewDogViewModel(addDogUseCase, testDispatcher)
         scope = TestScope()
     }
 
     @Test
-    fun `given viewModel is initialized, then it should have an initial state`() = scope.runTest {
+    fun `given viewModel is initialized, then it should have an initial state`() {
         val history = viewModel.createStateHistory()
 
         history shouldContainExactly listOf(
@@ -53,7 +55,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `given initial dog input state, when event updates name, then state should have name and input requirements being updated`() = scope.runTest {
+    fun `given initial dog input state, when event updates name, then state should have name and input requirements being updated`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.NameChanged("Hello"))
 
@@ -67,7 +69,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `when name is has 50 characters, then state should have isNameNotValid set to true and input requirements being updated`() = scope.runTest {
+    fun `when name is has 50 characters, then state should have isNameNotValid set to true and input requirements being updated`() {
         val history = viewModel.createStateHistory()
         var nameWith50 = ""
         val numToString = { (0..9).map { it.toString() }.joinToString(separator = "") }
@@ -86,7 +88,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `when name is more than 50 characters, then state should have isNameNotValid set to false and input requirements being empty`() = scope.runTest {
+    fun `when name is more than 50 characters, then state should have isNameNotValid set to false and input requirements being empty`() {
         val history = viewModel.createStateHistory()
         var nameWith60 = ""
         val numToString = { (0..9).map { it.toString() }.joinToString(separator = "") }
@@ -106,7 +108,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `given name with initial input, when event sets name back to empty string, then state should have isNameValid equal to true`() = scope.runTest {
+    fun `given name with initial input, when event sets name back to empty string, then state should have isNameValid equal to true`() {
         val history = viewModel.createStateHistory()
 
         viewModel.handleEvent(DogInputEvent.NameChanged("Hello"))
@@ -124,7 +126,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `given name with more than 50 characters, when name is updated to less than 50 characters, then state should have isNameValid equal to true and input requirements being updated`() = scope.runTest {
+    fun `given name with more than 50 characters, when name is updated to less than 50 characters, then state should have isNameValid equal to true and input requirements being updated`() {
         val history = viewModel.createStateHistory()
         var nameWith60 = ""
         val numToString = { (0..9).map { it.toString() }.joinToString(separator = "") }
@@ -153,11 +155,10 @@ class NewDogViewModelTest {
         )
     }
     @Test
-    fun `when event updates weight, then state should have weight and input requirements being updated`() = scope.runTest {
+    fun `when event updates weight, then state should have weight and input requirements being updated`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.WeightChanged("50"))
 
-        advanceUntilIdle()
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
@@ -168,7 +169,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `when weight is not a number, then state should have isWeightValid set to false`() = scope.runTest {
+    fun `when weight is not a number, then state should have isWeightValid set to false`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.WeightChanged("50.50.50"))
 
@@ -182,7 +183,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `when weight is less than 0, then state should have isWeightValid set to false`() = scope.runTest {
+    fun `when weight is less than 0, then state should have isWeightValid set to false`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.WeightChanged("-60.1"))
 
@@ -196,7 +197,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `when weight is a valid number, then state should have input requirements being updated`() = scope.runTest {
+    fun `when weight is a valid number, then state should have input requirements being updated`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.WeightChanged("100"))
 
@@ -210,7 +211,7 @@ class NewDogViewModelTest {
     }
 
     @Test
-    fun `given weight is valid, when weight is set to an invalid number, then state should have isWeightValid set to false and input requirements being empty`() = scope.runTest {
+    fun `given weight is valid, when weight is set to an invalid number, then state should have isWeightValid set to false and input requirements being empty`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.WeightChanged("100"))
         viewModel.handleEvent(DogInputEvent.WeightChanged("100.25-23"))
@@ -321,6 +322,7 @@ class NewDogViewModelTest {
 
         // all input is valid
         viewModel.handleEvent(DogInputEvent.SavingInfo)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify { addDogUseCase.invoke(dogInput) }
         capturedDog.captured shouldBe dogInput
