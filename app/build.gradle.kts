@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+    id("java-test-fixtures")
 }
 
 android {
@@ -17,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.sidgowda.pawcalc.PawCalcTestRunner"
+        testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -33,6 +34,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    testOptions {
+        unitTests.apply {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+            animationsDisabled = true
+        }
+    }
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -46,7 +54,7 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "**/attach_hotspot_windows.dll"
-            excludes += "META-INF/licenses/ASM"
+            excludes += "META-INF/*"
         }
     }
 }
@@ -84,6 +92,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
     testImplementation(libs.junit)
+    androidTestImplementation(testFixtures(projects.core.data))
+    androidTestImplementation(projects.core.test)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit)

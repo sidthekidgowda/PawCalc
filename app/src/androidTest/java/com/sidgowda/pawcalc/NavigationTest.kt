@@ -6,18 +6,30 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.sidgowda.pawcalc.newdog.navigation.NEW_DOG_SCREEN_ROUTE
-import com.sidgowda.pawcalc.onboarding.OnboardingSingleton
+import com.sidgowda.pawcalc.data.dispatchers.DispatchersModule
+import com.sidgowda.pawcalc.data.onboarding.di.OnboardingDataModule
+import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
+import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
+import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.onboarding.TestTags.TAG_ADD_DOG_BUTTON
-import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
+import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import javax.inject.Inject
+import javax.inject.Named
 
+@RunWith(AndroidJUnit4::class)
+@UninstallModules(DispatchersModule::class, OnboardingDataModule::class)
 @HiltAndroidTest
 class NavigationTest {
 
@@ -27,14 +39,30 @@ class NavigationTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<PawCalcActivity>()
 
+    @Inject
+    @Named("io_idling")
+    lateinit var ioIdlingDispatcher: IdlingResourceCoroutineDispatcher
+
+    @Inject
+    @Named("computation_idling")
+    lateinit var computationIdlingDispatcher: IdlingResourceCoroutineDispatcher
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
+        IdlingRegistry.getInstance().register(ioIdlingDispatcher)
+        IdlingRegistry.getInstance().register(computationIdlingDispatcher)
+    }
+
     @After
     fun cleanup() {
-        OnboardingSingleton.reset()
+        IdlingRegistry.getInstance().unregister(ioIdlingDispatcher)
+        IdlingRegistry.getInstance().unregister(computationIdlingDispatcher)
     }
 
     @Test
     fun Onboarding_Displayed_By_Default() {
-        composeTestRule.onNodeWithTag(ONBOARDING_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ONBOARDING_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test(expected = NoActivityResumedException::class)
@@ -61,7 +89,7 @@ class NavigationTest {
                 )
             ).performClick()
 
-            onNodeWithTag(DOG_LIST_ROUTE).assertIsDisplayed()
+            onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
         }
     }
 
@@ -69,14 +97,14 @@ class NavigationTest {
     fun Clicking_Back_Button_On_New_Dog_Navigates_To_Dog_List() {
         composeTestRule.onNodeWithTag(TAG_ADD_DOG_BUTTON).performClick()
         pressBack()
-        composeTestRule.onNodeWithTag(DOG_LIST_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
     fun Clicking_On_Settings_Icon_In_Dog_List_Navigates_To_Settings() {
         composeTestRule.onNodeWithTag(TAG_ADD_DOG_BUTTON).performClick()
         pressBack()
-        composeTestRule.onNodeWithTag(DOG_LIST_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
@@ -89,7 +117,7 @@ class NavigationTest {
     fun Clicking_On_Top_Bar_Back_Arrow_Navigates_Back_To_Dog_List() {
         composeTestRule.onNodeWithTag(TAG_ADD_DOG_BUTTON).performClick()
         pressBack()
-        composeTestRule.onNodeWithTag(DOG_LIST_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
@@ -101,7 +129,7 @@ class NavigationTest {
            )
        ).performClick()
 
-        composeTestRule.onNodeWithTag(DOG_LIST_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
     }
 
 
@@ -109,7 +137,7 @@ class NavigationTest {
     fun Clicking_Back_Button_On_Dog_List_Closes_App() {
         composeTestRule.onNodeWithTag(TAG_ADD_DOG_BUTTON).performClick()
         pressBack()
-        composeTestRule.onNodeWithTag(DOG_LIST_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
         pressBack()
     }
 }

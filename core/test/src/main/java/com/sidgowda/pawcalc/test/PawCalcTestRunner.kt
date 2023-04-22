@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.test
 
 import android.app.Application
 import android.content.Context
