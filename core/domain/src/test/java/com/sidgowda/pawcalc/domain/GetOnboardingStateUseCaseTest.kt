@@ -14,6 +14,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetOnboardingStateUseCaseTest {
+
     private object FakeOnboardingRepo : OnboardingRepo {
 
         var mutableSharedFlow = MutableSharedFlow<OnboardingState>(replay = 1)
@@ -27,7 +28,6 @@ class GetOnboardingStateUseCaseTest {
     }
 
     private lateinit var getOnboardingStateUseCase: GetOnboardingStateUseCase
-
 
     @Before
     fun setup() {
