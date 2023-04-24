@@ -15,6 +15,7 @@ class GetDogForIdUseCase @Inject constructor(
 ) {
     operator fun invoke(id: Int): Flow<Dog> {
         return dogsRepo.dogState()
+            .filter { dogState -> !dogState.isLoading }
             .map { it.dogs }
             .flatMapConcat { it.asFlow() }
             .filter { dog -> dog.id == id }
