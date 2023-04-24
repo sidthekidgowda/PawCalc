@@ -33,13 +33,13 @@ class OnboardingRepoTest {
     @Before
     fun setup() {
         onboardingRepo = OnboardingRepoImpl(FakeOnboardingDataSource)
-        FakeOnboardingDataSource.mutableSharedFlow = MutableSharedFlow<OnboardingState>(replay = 1)
+        FakeOnboardingDataSource.mutableSharedFlow = MutableSharedFlow(replay = 1)
     }
     @Test
     fun `when not onboarded, then should return NotOnboarded`() = runTest {
         onboardingRepo.onboardingState.test {
             FakeOnboardingDataSource.mutableSharedFlow.emit(OnboardingState.NotOnboarded)
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
         }
     }
 
@@ -47,10 +47,10 @@ class OnboardingRepoTest {
     fun `when new collector collects again, then should return NotOnboarded`() = runTest {
         onboardingRepo.onboardingState.test {
             FakeOnboardingDataSource.mutableSharedFlow.emit(OnboardingState.NotOnboarded)
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
         }
         onboardingRepo.onboardingState.test {
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
         }
     }
 
@@ -58,7 +58,7 @@ class OnboardingRepoTest {
     fun `when OnboardingRepo setsUserOnboarded, then should return Onboarded`() = runTest {
         onboardingRepo.onboardingState.test {
             FakeOnboardingDataSource.setUserOnboarded()
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
     }
 
@@ -66,9 +66,9 @@ class OnboardingRepoTest {
     fun `given Onboarding returns NotOnboarded when setUserOnboarded, then should return Onboarded`() = runTest {
         onboardingRepo.onboardingState.test {
             FakeOnboardingDataSource.mutableSharedFlow.emit(OnboardingState.NotOnboarded)
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
             FakeOnboardingDataSource.setUserOnboarded()
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
     }
 
@@ -76,10 +76,10 @@ class OnboardingRepoTest {
     fun `given Onboarded, when newCollector subscribes, then should return Onboarded`() = runTest {
         onboardingRepo.onboardingState.test {
             FakeOnboardingDataSource.setUserOnboarded()
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
         onboardingRepo.onboardingState.test {
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
     }
 }

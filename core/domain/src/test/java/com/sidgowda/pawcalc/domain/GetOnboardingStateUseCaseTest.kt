@@ -39,7 +39,7 @@ class GetOnboardingStateUseCaseTest {
     fun `when not onboarded, then should return NotOnboarded`() = runTest {
         getOnboardingStateUseCase.invoke().test {
             FakeOnboardingRepo.mutableSharedFlow.emit(OnboardingState.NotOnboarded)
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
         }
     }
 
@@ -47,10 +47,10 @@ class GetOnboardingStateUseCaseTest {
     fun `when new collector collects again, then should return NotOnboarded`() = runTest {
         getOnboardingStateUseCase.invoke().test {
             FakeOnboardingRepo.mutableSharedFlow.emit(OnboardingState.NotOnboarded)
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
         }
         getOnboardingStateUseCase.invoke().test {
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
         }
     }
 
@@ -58,7 +58,7 @@ class GetOnboardingStateUseCaseTest {
     fun `when OnboardingRepo setsUserOnboarded, then should return Onboarded`() = runTest {
         getOnboardingStateUseCase.invoke().test {
             FakeOnboardingRepo.setUserOnboarded()
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
     }
 
@@ -66,9 +66,9 @@ class GetOnboardingStateUseCaseTest {
     fun `given Onboarding returns NotOnboarded when setUserOnboarded, then should return Onboarded`() = runTest {
         getOnboardingStateUseCase.invoke().test {
             FakeOnboardingRepo.mutableSharedFlow.emit(OnboardingState.NotOnboarded)
-            assertEquals(awaitItem(), OnboardingState.NotOnboarded)
+            assertEquals(OnboardingState.NotOnboarded, awaitItem())
             FakeOnboardingRepo.setUserOnboarded()
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
     }
 
@@ -76,10 +76,10 @@ class GetOnboardingStateUseCaseTest {
     fun `given Onboarded, when newCollector subscribes, then should return Onboarded`() = runTest {
         getOnboardingStateUseCase.invoke().test {
             FakeOnboardingRepo.setUserOnboarded()
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
         getOnboardingStateUseCase.invoke().test {
-            assertEquals(awaitItem(), OnboardingState.Onboarded)
+            assertEquals(OnboardingState.Onboarded, awaitItem())
         }
     }
 }
