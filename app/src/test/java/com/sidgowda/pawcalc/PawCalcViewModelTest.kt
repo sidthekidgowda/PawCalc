@@ -33,7 +33,6 @@ class PawCalcViewModelTest {
         onboardingStateUseCase = mockk()
         testDispatcher = StandardTestDispatcher()
         scope = TestScope()
-
     }
 
     @Test

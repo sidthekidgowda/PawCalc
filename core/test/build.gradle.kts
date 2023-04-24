@@ -58,5 +58,6 @@ dependencies {
     api(libs.androidx.compose.ui.test.junit)
     api(libs.androidx.navigation.testing)
     api(libs.hilt.android.compiler)
+    api(libs.app.cash.turbine)
     debugApi(libs.androidx.compose.ui.test.manifest)
 }
