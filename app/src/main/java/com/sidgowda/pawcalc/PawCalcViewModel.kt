@@ -22,6 +22,10 @@ class PawCalcViewModel @Inject constructor(
                 it
             )
         }
+        .catch {
+            // any errors shouldn't crash app. Treat as unitialized
+            emit(PawCalcActivityState.Initialized(onboardingState = OnboardingState.NotOnboarded))
+        }
         .flowOn(ioDispatcher)
         .stateIn(
             viewModelScope,

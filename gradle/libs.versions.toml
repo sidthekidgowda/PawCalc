@@ -88,7 +88,7 @@ androidx-compose-ui-test-junit = { module = "androidx.compose.ui:ui-test-junit4"
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidxComposeUi" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotestVersion" }
-mock-test = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-test = { module = "io.mockk:mockk", version.ref = "mockk" }
 androidx-test-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxJunit"}
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric"}
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomVersion" }

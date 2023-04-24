@@ -52,7 +52,7 @@ dependencies {
     api(libs.hilt.android.testing)
     api(libs.androidx.test.espresso.core)
     api(libs.androidx.test.core)
-    api(libs.mock.test)
+    api(libs.mockk.test)
     api(libs.androidx.test.junit.ktx)
     api(libs.robolectric)
     api(libs.androidx.compose.ui.test.junit)
