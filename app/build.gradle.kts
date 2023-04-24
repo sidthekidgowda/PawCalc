@@ -68,6 +68,7 @@ dependencies {
     implementation(projects.feature.onboarding)
     implementation(projects.feature.doglist)
     implementation(projects.common.navigation)
+    implementation(libs.androidx.datastore.preferences)
     implementation(projects.common.ui)
     implementation(projects.core.data)
     implementation(projects.core.domain)
