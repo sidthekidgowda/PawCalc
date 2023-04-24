@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.data.onboarding.di
 
-import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataSource
 import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataStore
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
@@ -8,7 +9,6 @@ import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepoImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -27,9 +27,9 @@ object OnboardingDataModule {
     @Singleton
     @Provides
     fun providesOnboardingDataSource(
-        @ApplicationContext context: Context
+        dataStore: DataStore<Preferences>
     ): OnboardingDataSource {
-        return OnboardingDataStore(context)
+        return OnboardingDataStore(dataStore)
     }
 
 }

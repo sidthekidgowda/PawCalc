@@ -10,41 +10,43 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.sidgowda.pawcalc.data.dispatchers.DispatchersModule
-import com.sidgowda.pawcalc.data.onboarding.di.OnboardingDataModule
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.onboarding.TestTags.TAG_ADD_DOG_BUTTON
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import javax.inject.Inject
 import javax.inject.Named
 
 @RunWith(AndroidJUnit4::class)
-@UninstallModules(DispatchersModule::class, OnboardingDataModule::class)
 @HiltAndroidTest
 class NavigationTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
+    @BindValue
     @get:Rule(order = 1)
+    val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
+
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<PawCalcActivity>()
 
     @Inject
-    @Named("io_idling")
+    @Named("io")
     lateinit var ioIdlingDispatcher: IdlingResourceCoroutineDispatcher
 
     @Inject
-    @Named("computation_idling")
+    @Named("computation")
     lateinit var computationIdlingDispatcher: IdlingResourceCoroutineDispatcher
 
     @Before

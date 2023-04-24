@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.data)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.junit)
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.kotest.assertions.core)
