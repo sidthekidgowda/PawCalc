@@ -54,12 +54,8 @@ dependencies {
     implementation(libs.androidx.room.coroutines)
     kapt(libs.hilt.android.compiler)
     kapt(libs.androidx.room.compiler)
-
     // test libraries
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.room.testing)
+    testImplementation(projects.core.test)
+    androidTestImplementation(projects.core.test)
+    kaptAndroidTest(libs.hilt.android.compiler)
 }
