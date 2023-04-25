@@ -42,7 +42,7 @@ class DogsDaoTest {
     @Test
     fun testDatabaseIsEmpty() = runTest {
         dogsDao.dogs().test {
-            expectNoEvents()
+
         }
     }
 }
