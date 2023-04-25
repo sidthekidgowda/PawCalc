@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 
@@ -45,19 +46,22 @@ android {
 dependencies {
     implementation(projects.core.data)
     api(libs.junit)
+    api(libs.androidx.test.ext.junit)
+    api(libs.androidx.test.junit.ktx)
     api(libs.kotlinx.coroutines.test)
     api(libs.kotest.assertions.core)
     api(libs.androidx.test.espresso.idlingResource)
-    api(libs.androidx.test.ext.junit)
     api(libs.hilt.android.testing)
     api(libs.androidx.test.espresso.core)
     api(libs.androidx.test.core)
     api(libs.mockk.test)
-    api(libs.androidx.test.junit.ktx)
     api(libs.robolectric)
     api(libs.androidx.compose.ui.test.junit)
     api(libs.androidx.navigation.testing)
-    api(libs.hilt.android.compiler)
     api(libs.app.cash.turbine)
+    api(libs.androidx.arch.core.testing)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    kaptAndroidTest(libs.hilt.android.compiler)
     debugApi(libs.androidx.compose.ui.test.manifest)
 }
