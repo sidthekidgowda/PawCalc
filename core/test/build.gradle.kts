@@ -61,5 +61,5 @@ dependencies {
     api(libs.androidx.arch.core.testing)
     api(libs.app.cash.turbine)
     api(libs.androidx.test.ext.junit)
-    api(libs.androidx.test.junit.ktx)
+    api(libs.androidx.test.ext.junit.ktx)
 }
