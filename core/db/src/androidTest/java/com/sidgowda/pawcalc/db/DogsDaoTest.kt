@@ -5,7 +5,9 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
+import com.sidgowda.pawcalc.db.dog.DogEntity
 import com.sidgowda.pawcalc.db.dog.DogsDao
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -42,7 +44,7 @@ class DogsDaoTest {
     @Test
     fun testDatabaseIsEmpty() = runTest {
         dogsDao.dogs().test {
-
+            assertEquals(emptyList<DogEntity>(), awaitItem())
         }
     }
 }

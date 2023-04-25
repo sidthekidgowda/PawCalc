@@ -91,6 +91,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
     testImplementation(projects.core.test)
+    testImplementation(libs.mockk.test)
     androidTestImplementation(projects.core.test)
     kaptAndroidTest(libs.hilt.android.compiler)
 }

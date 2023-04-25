@@ -48,8 +48,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     // test libraries
-    // test libraries
     testImplementation(projects.core.test)
+    testImplementation(libs.mockk.test)
     androidTestImplementation(projects.core.test)
     kaptAndroidTest(libs.hilt.android.compiler)
 }
