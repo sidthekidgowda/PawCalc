@@ -11,8 +11,8 @@ import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
-import com.sidgowda.pawcalc.db.dog.DogsDao
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import io.mockk.coVerify
 import io.mockk.spyk
 import io.mockk.verify
@@ -66,7 +66,6 @@ class DogsRepoTest {
     }
 
     private lateinit var dogsRepo: DogsRepo
-    private lateinit var dogsDao: DogsDao
     private lateinit var dogsMemoryDataSource: DogsDataSource
     private lateinit var dogsDiskDataSource: DogsDataSource
     private lateinit var testCoroutineDispatcher: CoroutineDispatcher
@@ -233,23 +232,9 @@ class DogsRepoTest {
             disk = spyDisk,
             computationDispatcher = testCoroutineDispatcher
         )
-        dogsRepo.addDog(
-            DogInput(
-                profilePic = Uri.EMPTY,
-                name = "Dog_1",
-                weight = 65.0.toString(),
-                birthDate = "12/21/2021"
-            )
-        )
-        dogsRepo.addDog(
-            DogInput(
-                profilePic = Uri.EMPTY,
-                name = "Dog_2",
-                weight = 68.0.toString(),
-                birthDate = "12/22/2021"
-            )
-        ).also { advanceUntilIdle() }
-
+        createDogInputs(2).forEach {
+            dogsRepo.addDog(it)
+        }
         dogsRepo.deleteDog(DOG_TWO).also { advanceUntilIdle() }
 
         coVerify {
@@ -260,28 +245,87 @@ class DogsRepoTest {
 
     @Test
     fun `when dogs are deleted, then new subscribers should get updated dogs`() = testScope.runTest {
-        dogsRepo.addDog(
-            DogInput(
-                profilePic = Uri.EMPTY,
-                name = "Dog_1",
-                weight = 65.0.toString(),
-                birthDate = "12/21/2021"
-            )
-        )
-        dogsRepo.addDog(
-            DogInput(
-                profilePic = Uri.EMPTY,
-                name = "Dog_2",
-                weight = 68.0.toString(),
-                birthDate = "12/22/2021"
-            )
-        ).also { advanceUntilIdle() }
-        dogsRepo.deleteDog(DOG_ONE).also { advanceUntilIdle() }
-
+        createDogInputs(2).forEach {
+            dogsRepo.addDog(it)
+        }
+        dogsRepo.deleteDog(DOG_ONE)
         dogsRepo.fetchDogs().also { advanceUntilIdle() }
 
         dogsRepo.dogState().first().dogs shouldContainExactly listOf(
             DOG_TWO
+        )
+    }
+
+    @Test
+    fun `given 6 dogs, when dog 2 is deleted and a new dog is added, then should be added to end of list and it's id is Id 7`() = testScope.runTest {
+        createDogInputs(6).forEach {
+            dogsRepo.addDog(it)
+        }
+        dogsRepo.deleteDog(DOG_TWO)
+        dogsRepo.addDog(
+            DogInput(
+                profilePic = Uri.EMPTY,
+                name = "Dog_7",
+                weight = 68.0.toString(),
+                birthDate = "12/7/2021"
+            )
+        ).also { advanceUntilIdle() }
+
+        dogsRepo.dogState().first().dogs.last() shouldBe Dog(
+            id = 7,
+            name = "Dog_7",
+            weight = 68.0,
+            profilePic = Uri.EMPTY,
+            birthDate = "12/7/2021",
+            dogYears = "12/7/2021".toDogYears(),
+            humanYears = "12/7/2021".toHumanYears()
+        )
+    }
+
+    @Test
+    fun `given 5 dogs, when dog 3 is updated, then it should be updated in memory and disk`() = testScope.runTest {
+        val spyDisk = spyk(dogsDiskDataSource)
+        val spyMemory = spyk(dogsMemoryDataSource)
+        dogsRepo = DogsRepoImpl(
+            memory = spyMemory,
+            disk = spyDisk,
+            computationDispatcher = testCoroutineDispatcher
+        )
+        createDogInputs(5).forEach {
+            dogsRepo.addDog(it)
+        }
+        dogsRepo.updateDog(DOG_THREE.copy( name = "Dog_3_Update")).also { advanceUntilIdle() }
+
+        coVerify {
+            spyMemory.updateDog(any())
+            spyDisk.updateDog(any())
+        }
+    }
+
+    @Test
+    fun `when dog 3 is updated, it should be reflected in new state`() = testScope.runTest {
+        dogsDiskDataSource.addDog(DOG_ONE, DOG_TWO, DOG_THREE)
+        val history = dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs()
+        dogsRepo.updateDog(DOG_THREE.copy( name = "Dog_3_Update")).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogState(
+                isLoading = true,
+                dogs = emptyList()
+            ),
+            DogState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE, DOG_TWO, DOG_THREE
+                )
+            ),
+            DogState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE, DOG_TWO, DOG_THREE.copy(name = "Dog_3_Update")
+                )
+            )
         )
     }
 
@@ -293,46 +337,51 @@ class DogsRepoTest {
         return history
     }
 
+    private fun createDogInputs(count: Int): List<DogInput> {
+        val dogInputList = mutableListOf<DogInput>()
+        for (i in 1..count) {
+            dogInputList.add(
+                DogInput(
+                    profilePic = Uri.EMPTY,
+                    name = "Dog_$i",
+                    weight = 68.0.toString(),
+                    birthDate = "12/$i/2021"
+                )
+            )
+        }
+        return dogInputList
+    }
+
     private companion object {
          val DOG_ONE = Dog(
              id = 1,
              name = "Dog_1",
-             weight = 65.0,
+             weight = 68.0,
              profilePic = Uri.EMPTY,
-             birthDate = "12/21/2021",
-             dogYears = "12/21/2021".toDogYears(),
-             humanYears = "12/21/2021".toHumanYears()
+             birthDate = "12/1/2021",
+             dogYears = "12/1/2021".toDogYears(),
+             humanYears = "12/1/2021".toHumanYears()
          )
         val DOG_TWO = Dog(
             id = 2,
             name = "Dog_2",
             weight = 68.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021",
-            dogYears = "12/22/2021".toDogYears(),
-            humanYears = "12/22/2021".toHumanYears()
+            birthDate = "12/2/2021",
+            dogYears = "12/2/2021".toDogYears(),
+            humanYears = "12/2/2021".toHumanYears()
         )
         val DOG_THREE = Dog(
             id = 3,
             name = "Dog_3",
             weight = 68.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/23/2021",
-            dogYears = "12/23/2021".toDogYears(),
-            humanYears = "12/23/2021".toHumanYears()
+            birthDate = "12/3/2021",
+            dogYears = "12/3/2021".toDogYears(),
+            humanYears = "12/3/2021".toHumanYears()
         )
     }
 
-//    fun dogState(): Flow<DogState>
-//
-//    suspend fun fetchDogs()
-//
-//    suspend fun addDog(dogInput: DogInput)
-//
-//    suspend fun deleteDog(dog: Dog)
-//
-//    suspend fun updateDog(dog: Dog)
 //
 //    suspend fun clear()
-
 }

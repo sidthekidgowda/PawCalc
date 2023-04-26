@@ -29,8 +29,8 @@ class DogsRepoImpl @Inject constructor(
     ) { dogs, loadState ->
         when (loadState) {
             LoadState.Loading -> DogState(
-                isLoading = true,
-                dogs = emptyList()
+                isLoading = dogs?.isEmpty() ?: true,
+                dogs = dogs ?: emptyList()
             )
             LoadState.Idle -> DogState(
                 isLoading = false,
@@ -55,7 +55,7 @@ class DogsRepoImpl @Inject constructor(
                    memory.addDog(*inDiskDogs.toTypedArray())
                 }
             } catch (e: Exception) {
-                // add log statement
+                // todo add log statement
             } finally {
                 loadState.update { LoadState.Idle }
             }
