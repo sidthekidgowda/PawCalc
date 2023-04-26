@@ -45,6 +45,7 @@ class DogsRepoImpl @Inject constructor(
         // if dogs exists in memory, do nothing
         val inMemoryDogs = memory.dogs().first()
         if (inMemoryDogs != null) {
+            loadState.update { LoadState.Idle }
             // add log statement
         } else {
             loadState.update { LoadState.Loading }
