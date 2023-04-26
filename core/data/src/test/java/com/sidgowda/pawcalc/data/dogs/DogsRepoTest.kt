@@ -13,9 +13,7 @@ import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import io.mockk.coVerify
-import io.mockk.spyk
-import io.mockk.verify
+import io.mockk.*
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,6 +27,7 @@ import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -329,6 +328,89 @@ class DogsRepoTest {
         )
     }
 
+    @Test
+    fun `when clear is called, then memory and disk should clear as well`() = testScope.runTest {
+        val spyDisk = spyk(dogsDiskDataSource)
+        val spyMemory = spyk(dogsMemoryDataSource)
+        dogsRepo = DogsRepoImpl(
+            memory = spyMemory,
+            disk = spyDisk,
+            computationDispatcher = testCoroutineDispatcher
+        )
+        createDogInputs(6).forEach {
+            dogsRepo.addDog(it)
+        }
+        dogsRepo.clear().also { advanceUntilIdle() }
+
+        coVerify {
+            spyMemory.clear()
+            spyDisk.clear()
+        }
+    }
+
+    @Test
+    fun `given 6 dogs, when clear is called, then no dogs should be emitted`() = testScope.runTest {
+        dogsDiskDataSource.addDog(
+            DOG_ONE,
+            DOG_TWO,
+            DOG_THREE,
+            DOG_TWO.copy(id = 4),
+            DOG_ONE.copy(id = 5),
+            DOG_THREE.copy(id = 6)
+        )
+        val history = dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs()
+        dogsRepo.clear().also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogState(
+                isLoading = true,
+                dogs = emptyList()
+            ),
+            DogState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE,
+                    DOG_TWO.copy(id = 4),
+                    DOG_ONE.copy(id = 5),
+                    DOG_THREE.copy(id = 6)
+                )
+            ),
+            DogState(
+                isLoading = false,
+                dogs = emptyList()
+            )
+        )
+    }
+
+    @Test
+    fun `when disk throws error, then no dogs should be emitted`() = testScope.runTest {
+        val mockDisk = mockk<DogsDataSource>()
+        coEvery { mockDisk.dogs() } returns flow {
+            throw IOException()
+        }
+        dogsRepo = DogsRepoImpl(
+            memory = dogsMemoryDataSource,
+            disk = mockDisk,
+            computationDispatcher = testCoroutineDispatcher
+        )
+        val history = dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs()
+
+        history shouldContainExactly listOf(
+            DogState(
+                isLoading = true,
+                dogs = emptyList()
+            ),
+            DogState(
+                isLoading = false,
+                dogs = emptyList()
+            )
+        )
+    }
+
     private fun DogsRepo.createStateHistory(): List<DogState> {
         val history = mutableListOf<DogState>()
         testScope.backgroundScope.launch {
@@ -381,7 +463,4 @@ class DogsRepoTest {
             humanYears = "12/3/2021".toHumanYears()
         )
     }
-
-//
-//    suspend fun clear()
 }
