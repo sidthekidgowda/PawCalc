@@ -221,6 +221,7 @@ class EditDogViewModelTest {
         val history = viewModel.createStateHistory()
         viewModel.fetchDogForId(3)
         advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
         viewModel.handleEvent(DogInputEvent.BirthDateChanged("12/20/2021"))
 
         history shouldContainExactly listOf(
@@ -238,6 +239,16 @@ class EditDogViewModelTest {
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                birthDateDialogShown = true,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDateDialogShown = true,
                 birthDate = "12/20/2021",
                 inputRequirements = DogInputRequirements.values().toSet()
             )
@@ -289,11 +300,136 @@ class EditDogViewModelTest {
         viewModel.dogInputState.value.isInputValid() shouldBe false
     }
 
-    // see birth date changed when saving
-    // see weight changed when saving
-    // see requirements change to invalid for name
-    // see requirements change to invalid for weight
-    // see requirements change to invalid for birthdate
+    @Test
+    fun `when weight is changed, then input state is updated`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(1)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.WeightChanged("80.0"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = DOG_ONE.weight.toString(),
+                birthDate = DOG_ONE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = "80.0",
+                birthDate = DOG_ONE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            )
+        )
+    }
+
+    @Test
+    fun `when weight is updated to less than zero, then input state is invalid`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(2)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.WeightChanged("-50.0"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = "-50.0",
+                isWeightValid = false,
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = setOf(
+                    DogInputRequirements.BirthDate,
+                    DogInputRequirements.OnePicture,
+                    DogInputRequirements.NameBetweenZeroAndFifty
+                )
+            )
+        )
+        viewModel.dogInputState.value.isInputValid() shouldBe false
+    }
+
+    @Test
+    fun `when weight is not a number, then input state is invalid`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(2)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.WeightChanged("1.23.0"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = "1.23.0",
+                isWeightValid = false,
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = setOf(
+                    DogInputRequirements.BirthDate,
+                    DogInputRequirements.OnePicture,
+                    DogInputRequirements.NameBetweenZeroAndFifty
+                )
+            )
+        )
+        viewModel.dogInputState.value.isInputValid() shouldBe false
+    }
+
+    @Test
+    fun `when weight is more than 500, then input state is invalid`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(2)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.WeightChanged("5000"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = "5000",
+                isWeightValid = false,
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = setOf(
+                    DogInputRequirements.BirthDate,
+                    DogInputRequirements.OnePicture,
+                    DogInputRequirements.NameBetweenZeroAndFifty
+                )
+            )
+        )
+        viewModel.dogInputState.value.isInputValid() shouldBe false
+    }
+    
     // see requirements change to invalid for profilepic
     //
     // add tests for updateBirthDateDialogShown
