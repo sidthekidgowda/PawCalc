@@ -13,6 +13,8 @@ import com.sidgowda.pawcalc.domain.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.UpdateDogUseCase
 import com.sidgowda.pawcalc.editdog.ui.EditDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.mockk.*
@@ -214,7 +216,7 @@ class EditDogViewModelTest {
                 )
             )
         )
-        viewModel.dogInputState.value.isInputValid() shouldBe false
+        viewModel.dogInputState.value.isInputValid().shouldBeFalse()
     }
 
     @Test
@@ -298,7 +300,7 @@ class EditDogViewModelTest {
                 )
             )
         )
-        viewModel.dogInputState.value.isInputValid() shouldBe false
+        viewModel.dogInputState.value.isInputValid().shouldBeFalse()
     }
 
     @Test
@@ -360,7 +362,7 @@ class EditDogViewModelTest {
                 )
             )
         )
-        viewModel.dogInputState.value.isInputValid() shouldBe false
+        viewModel.dogInputState.value.isInputValid().shouldBeFalse()
     }
 
     @Test
@@ -394,7 +396,7 @@ class EditDogViewModelTest {
                 )
             )
         )
-        viewModel.dogInputState.value.isInputValid() shouldBe false
+        viewModel.dogInputState.value.isInputValid().shouldBeFalse()
     }
 
     @Test
@@ -428,12 +430,22 @@ class EditDogViewModelTest {
                 )
             )
         )
-        viewModel.dogInputState.value.isInputValid() shouldBe false
+        viewModel.dogInputState.value.isInputValid().shouldBeFalse()
     }
 
-    // see requirements change to invalid for profilepic
-    //
-    // add tests for updateBirthDateDialogShown
+    @Test
+    fun `when all updates are valid, then isInputValid should be true`() = scope.runTest {
+        viewModel.fetchDogForId(2)
+        advanceUntilIdle()
+
+        viewModel.handleEvent(DogInputEvent.WeightChanged("29"))
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("2/2/2021"))
+        viewModel.handleEvent(DogInputEvent.NameChanged("Mowgs"))
+        viewModel.handleEvent(DogInputEvent.PicChanged("http://newpic".toUri()))
+
+        viewModel.dogInputState.value.isInputValid().shouldBeTrue()
+    }
 
     @Test
     fun `when save dog is called and nothing is updated, verify updateUseCase uses sameDog`() = scope.runTest {
