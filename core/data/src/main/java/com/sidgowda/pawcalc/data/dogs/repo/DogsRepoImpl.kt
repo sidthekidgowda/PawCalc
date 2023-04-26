@@ -22,7 +22,7 @@ class DogsRepoImpl @Inject constructor(
         object Idle : LoadState()
     }
 
-    private val loadState = MutableStateFlow<LoadState>(LoadState.Idle)
+    private val loadState = MutableStateFlow<LoadState>(LoadState.Loading)
     override fun dogState(): Flow<DogState> = combine(
         memory.dogs(),
         loadState
