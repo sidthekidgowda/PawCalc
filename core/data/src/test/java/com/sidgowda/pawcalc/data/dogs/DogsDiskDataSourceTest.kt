@@ -34,7 +34,7 @@ class DogsDiskDataSourceTest {
     }
 
     @Test
-    fun `assertDiskDataSourceIsEmpty`() = runTest {
+    fun `assert DiskDataSource returns empty if it has no dogs`() = runTest {
         coEvery { dogsDao.dogs() } returns flowOf(emptyList())
 
         dogsDataSource.dogs().test {
@@ -59,6 +59,34 @@ class DogsDiskDataSourceTest {
 
         dogsDataSource.dogs().test {
             assertEquals(listOf(DOG_ONE_ENTITY.toDog(), DOG_TWO_ENTITY.toDog()), awaitItem())
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `add method should be able to add multiple dogs at a time`() = runTest {
+        val listOfDogs = mutableListOf<DogEntity>()
+        coEvery { dogsDao.dogs() } returns flow {
+            emit(listOfDogs)
+        }
+        coEvery { dogsDao.addDog(any()) } answers {
+            val dog = firstArg<DogEntity>()
+            listOfDogs.add(dog)
+        }
+        dogsDataSource.addDog(
+            DOG_ONE_ENTITY.toDog(),
+            DOG_TWO_ENTITY.toDog(),
+            DOG_THREE_ENTITY.toDog()
+        )
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE_ENTITY.toDog(),
+                    DOG_TWO_ENTITY.toDog(),
+                    DOG_THREE_ENTITY.toDog()
+                ), awaitItem()
+            )
             awaitComplete()
         }
     }
