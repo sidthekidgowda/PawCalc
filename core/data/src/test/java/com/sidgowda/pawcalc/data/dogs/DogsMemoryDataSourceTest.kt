@@ -45,7 +45,6 @@ class DogsMemoryDataSourceTest {
                     DOG_TWO_ENTITY.toDog()
                 ), awaitItem()
             )
-            awaitComplete()
         }
     }
 
@@ -65,8 +64,58 @@ class DogsMemoryDataSourceTest {
                     DOG_THREE_ENTITY.toDog()
                 ), awaitItem()
             )
-            awaitComplete()
         }
+    }
+
+    @Test
+    fun `when dog two is deleted, only dog one and dog three exists`() = runTest {
+        dogsDataSource.addDog(
+            DOG_ONE_ENTITY.toDog(),
+            DOG_TWO_ENTITY.toDog(),
+            DOG_THREE_ENTITY.toDog()
+        )
+        dogsDataSource.deleteDog(DOG_TWO_ENTITY.toDog())
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE_ENTITY.toDog(),
+                    DOG_THREE_ENTITY.toDog()
+                ), awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when update is called for dog two, then dog two is updated`() = runTest {
+        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.updateDog(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE_ENTITY.toDog(),
+                    DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
+                    DOG_THREE_ENTITY.toDog()
+                ), awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when clear is called, all dogs should be deleted and null should be returned`() = runTest {
+        dogsDataSource.addDog(
+            DOG_ONE_ENTITY.toDog(),
+            DOG_TWO_ENTITY.toDog(),
+            DOG_THREE_ENTITY.toDog()
+        )
+
+        dogsDataSource.clear()
+
+        val dogs = dogsDataSource.dogs().first()
+        assertNull(dogs)
     }
 
     private companion object {
