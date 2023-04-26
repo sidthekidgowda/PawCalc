@@ -54,6 +54,7 @@ dependencies {
     // test libraries
     testImplementation(projects.core.test)
     testImplementation(libs.mockk.test)
+    testImplementation(libs.robolectric)
     androidTestImplementation(projects.core.test)
     kaptAndroidTest(libs.hilt.android.compiler)
 }
