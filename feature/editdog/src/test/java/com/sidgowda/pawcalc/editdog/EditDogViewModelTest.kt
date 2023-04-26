@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.GetDogForIdUseCase
@@ -12,6 +13,7 @@ import com.sidgowda.pawcalc.domain.UpdateDogUseCase
 import com.sidgowda.pawcalc.editdog.ui.EditDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -74,7 +76,7 @@ class EditDogViewModelTest {
     }
 
     @Test
-    fun `given list of dogs, when getDogForId is called with id, then viewModel should be initialized with Dog One`() = scope.runTest {
+    fun `given list of dogs, when getDogForId is called with id one, then viewModel should be initialized with Dog One`() = scope.runTest {
         val history = viewModel.createStateHistory()
         viewModel.fetchDogForId(1)
         advanceUntilIdle()
@@ -93,7 +95,7 @@ class EditDogViewModelTest {
     }
 
     @Test
-    fun `given list of dogs, when getDogForId is called with id 2, then viewModel should be initialized with Dog Two`() = scope.runTest {
+    fun `given list of dogs, when getDogForId is called with id two, then viewModel should be initialized with Dog Two`() = scope.runTest {
         val history = viewModel.createStateHistory()
         viewModel.fetchDogForId(2)
         advanceUntilIdle()
@@ -112,7 +114,7 @@ class EditDogViewModelTest {
     }
 
     @Test
-    fun `given list of dogs, when getDogForId is called with id 3, then viewModel should be initialized with Dog Three`() = scope.runTest {
+    fun `given list of dogs, when getDogForId is called with id three, then viewModel should be initialized with Dog Three`() = scope.runTest {
         val history = viewModel.createStateHistory()
         viewModel.fetchDogForId(3)
         advanceUntilIdle()
@@ -146,13 +148,155 @@ class EditDogViewModelTest {
         )
     }
 
-    // see name changed when saving
+    @Test
+    fun `when name is updated then input state is updated as well`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(3)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.NameChanged("New name"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = "New name",
+                weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            )
+        )
+    }
+
+    @Test
+    fun `when name is updated and is more than 50characters then input state is invalid`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(2)
+        advanceUntilIdle()
+        var nameWith60 = ""
+        val numToString = { (0..9).map { it.toString() }.joinToString(separator = "") }
+        repeat(6) {
+            nameWith60 += numToString()
+        }
+
+        viewModel.handleEvent(DogInputEvent.NameChanged(nameWith60))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = nameWith60,
+                isNameValid = false,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = setOf(
+                    DogInputRequirements.BirthDate,
+                    DogInputRequirements.OnePicture,
+                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500
+                )
+            )
+        )
+        viewModel.dogInputState.value.isInputValid() shouldBe false
+    }
+
+    @Test
+    fun `when birthdate is updated then input state is updated as well`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(3)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("12/20/2021"))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = "12/20/2021",
+                inputRequirements = DogInputRequirements.values().toSet()
+            )
+        )
+    }
+
+    @Test
+    fun `when birthdate is an empty string, then input state is invalid`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(3)
+        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged(""))
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                birthDateDialogShown = true,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = "",
+                isBirthDateValid = false,
+                birthDateDialogShown = true,
+                inputRequirements = setOf(
+                    DogInputRequirements.NameBetweenZeroAndFifty,
+                    DogInputRequirements.OnePicture,
+                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500
+                )
+            )
+        )
+        viewModel.dogInputState.value.isInputValid() shouldBe false
+    }
+
     // see birth date changed when saving
     // see weight changed when saving
     // see requirements change to invalid for name
     // see requirements change to invalid for weight
     // see requirements change to invalid for birthdate
     // see requirements change to invalid for profilepic
+    //
+    // add tests for updateBirthDateDialogShown
 
     private fun EditDogViewModel.createStateHistory(): List<DogInputState> {
         val history = mutableListOf<DogInputState>()

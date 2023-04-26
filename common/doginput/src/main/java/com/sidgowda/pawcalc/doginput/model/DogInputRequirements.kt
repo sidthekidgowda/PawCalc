@@ -61,8 +61,12 @@ fun MutableStateFlow<DogInputState>.updateBirthDate(birthDate: String) {
     update {
         it.copy(
             birthDate = birthDate,
-            isBirthDateValid = true,
-            inputRequirements = it.inputRequirements.plus(DogInputRequirements.BirthDate)
+            isBirthDateValid = birthDate.isNotEmpty() && it.birthDateDialogShown,
+            inputRequirements = if (birthDate.isNotEmpty()) {
+                it.inputRequirements.plus(DogInputRequirements.BirthDate)
+            } else {
+                it.inputRequirements.minus(DogInputRequirements.BirthDate)
+            }
         )
     }
 }
@@ -70,7 +74,7 @@ fun MutableStateFlow<DogInputState>.updateBirthDate(birthDate: String) {
 fun MutableStateFlow<DogInputState>.updateBirthDateDialogShown() {
     update {
         it.copy(
-            isBirthDateValid = it.birthDate.isNotEmpty()
+            birthDateDialogShown = true
         )
     }
 }

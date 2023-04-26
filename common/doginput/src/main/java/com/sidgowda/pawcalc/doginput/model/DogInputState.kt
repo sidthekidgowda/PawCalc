@@ -12,6 +12,7 @@ data class DogInputState(
     val isWeightValid: Boolean = true,
     val birthDate: String = "",
     val isBirthDateValid: Boolean = true,
+    val birthDateDialogShown: Boolean = false,
     val inputRequirements: Set<DogInputRequirements> = emptySet()
 ) {
     fun isInputValid(): Boolean = inputRequirements.containsAll(

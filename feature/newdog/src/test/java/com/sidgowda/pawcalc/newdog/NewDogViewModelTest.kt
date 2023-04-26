@@ -233,12 +233,17 @@ class NewDogViewModelTest {
     @Test
     fun `given birth date is valid, then state should have birthDate being set and input requirements being updated`() {
         val history = viewModel.createStateHistory()
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
         viewModel.handleEvent(DogInputEvent.BirthDateChanged("12/20/1990"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
+                birthDateDialogShown = true,
+            ),
+            DogInputState(
                 birthDate = "12/20/1990",
+                birthDateDialogShown = true,
                 inputRequirements = setOf(DogInputRequirements.BirthDate)
             )
         )
@@ -248,27 +253,40 @@ class NewDogViewModelTest {
     fun `given birth date dialog shown, when birth date is empty, then isBirthDateValid should be set to false`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged(""))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
+                birthDateDialogShown = true,
+            ),
+            DogInputState(
+                birthDateDialogShown = true,
+                birthDate = "",
                 isBirthDateValid = false
             )
         )
     }
 
     @Test
-    fun `given birth date is invalid, when birth date is updated, then isBirthDateValid should be set to true and input requirements updated`() {
+    fun `given birth date invalid, when birth date is updated, then isBirthDateValid should be set to true and input requirements updated`() {
         val history = viewModel.createStateHistory()
         viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged(""))
         viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
+                birthDateDialogShown = true,
+            ),
+            DogInputState(
+                birthDateDialogShown = true,
+                birthDate = "",
                 isBirthDateValid = false
             ),
             DogInputState(
+                birthDateDialogShown = true,
                 isBirthDateValid = true,
                 birthDate = "7/30/2019",
                 inputRequirements = setOf(DogInputRequirements.BirthDate)
