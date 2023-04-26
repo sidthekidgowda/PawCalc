@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.editdog
 
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
@@ -429,10 +430,53 @@ class EditDogViewModelTest {
         )
         viewModel.dogInputState.value.isInputValid() shouldBe false
     }
-    
+
     // see requirements change to invalid for profilepic
     //
     // add tests for updateBirthDateDialogShown
+
+    @Test
+    fun `when save dog is called and nothing is updated, verify updateUseCase uses sameDog`() = scope.runTest {
+        viewModel.fetchDogForId(3)
+        advanceUntilIdle()
+
+        viewModel.handleEvent(DogInputEvent.SavingInfo)
+        advanceUntilIdle()
+
+        coVerify { updateDogUseCase.invoke(DOG_THREE) }
+        capturedDog.captured shouldBe DOG_THREE
+    }
+
+    @Test
+    fun `when save dog is called, verify updateUseCase is invoked with updatedDog`() = scope.runTest {
+        viewModel.fetchDogForId(2)
+        advanceUntilIdle()
+        val updatedDog = updatedDog()
+
+        viewModel.handleEvent(DogInputEvent.SavingInfo)
+        advanceUntilIdle()
+
+        coVerify { updateDogUseCase.invoke(updatedDog) }
+        capturedDog.captured shouldBe updatedDog
+    }
+
+    private fun updatedDog(): Dog {
+        val uri = "http://pic".toUri()
+        viewModel.handleEvent(DogInputEvent.PicChanged(uri))
+        viewModel.handleEvent(DogInputEvent.NameChanged("Mowgli"))
+        viewModel.handleEvent(DogInputEvent.WeightChanged("100.0"))
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
+
+        return Dog(
+            id = 2,
+            name = "Mowgli",
+            weight = 100.0,
+            profilePic = uri,
+            birthDate = "7/30/2019",
+            dogYears = "7/30/2019".toDogYears(),
+            humanYears = "7/30/2019".toHumanYears()
+        )
+    }
 
     private fun EditDogViewModel.createStateHistory(): List<DogInputState> {
         val history = mutableListOf<DogInputState>()
