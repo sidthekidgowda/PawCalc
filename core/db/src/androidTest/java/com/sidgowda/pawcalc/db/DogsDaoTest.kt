@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.db
 
+import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -31,8 +32,7 @@ class DogsDaoTest {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             PawCalcDatabase::class.java
-        ).allowMainThreadQueries()
-            .build()
+        ).build()
         dogsDao = database.dogDao()
     }
 
@@ -42,9 +42,122 @@ class DogsDaoTest {
     }
 
     @Test
-    fun testDatabaseIsEmpty() = runTest {
+    fun assertDatabaseIsEmpty() = runTest {
         dogsDao.dogs().test {
             assertEquals(emptyList<DogEntity>(), awaitItem())
         }
+    }
+
+    @Test
+    fun givenEmptyDatabase_whenDogIsAdded_thenDatabaseShouldHaveOneDog() = runTest {
+        dogsDao.dogs().test {
+            assertEquals(emptyList<DogEntity>(), awaitItem())
+            dogsDao.addDog(DOG_ONE)
+            assertEquals(listOf(DOG_ONE), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenTwoDogsAreAdded_thenDatabaseShouldHaveTwoDogs() = runTest {
+        dogsDao.addDog(DOG_ONE)
+        dogsDao.addDog(DOG_TWO)
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE, DOG_TWO), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenDeleteDogThreeIsCalled_thenDatabaseShouldNotHaveDogThreeAnymore() = runTest {
+        dogsDao.addDog(DOG_ONE)
+        dogsDao.addDog(DOG_TWO)
+        dogsDao.addDog(DOG_THREE)
+        dogsDao.addDog(DOG_FOUR)
+        dogsDao.deleteDog(DOG_THREE)
+
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE, DOG_TWO, DOG_FOUR), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenUpdateDogTwoIsCalled_ThenDogTwoShouldBeUpdated() = runTest {
+        dogsDao.addDog(DOG_ONE)
+        dogsDao.addDog(DOG_TWO)
+        dogsDao.addDog(DOG_FOUR)
+
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE, DOG_TWO, DOG_FOUR), awaitItem())
+            val updatedDog = DOG_TWO.copy(name = "UpdatedName")
+            dogsDao.updateDog(updatedDog)
+            assertEquals(listOf(DOG_ONE, updatedDog, DOG_FOUR), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenDogsHaveSameId_thenOnlyFirstDogShouldBeAdded() = runTest {
+        dogsDao.addDog(DOG_ONE)
+        dogsDao.addDog(DOG_FOUR.copy(id = 1))
+
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenDeleteAllIsCalled_thenDatabaseShouldHaveNoDogs() = runTest {
+        dogsDao.addDog(DOG_ONE)
+        dogsDao.addDog(DOG_TWO)
+        dogsDao.addDog(DOG_THREE)
+        dogsDao.addDog(DOG_FOUR)
+
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE, DOG_TWO, DOG_THREE, DOG_FOUR), awaitItem())
+            dogsDao.deleteAll()
+            assertEquals(emptyList<DogEntity>(), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenHigherPrimaryKeysAreAddedBeforeLowerPrimaryKeys_thenDatabaseShouldSortInAscendingOrder() = runTest {
+        dogsDao.addDog(DOG_FOUR)
+        dogsDao.addDog(DOG_THREE)
+        dogsDao.addDog(DOG_TWO)
+        dogsDao.addDog(DOG_ONE)
+
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE, DOG_TWO, DOG_THREE, DOG_FOUR), awaitItem())
+        }
+    }
+
+
+    private companion object {
+        val DOG_ONE = DogEntity(
+            id = 1,
+            name = "Dog",
+            weight = 65.0,
+            profilePic = Uri.EMPTY,
+            birthDate = "12/22/2021"
+        )
+        val DOG_TWO = DogEntity(
+            id = 2,
+            name = "Dog",
+            weight = 65.0,
+            profilePic = Uri.EMPTY,
+            birthDate = "12/22/2021"
+        )
+        val DOG_THREE = DogEntity(
+            id = 3,
+            name = "Dog",
+            weight = 65.0,
+            profilePic = Uri.EMPTY,
+            birthDate = "12/22/2021"
+        )
+        val DOG_FOUR = DogEntity(
+            id = 4,
+            name = "Dog",
+            weight = 65.0,
+            profilePic = Uri.EMPTY,
+            birthDate = "12/22/2021"
+        )
     }
 }
