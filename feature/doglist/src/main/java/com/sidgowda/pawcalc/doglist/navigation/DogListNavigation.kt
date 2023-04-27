@@ -22,8 +22,7 @@ fun NavGraphBuilder.dogListScreenDestination(
             savedStateHandle = backStackEntry.savedStateHandle,
             onNavigateToOnboarding = onNavigateToOnboarding,
             onNewDog = onNewDog,
-            onEditDog = onEditDog,
-            onDogDetails = onDogDetails
+            onDogDetails = onEditDog
         )
     }
 }
