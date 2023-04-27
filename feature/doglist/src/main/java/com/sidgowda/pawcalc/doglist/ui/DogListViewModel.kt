@@ -69,7 +69,7 @@ class DogListViewModel @Inject constructor(
         when (event) {
             is DogListEvent.FetchDogs -> fetchDogs()
             is DogListEvent.AddDog -> addDog()
-            is DogListEvent.DogDetails -> dogDetails()
+            is DogListEvent.DogDetails -> dogDetails(event.id)
             is DogListEvent.DeleteDog -> deleteDog(event.dog)
             is DogListEvent.OnNavigated -> onNavigated()
         }
@@ -77,13 +77,13 @@ class DogListViewModel @Inject constructor(
 
     private fun addDog() {
         _localDogListState.update {
-            it.copy(navigateEvent = NavigateEvent.ADD_DOG)
+            it.copy(navigateEvent = NavigateEvent.AddDog)
         }
     }
 
-    private fun dogDetails() {
+    private fun dogDetails(id: Int) {
         _localDogListState.update {
-            it.copy(navigateEvent = NavigateEvent.DOG_DETAILS)
+            it.copy(navigateEvent = NavigateEvent.DogDetails(id))
         }
     }
 

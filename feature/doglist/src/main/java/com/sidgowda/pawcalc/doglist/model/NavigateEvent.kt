@@ -1,5 +1,7 @@
 package com.sidgowda.pawcalc.doglist.model
 
-enum class NavigateEvent {
-    ADD_DOG, DOG_DETAILS
+sealed class NavigateEvent {
+
+    object AddDog : NavigateEvent()
+    data class DogDetails(val id: Int) : NavigateEvent()
 }

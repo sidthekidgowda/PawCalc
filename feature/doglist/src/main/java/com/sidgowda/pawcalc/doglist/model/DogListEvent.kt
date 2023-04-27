@@ -7,6 +7,6 @@ sealed class DogListEvent {
     object AddDog : DogListEvent()
 
     object OnNavigated : DogListEvent()
-    object DogDetails : DogListEvent()
+    data class DogDetails(val id: Int) : DogListEvent()
     data class DeleteDog(val dog: Dog) : DogListEvent()
 }

@@ -50,6 +50,7 @@ import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
+import com.sidgowda.pawcalc.doglist.model.NavigateEvent
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -61,7 +62,7 @@ fun DogList(
     savedStateHandle: SavedStateHandle,
     onNavigateToOnboarding: () -> Unit,
     onNewDog: () -> Unit,
-    onDogDetails: () -> Unit
+    onDogDetails: (Int) -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -106,10 +107,23 @@ internal fun OnboardedDogList(
     modifier: Modifier = Modifier,
     viewModel: DogListViewModel,
     onNewDog: () -> Unit,
-    onDogDetails: () -> Unit
+    onDogDetails: (Int) -> Unit
 ) {
     val dogListState: DogListState by viewModel.dogListState.collectAsStateWithLifecycle()
 
+    dogListState.navigateEvent?.let {  navigateEvent ->
+        LaunchedEffect(key1 = navigateEvent) {
+            when(navigateEvent) {
+                is NavigateEvent.DogDetails -> {
+                    onDogDetails(navigateEvent.id)
+                }
+                NavigateEvent.AddDog -> {
+                    onNewDog()
+                }
+            }
+            viewModel.handleEvent(DogListEvent.OnNavigated)
+        }
+    }
     DogListScreen(
         modifier = modifier,
         dogListState = dogListState,
