@@ -48,6 +48,7 @@ import com.sidgowda.pawcalc.data.date.toText
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -60,7 +61,6 @@ fun DogList(
     savedStateHandle: SavedStateHandle,
     onNavigateToOnboarding: () -> Unit,
     onNewDog: () -> Unit,
-    onEditDog: (Int) -> Unit,
     onDogDetails: () -> Unit
 ) {
     val viewModel: DogListViewModel = hiltViewModel()
@@ -92,30 +92,38 @@ fun DogList(
         }
     }
     if (isOnboarded) {
-        DogListScreen(
+        OnboardedDogList(
             modifier = modifier.fillMaxSize(),
             viewModel = viewModel,
             onNewDog = onNewDog,
-            onEditDog = onEditDog,
-            onDogDetails = onDogDetails,
+            onDogDetails = onDogDetails
         )
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-internal fun DogListScreen(
+internal fun OnboardedDogList(
     modifier: Modifier = Modifier,
     viewModel: DogListViewModel,
     onNewDog: () -> Unit,
-    onEditDog: (Int) -> Unit,
     onDogDetails: () -> Unit
 ) {
-    LaunchedEffect(key1 = Unit) {
-        // fetch dogs to get most recent updates
-        viewModel.fetchDogs()
-    }
     val dogListState: DogListState by viewModel.dogListState.collectAsStateWithLifecycle()
+
+    DogListScreen(
+        modifier = modifier,
+        dogListState = dogListState,
+        handleEvent = viewModel::handleEvent
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+internal fun DogListScreen(
+    modifier: Modifier = Modifier,
+    dogListState: DogListState,
+    handleEvent: (event: DogListEvent) -> Unit
+) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
@@ -123,7 +131,9 @@ internal fun DogListScreen(
                 modifier = Modifier
                     .padding(end = 8.dp, bottom = 8.dp)
                     .size(64.dp),
-                onClick = onNewDog
+                onClick = {
+                    handleEvent(DogListEvent.AddDog)
+                }
             ) {
                 Icon(
                     modifier = Modifier.size(34.dp),
@@ -142,6 +152,7 @@ internal fun DogListScreen(
             when {
                 dogListState.isLoading -> {
                     Shimmer(contentPadding = contentPadding)
+                    handleEvent(DogListEvent.FetchDogs)
                 }
                 else -> {
                     if (dogListState.dogs.isEmpty()) {
@@ -173,7 +184,7 @@ internal fun DogListScreen(
                                     targetValue = if (!isDogItemDismissed) 120.dp else 0.dp,
                                     animationSpec = tween(delayMillis = 300),
                                     finishedListener = {
-                                        viewModel.deleteDog(dog)
+                                        handleEvent(DogListEvent.DeleteDog(dog))
                                     }
                                 )
                                 var dismissState = rememberDismissState(
@@ -204,7 +215,7 @@ internal fun DogListScreen(
                                                 .height(dogItemHeightAnimation)
                                                 .fillMaxWidth()
                                                 .clickable {
-                                                    onEditDog(dog.id)
+                                                    handleEvent(DogListEvent.DogDetails(dog.id))
                                                 },
                                             dog = dog
                                         )
