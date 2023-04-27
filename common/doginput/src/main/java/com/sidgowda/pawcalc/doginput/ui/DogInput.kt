@@ -26,6 +26,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,6 +64,7 @@ fun DogInput(
     onSaveDog: () -> Unit
 ) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
@@ -119,7 +121,6 @@ fun DogInput(
             modifier = modifier,
             scrollState = scrollState,
             bottomSheetState = bottomSheetState,
-            coroutineScope = scope,
             dogInputState = dogInputState,
             dogInputUnit = unit,
             onNameChanged = { name ->
@@ -135,6 +136,12 @@ fun DogInput(
                 handleEvent(DogInputEvent.SavingInfo)
                 onSaveDog()
             },
+            showBottomSheet = {
+                scope.launch {
+                    focusManager.clearFocus()
+                    bottomSheetState.show()
+                }
+            }
         )
         val requestPermission = {
             context.startActivity(
@@ -204,9 +211,9 @@ internal fun DogInputScreen(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
     scrollState: ScrollState,
-    coroutineScope: CoroutineScope,
     dogInputState: DogInputState,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
+    showBottomSheet: () -> Unit,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
     onDatePickerRequest: () -> Unit,
@@ -225,8 +232,8 @@ internal fun DogInputScreen(
     ) {
         CameraInput(
             bottomSheetState = bottomSheetState,
-            coroutineScope = coroutineScope,
-            imageUri = dogInputState.profilePic
+            imageUri = dogInputState.profilePic,
+            showBottomSheet = showBottomSheet
         )
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
@@ -263,17 +270,15 @@ internal fun DogInputScreen(
 internal fun CameraInput(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
-    imageUri: Uri?
+    imageUri: Uri?,
+    showBottomSheet: () -> Unit
 ) {
     if (imageUri == null) {
         EmptyDogPictureWithCamera(
             modifier = modifier.clickable {
                 // open bottom sheet
                 if (!bottomSheetState.isVisible) {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
+                    showBottomSheet()
                 }
             }
         )
@@ -282,9 +287,7 @@ internal fun CameraInput(
             modifier = modifier.clickable {
                 // open bottom sheet
                 if (!bottomSheetState.isVisible) {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
+                    showBottomSheet()
                 }
             }
         ) {
@@ -607,8 +610,8 @@ fun PreviewNewDogScreen() {
             onNameChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope(),
-            scrollState = rememberScrollState()
+            scrollState = rememberScrollState(),
+            showBottomSheet = {}
         )
     }
 }
@@ -626,8 +629,8 @@ fun PreviewEditDogScreen() {
             onNameChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope(),
-            scrollState = rememberScrollState()
+            scrollState = rememberScrollState(),
+            showBottomSheet = {}
         )
     }
 }
