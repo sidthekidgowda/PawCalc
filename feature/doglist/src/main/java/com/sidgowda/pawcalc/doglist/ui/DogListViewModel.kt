@@ -21,6 +21,10 @@ class DogListViewModel @Inject constructor(
     private val dogsRepo: DogsRepo
 ) : ViewModel() {
 
+    companion object {
+        private const val THROTTLE_DURATION = 300L
+    }
+
     data class LocalState(
         val navigateEvent: NavigateEvent?,
         val cachedDogs: List<Dog>
@@ -68,7 +72,7 @@ class DogListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // taking the first click event and ignoring the rest
-            _navigateEventFlow.throttleFirst(300L).collect { navigateEvent ->
+            _navigateEventFlow.throttleFirst(THROTTLE_DURATION).collect { navigateEvent ->
                 // reduce to ui state
                 when (navigateEvent) {
                     NavigateEvent.AddDog -> _localDogListState.update {
