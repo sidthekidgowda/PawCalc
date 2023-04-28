@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.ui.component
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -46,6 +47,8 @@ fun buttonColors() = ButtonDefaults.buttonColors(
 @Composable
 fun PreviewPawCalcButton() {
     PawCalcTheme {
-        PawCalcButton(text = "Save", onClick = {}, )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            PawCalcButton(text = "Save", onClick = {}, )
+        }
     }
 }

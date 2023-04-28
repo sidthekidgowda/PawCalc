@@ -257,6 +257,7 @@ internal fun DogInputScreen(
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
+        //todo verify double clicks to not add multiple dogs
         PawCalcButton(
             enabled = dogInputState.isInputValid(),
             text = stringResource(id = R.string.save_input),
