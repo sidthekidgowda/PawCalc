@@ -110,9 +110,9 @@ internal fun OnboardedDogList(
     onDogDetails: (Int) -> Unit
 ) {
     val dogListState: DogListState by viewModel.dogListState.collectAsStateWithLifecycle()
-    LaunchedEffect(key1 = Unit) {
-        viewModel.navigateEventFlow.throttleFirst(300L).collect { navigateEvent ->
-            when(navigateEvent) {
+    dogListState.navigateEvent?.let { navigateEvent ->
+        LaunchedEffect(key1 = navigateEvent) {
+            when (navigateEvent) {
                 is NavigateEvent.DogDetails -> {
                     onDogDetails(navigateEvent.id)
                 }
@@ -120,6 +120,7 @@ internal fun OnboardedDogList(
                     onNewDog()
                 }
             }
+            viewModel.handleEvent(DogListEvent.OnNavigated)
         }
     }
     DogListScreen(
@@ -199,7 +200,7 @@ internal fun DogListScreen(
                                         handleEvent(DogListEvent.DeleteDog(dog))
                                     }
                                 )
-                                var dismissState = rememberDismissState(
+                                val dismissState = rememberDismissState(
                                     confirmStateChange = {
                                         if (it == DismissValue.DismissedToEnd) {
                                             isDogItemDismissed = true

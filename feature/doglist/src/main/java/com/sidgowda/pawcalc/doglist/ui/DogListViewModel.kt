@@ -21,24 +21,32 @@ class DogListViewModel @Inject constructor(
     private val dogsRepo: DogsRepo
 ) : ViewModel() {
 
+    data class LocalState(
+        val navigateEvent: NavigateEvent?,
+        val cachedDogs: List<Dog>
+    )
+
     val onboardingState: Flow<OnboardingState> = getOnboardingState()
-
     private val _navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
-    val navigateEventFlow = _navigateEventFlow.asSharedFlow()
+    private val _localDogListState = MutableStateFlow(
+        LocalState(
+            navigateEvent = null,
+            cachedDogs = emptyList()
+        )
+    )
 
-    private val cachedDogList = MutableStateFlow<List<Dog>>(emptyList())
-
-    val dogListState: StateFlow<DogListState> = dogsRepo.dogState()
-        .map {
+    val dogListState: StateFlow<DogListState> =
+        combine(_localDogListState, dogsRepo.dogState()) { localState, repoState ->
             DogListState(
-                isLoading = it.isLoading,
-                dogs = it.dogs
+                isLoading = repoState.isLoading,
+                dogs = repoState.dogs,
+                navigateEvent = localState.navigateEvent
             )
         }
         .onEach { dogListState ->
             // update cache
-            cachedDogList.update {
-                dogListState.dogs
+            _localDogListState.update {
+                it.copy(cachedDogs = dogListState.dogs)
             }
         }
         .catch {
@@ -46,7 +54,7 @@ class DogListViewModel @Inject constructor(
             emit(
                 DogListState(
                     isLoading = false,
-                    dogs = cachedDogList.value
+                    dogs = _localDogListState.value.cachedDogs
                 )
             )
         }
@@ -57,23 +65,39 @@ class DogListViewModel @Inject constructor(
             initialValue = DogListState()
         )
 
+    init {
+        viewModelScope.launch {
+            // taking the first click event and ignoring the rest
+            _navigateEventFlow.throttleFirst(300L).collect { navigateEvent ->
+                // reduce to ui state
+                when (navigateEvent) {
+                    NavigateEvent.AddDog -> _localDogListState.update {
+                        it.copy(navigateEvent = NavigateEvent.AddDog)
+                    }
+                    is NavigateEvent.DogDetails ->
+                        _localDogListState.update {
+                            it.copy(
+                                navigateEvent = NavigateEvent.DogDetails(id = navigateEvent.id)
+                            )
+                        }
+                }
+            }
+        }
+    }
+
     fun handleEvent(event: DogListEvent) {
         when (event) {
             is DogListEvent.FetchDogs -> fetchDogs()
             is DogListEvent.AddDog -> onNavigate(NavigateEvent.AddDog)
             is DogListEvent.DogDetails -> onNavigate(NavigateEvent.DogDetails(event.id))
             is DogListEvent.DeleteDog -> deleteDog(event.dog)
+            is DogListEvent.OnNavigated -> _localDogListState.update { it.copy(navigateEvent = null) }
         }
     }
 
     private fun onNavigate(navigateEvent: NavigateEvent) {
         viewModelScope.launch {
-            when (navigateEvent) {
-                NavigateEvent.AddDog -> _navigateEventFlow.emit(NavigateEvent.AddDog)
-                is NavigateEvent.DogDetails -> _navigateEventFlow.emit(
-                    NavigateEvent.DogDetails(id = navigateEvent.id)
-                )
-            }
+            _navigateEventFlow.emit(navigateEvent)
         }
     }
 
