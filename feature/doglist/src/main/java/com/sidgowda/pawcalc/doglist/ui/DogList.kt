@@ -110,9 +110,8 @@ internal fun OnboardedDogList(
     onDogDetails: (Int) -> Unit
 ) {
     val dogListState: DogListState by viewModel.dogListState.collectAsStateWithLifecycle()
-
-    dogListState.navigateEvent?.let {  navigateEvent ->
-        LaunchedEffect(key1 = navigateEvent) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.navigateEventFlow.throttleFirst(300L).collect { navigateEvent ->
             when(navigateEvent) {
                 is NavigateEvent.DogDetails -> {
                     onDogDetails(navigateEvent.id)
@@ -121,7 +120,6 @@ internal fun OnboardedDogList(
                     onNewDog()
                 }
             }
-            viewModel.handleEvent(DogListEvent.OnNavigated)
         }
     }
     DogListScreen(

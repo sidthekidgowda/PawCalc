@@ -21,69 +21,59 @@ class DogListViewModel @Inject constructor(
     private val dogsRepo: DogsRepo
 ) : ViewModel() {
 
-    data class LocalState(
-        val navigateEvent: NavigateEvent?,
-        val cachedDogs: List<Dog>
-    )
-
     val onboardingState: Flow<OnboardingState> = getOnboardingState()
 
-    private val _localDogListState = MutableStateFlow(
-        LocalState(
-            navigateEvent = null,
-            cachedDogs = emptyList()
-        )
-    )
+    private val _navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
+    val navigateEventFlow = _navigateEventFlow.asSharedFlow()
 
-    val dogListState: StateFlow<DogListState> =
-        combine(_localDogListState, dogsRepo.dogState()) { localState, repoState ->
+    private val cachedDogList = MutableStateFlow<List<Dog>>(emptyList())
+
+    val dogListState: StateFlow<DogListState> = dogsRepo.dogState()
+        .map {
             DogListState(
-                isLoading = repoState.isLoading,
-                dogs = repoState.dogs,
-                navigateEvent = localState.navigateEvent
+                isLoading = it.isLoading,
+                dogs = it.dogs
             )
         }
-            .onEach { dogListState ->
-                // update cache
-                _localDogListState.update {
-                    it.copy(cachedDogs = dogListState.dogs)
-                }
+        .onEach { dogListState ->
+            // update cache
+            cachedDogList.update {
+                dogListState.dogs
             }
-            .catch {
-                // if an error is found upstream, use cached list of dogs
-                emit(
-                    DogListState(
-                        isLoading = false,
-                        dogs = _localDogListState.value.cachedDogs
-                    )
+        }
+        .catch {
+            // if an error is found upstream, use cached list of dogs
+            emit(
+                DogListState(
+                    isLoading = false,
+                    dogs = cachedDogList.value
                 )
-            }
-            .flowOn(Dispatchers.Default)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000L),
-                initialValue = DogListState()
             )
+        }
+        .flowOn(Dispatchers.Default)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = DogListState()
+        )
 
     fun handleEvent(event: DogListEvent) {
         when (event) {
             is DogListEvent.FetchDogs -> fetchDogs()
-            is DogListEvent.AddDog -> addDog()
-            is DogListEvent.DogDetails -> dogDetails(event.id)
+            is DogListEvent.AddDog -> onNavigate(NavigateEvent.AddDog)
+            is DogListEvent.DogDetails -> onNavigate(NavigateEvent.DogDetails(event.id))
             is DogListEvent.DeleteDog -> deleteDog(event.dog)
-            is DogListEvent.OnNavigated -> onNavigated()
         }
     }
 
-    private fun addDog() {
-        _localDogListState.update {
-            it.copy(navigateEvent = NavigateEvent.AddDog)
-        }
-    }
-
-    private fun dogDetails(id: Int) {
-        _localDogListState.update {
-            it.copy(navigateEvent = NavigateEvent.DogDetails(id))
+    private fun onNavigate(navigateEvent: NavigateEvent) {
+        viewModelScope.launch {
+            when (navigateEvent) {
+                NavigateEvent.AddDog -> _navigateEventFlow.emit(NavigateEvent.AddDog)
+                is NavigateEvent.DogDetails -> _navigateEventFlow.emit(
+                    NavigateEvent.DogDetails(id = navigateEvent.id)
+                )
+            }
         }
     }
 
@@ -96,12 +86,6 @@ class DogListViewModel @Inject constructor(
     private fun deleteDog(dog: Dog) {
         viewModelScope.launch(Dispatchers.IO) {
             dogsRepo.deleteDog(dog)
-        }
-    }
-
-    private fun onNavigated() {
-        _localDogListState.update {
-            it.copy(navigateEvent = null)
         }
     }
 }
