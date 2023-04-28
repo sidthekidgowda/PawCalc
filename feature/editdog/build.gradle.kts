@@ -48,8 +48,11 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.ui)
+    implementation(projects.common.ui)
     implementation(projects.common.doginput)
+    implementation(projects.common.navigation)
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -67,13 +70,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit)
-    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
-    androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(projects.core.test)
+    testImplementation(libs.mockk.test)
+    testImplementation(libs.robolectric)
+    androidTestImplementation(projects.core.test)
     kaptAndroidTest(libs.hilt.android.compiler)
-    androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.androidx.test.core)
 }

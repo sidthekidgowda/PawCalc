@@ -218,7 +218,7 @@ fun PreviewCamera() {
 fun PreviewCameraShutterButton() {
     PawCalcTheme() {
         CameraShutterButton() {
-            
+
         }
     }
 }

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -48,9 +49,9 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.ui)
+    implementation(projects.common.ui)
     implementation(projects.common.camera)
-    implementation(projects.common.date)
+    implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -63,13 +64,15 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.com.google.android.material)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit)
-    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
-    androidTestImplementation(libs.androidx.test.core)
+    testImplementation(projects.core.test)
+    testImplementation(libs.mockk.test)
+    testImplementation(libs.robolectric)
+    androidTestImplementation(projects.core.test)
+    kaptAndroidTest(libs.hilt.android.compiler)
 }

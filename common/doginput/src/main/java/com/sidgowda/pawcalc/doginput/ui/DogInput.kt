@@ -26,6 +26,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,9 +40,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.camera.CameraMediaActivity
 import com.sidgowda.pawcalc.date.DatePickerDialogFragment
 import com.sidgowda.pawcalc.date.DatePickerListener
+import com.sidgowda.pawcalc.date.dateToLong
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
-import com.sidgowda.pawcalc.doginput.model.DogInputMode
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.model.DogInputUnit
 import com.sidgowda.pawcalc.doginput.ui.*
@@ -50,6 +51,7 @@ import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PictureWithCameraIcon
 import com.sidgowda.pawcalc.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
@@ -57,12 +59,12 @@ import kotlinx.coroutines.launch
 fun DogInput(
     modifier: Modifier = Modifier,
     dogInputState: DogInputState,
-    dogInputMode: DogInputMode,
     unit: DogInputUnit = DogInputUnit.IMPERIAL,
     handleEvent: (event: DogInputEvent) -> Unit,
     onSaveDog: () -> Unit
 ) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
@@ -119,7 +121,6 @@ fun DogInput(
             modifier = modifier,
             scrollState = scrollState,
             bottomSheetState = bottomSheetState,
-            coroutineScope = scope,
             dogInputState = dogInputState,
             dogInputUnit = unit,
             onNameChanged = { name ->
@@ -131,7 +132,16 @@ fun DogInput(
             onDatePickerRequest = {
                 isDatePickerRequested = true
             },
-            onSaveDog = onSaveDog,
+            onSaveDog = {
+                handleEvent(DogInputEvent.SavingInfo)
+                onSaveDog()
+            },
+            showBottomSheet = {
+                scope.launch {
+                    focusManager.clearFocus()
+                    bottomSheetState.show()
+                }
+            }
         )
         val requestPermission = {
             context.startActivity(
@@ -182,6 +192,7 @@ fun DogInput(
         if (isDatePickerRequested) {
             OpenDatePicker(
                 date = dogInputState.birthDate,
+                coroutineScope = scope,
                 onDateSelected = { date ->
                     handleEvent(DogInputEvent.BirthDateChanged(date))
                 },
@@ -200,9 +211,9 @@ internal fun DogInputScreen(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
     scrollState: ScrollState,
-    coroutineScope: CoroutineScope,
     dogInputState: DogInputState,
     dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
+    showBottomSheet: () -> Unit,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
     onDatePickerRequest: () -> Unit,
@@ -215,15 +226,14 @@ internal fun DogInputScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(PawCalcTheme.colors.background)
-            .padding(top = 40.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+            .background(PawCalcTheme.colors.background),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CameraInput(
             bottomSheetState = bottomSheetState,
-            coroutineScope = coroutineScope,
-            imageUri = dogInputState.profilePic
+            imageUri = dogInputState.profilePic,
+            showBottomSheet = showBottomSheet
         )
         NameInput(
             modifier = Modifier.padding(horizontal = 48.dp),
@@ -247,10 +257,10 @@ internal fun DogInputScreen(
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
-        SaveButton(
-            modifier = Modifier.fillMaxWidth(),
-            isEnabled = dogInputState.isInputValid(),
-            onSaveDog = onSaveDog
+        PawCalcButton(
+            enabled = dogInputState.isInputValid(),
+            text = stringResource(id = R.string.save_input),
+            onClick = onSaveDog
         )
     }
 }
@@ -260,17 +270,15 @@ internal fun DogInputScreen(
 internal fun CameraInput(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
-    imageUri: Uri?
+    imageUri: Uri?,
+    showBottomSheet: () -> Unit
 ) {
     if (imageUri == null) {
         EmptyDogPictureWithCamera(
             modifier = modifier.clickable {
                 // open bottom sheet
                 if (!bottomSheetState.isVisible) {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
+                    showBottomSheet()
                 }
             }
         )
@@ -279,9 +287,7 @@ internal fun CameraInput(
             modifier = modifier.clickable {
                 // open bottom sheet
                 if (!bottomSheetState.isVisible) {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
+                    showBottomSheet()
                 }
             }
         ) {
@@ -327,6 +333,10 @@ internal fun NameInput(
             onValueChange = {
                 onNameChanged(it)
             },
+            shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
+                bottomStart = ZeroCornerSize,
+                bottomEnd = ZeroCornerSize
+            ),
             textStyle = PawCalcTheme.typography.h5,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = PawCalcTheme.colors.surface(),
@@ -348,7 +358,7 @@ internal fun NameInput(
         if (isNameError) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Name must be at least 1 character and at most 50 characters",
+                text = stringResource(id = R.string.name_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -433,7 +443,7 @@ internal fun WeightInput(
         if (isWeightError) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Weight must be a number and more than 0 lbs",
+                text = stringResource(id = R.string.weight_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -461,7 +471,7 @@ internal fun BirthDateInput(
             onValueChange = {},
             placeholder = {
                 Text(
-                    text = "mm/dd/yyyy",
+                    text = stringResource(id = R.string.birth_date_american_placeholder),
                     textAlign = TextAlign.Start,
                     style = PawCalcTheme.typography.h7,
                 )
@@ -530,7 +540,7 @@ internal fun BirthDateInput(
         if (isBirthDateError) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Please select a birth date",
+                text = stringResource(id = R.string.birth_date_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -540,56 +550,48 @@ internal fun BirthDateInput(
 @Composable
 internal fun OpenDatePicker(
     modifier: Modifier = Modifier,
+    coroutineScope: CoroutineScope,
     date: String,
     onDateSelected: (String) -> Unit = {},
     onDatePickerDismissed: () -> Unit
 ) {
-    AndroidViewBinding(
-        DatePickerDialogBinding::inflate,
-        modifier = modifier.fillMaxSize()
-    ) {
-        val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
-        fragment.arguments = Bundle().apply {
-            putString(DatePickerDialogFragment.BUNDLE_DATE_KEY, date)
-        }
-        fragment.datePickerListener = object : DatePickerListener {
-            override fun dateSelected(date: String) {
-               // update date
-                onDateSelected(date)
-                onDatePickerDismissed()
-            }
-
-            override fun onCancel() {
-                onDatePickerDismissed()
-            }
-
-            override fun onDismiss() {
-                onDatePickerDismissed()
-            }
+    var isDateReadyToShow by remember {
+        mutableStateOf(false)
+    }
+    var dateAsLong: Long by remember {
+        mutableStateOf(0L)
+    }
+    LaunchedEffect(key1 = Unit) {
+        coroutineScope.launch(Dispatchers.Default) {
+            dateAsLong = dateToLong(date)
+            isDateReadyToShow = true
         }
     }
-}
+    if (isDateReadyToShow) {
+        AndroidViewBinding(
+            DatePickerDialogBinding::inflate,
+            modifier = modifier.fillMaxSize()
+        ) {
+            val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
+            fragment.arguments = Bundle().apply {
+                putLong(DatePickerDialogFragment.BUNDLE_DATE_KEY, dateAsLong)
+            }
+            fragment.datePickerListener = object : DatePickerListener {
+                override fun dateSelected(date: String) {
+                    // update date
+                    onDateSelected(date)
+                    onDatePickerDismissed()
+                }
 
-@Composable
-internal fun SaveButton(
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean,
-    onSaveDog: () -> Unit
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-        )
-        PawCalcButton(
-            enabled = isEnabled,
-            text = stringResource(id = R.string.save_input),
-            onClick = onSaveDog
-        )
+                override fun onCancel() {
+                    onDatePickerDismissed()
+                }
+
+                override fun onDismiss() {
+                    onDatePickerDismissed()
+                }
+            }
+        }
     }
 }
 
@@ -608,8 +610,8 @@ fun PreviewNewDogScreen() {
             onNameChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope(),
-            scrollState = rememberScrollState()
+            scrollState = rememberScrollState(),
+            showBottomSheet = {}
         )
     }
 }
@@ -627,8 +629,8 @@ fun PreviewEditDogScreen() {
             onNameChanged = {},
             onDatePickerRequest = {},
             bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            coroutineScope = rememberCoroutineScope(),
-            scrollState = rememberScrollState()
+            scrollState = rememberScrollState(),
+            showBottomSheet = {}
         )
     }
 }

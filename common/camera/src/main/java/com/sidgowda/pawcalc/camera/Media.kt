@@ -174,7 +174,7 @@ private fun retrieveImagesFromMedia(context: Context): List<MediaImage> {
 fun PreviewOpenMedia() {
     PawCalcTheme {
         OpenMedia(
-            onClose = {  },
+            onClose = { },
             onSavePhoto = {}
         )
     }

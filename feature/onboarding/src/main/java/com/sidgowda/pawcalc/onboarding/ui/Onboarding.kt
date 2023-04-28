@@ -10,8 +10,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.onboarding.TestTags.TAG_ADD_DOG_BUTTON
-import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
+import com.sidgowda.pawcalc.onboarding.ui.OnboardingViewModel
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PawCalcLogo
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -22,11 +24,12 @@ fun Onboarding(
     onNavigateToNewDog: () -> Unit,
     onPopBackStack: () -> Unit
 ) {
+    val viewModel: OnboardingViewModel = hiltViewModel()
     OnboardingScreen(
         onBoarded = {
             onPopBackStack()
             onNavigateToNewDog()
-            OnboardingSingleton.onOnboarded()
+            viewModel.setUserOnboarded()
         }
     )
 }
@@ -40,7 +43,7 @@ internal fun OnboardingScreen(
         modifier = modifier
             .fillMaxSize()
             .background(PawCalcTheme.colors.background)
-            .testTag(ONBOARDING_ROUTE),
+            .testTag(ONBOARDING_SCREEN_ROUTE),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

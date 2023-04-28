@@ -4,9 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.newdog.NewDog
-
-const val NEW_DOG_SCREEN_ROUTE = "new_dog_screen_route"
 
 fun NavController.navigateToNewDogScreen(navOptions: NavOptions? = null) {
     this.navigate(NEW_DOG_SCREEN_ROUTE, navOptions)

@@ -17,7 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.sidgowda.pawcalc.PawCalcTestRunner"
+        testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -33,6 +33,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    testOptions {
+        unitTests.apply {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+            animationsDisabled = true
+        }
+    }
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -44,9 +51,8 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "**/attach_hotspot_windows.dll"
-            excludes += "META-INF/licenses/ASM"
+            excludes += "META-INF/*"
         }
     }
 }
@@ -59,7 +65,13 @@ dependencies {
     implementation(projects.feature.newdog)
     implementation(projects.feature.editdog)
     implementation(projects.feature.onboarding)
-    implementation(projects.core.ui)
+    implementation(projects.feature.doglist)
+    implementation(projects.common.navigation)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(projects.common.ui)
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -78,13 +90,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit)
-    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
-    androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(projects.core.test)
+    testImplementation(libs.mockk.test)
+    testImplementation(libs.robolectric)
+    androidTestImplementation(projects.core.test)
     kaptAndroidTest(libs.hilt.android.compiler)
-    androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.androidx.test.core)
 }

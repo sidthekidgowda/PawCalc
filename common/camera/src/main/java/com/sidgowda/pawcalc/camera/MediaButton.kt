@@ -59,8 +59,8 @@ fun PreviewBackButton() {
 @Composable
 fun PreviewCloseButton() {
     PawCalcTheme {
-       MediaButton(imageVector = Icons.Default.Close) {
+        MediaButton(imageVector = Icons.Default.Close) {
 
-       }
+        }
     }
 }

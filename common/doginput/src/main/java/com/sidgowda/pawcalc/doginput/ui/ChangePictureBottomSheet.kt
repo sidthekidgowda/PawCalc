@@ -122,7 +122,7 @@ fun PreviewChangePictureBottomSheet() {
 fun PreviewTakePhotoFromCamera() {
     PawCalcTheme {
         PictureItem(
-            onAction = {  },
+            onAction = { },
             content = {
                 TakePhotoFromCamera()
             }
@@ -136,7 +136,7 @@ fun PreviewTakePhotoFromCamera() {
 fun PreviewChoosePhotoFromMedia() {
     PawCalcTheme {
         PictureItem(
-            onAction = {  },
+            onAction = { },
             content = {
                 ChoosePhotoFromMedia()
             }

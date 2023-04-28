@@ -8,9 +8,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.sidgowda.pawcalc.R
 import com.sidgowda.pawcalc.SETTINGS_ROUTE
-import com.sidgowda.pawcalc.editdog.EDIT_DOG_SCREEN_ROUTE
-import com.sidgowda.pawcalc.newdog.navigation.NEW_DOG_SCREEN_ROUTE
-import com.sidgowda.pawcalc.onboarding.navigation.ONBOARDING_ROUTE
 
 sealed class Destination(
     @StringRes val title: Int,
@@ -22,11 +19,17 @@ sealed class Destination(
     companion object {
         fun fromString(route: String): Destination {
             return when(route) {
-                ONBOARDING_ROUTE -> Onboarding
+                ONBOARDING_SCREEN_ROUTE -> Onboarding
                 SETTINGS_ROUTE -> Settings
                 NEW_DOG_SCREEN_ROUTE -> NewDog
-                EDIT_DOG_SCREEN_ROUTE -> EditDog
-                else -> DogList
+                DOG_LIST_SCREEN_ROUTE -> DogList
+                else -> {
+                    // edit dog has arguments
+                    if (route.contains(EDIT_DOG_SCREEN_ROUTE)) {
+                        return EditDog
+                    }
+                    throw IllegalStateException("route is invalid")
+                }
             }
         }
     }
