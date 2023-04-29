@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.onboarding.di
+package com.sidgowda.pawcalc.data.modules
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

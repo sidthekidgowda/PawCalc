@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.dogs.di
+package com.sidgowda.pawcalc.data.modules
 
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDiskDataSource

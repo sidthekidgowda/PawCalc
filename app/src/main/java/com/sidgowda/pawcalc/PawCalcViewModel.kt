@@ -3,7 +3,12 @@ package com.sidgowda.pawcalc
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.db.settings.DateFormat
+import com.sidgowda.pawcalc.db.settings.ThemeFormat
+import com.sidgowda.pawcalc.db.settings.WeightFormat
 import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -13,18 +18,30 @@ import javax.inject.Named
 @HiltViewModel
 class PawCalcViewModel @Inject constructor(
     getOnboardingState: GetOnboardingStateUseCase,
+    getSettingsUseCase: GetSettingsUseCase,
     @Named("io") ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    // combine onboarding with 
     val uiState: StateFlow<PawCalcActivityState> =
-        getOnboardingState().map {
+        getOnboardingState().zip(getSettingsUseCase()) { onboarding, settings ->
             PawCalcActivityState.Initialized(
-                it
+                onboarding,
+                settings
             )
         }
         .catch {
             // any errors shouldn't crash app. Treat as uninitialized
-            emit(PawCalcActivityState.Initialized(onboardingState = OnboardingState.NotOnboarded))
+            emit(
+                PawCalcActivityState.Initialized(
+                    onboardingState = OnboardingState.NotOnboarded,
+                    settings = Settings(
+                        weightFormat = WeightFormat.POUNDS,
+                        dateFormat = DateFormat.AMERICAN,
+                        themeFormat = ThemeFormat.SYSTEM
+                    )
+                )
+            )
         }
         .flowOn(ioDispatcher)
         .stateIn(
@@ -37,6 +54,7 @@ class PawCalcViewModel @Inject constructor(
 sealed interface PawCalcActivityState {
     object Loading : PawCalcActivityState
     data class Initialized(
-        val onboardingState: OnboardingState
+        val onboardingState: OnboardingState,
+        val settings: Settings
     ) : PawCalcActivityState
 }

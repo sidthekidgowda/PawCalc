@@ -68,7 +68,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun saveUpdatedSettings(updatedSettings: Settings) {
         viewModelScope.launch {
-            updateSettingsUseCase.invoke(updatedSettings)
+            updateSettingsUseCase(updatedSettings)
         }
     }
 }

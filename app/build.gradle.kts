@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(projects.common.ui)
     implementation(projects.core.data)
+    implementation(projects.core.db)
     implementation(projects.core.domain)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)

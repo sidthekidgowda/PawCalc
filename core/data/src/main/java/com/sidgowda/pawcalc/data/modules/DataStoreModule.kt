@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.onboarding.di
+package com.sidgowda.pawcalc.data.modules
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -15,7 +15,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -30,13 +29,14 @@ object DataStoreModule {
     fun providesDataStore(
         @ApplicationContext context: Context,
         @Named("io") ioDispatcher: CoroutineDispatcher,
+        @Named("ioScope") ioScope: CoroutineScope
     ): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
             corruptionHandler = ReplaceFileCorruptionHandler(
                 produceNewData = { emptyPreferences() }
             ),
             migrations = listOf(SharedPreferencesMigration(context, DATA_STORE_KEY)),
-            scope = CoroutineScope(ioDispatcher + SupervisorJob()),
+            scope = ioScope,
             produceFile = { context.preferencesDataStoreFile(DATA_STORE_KEY) }
         )
     }

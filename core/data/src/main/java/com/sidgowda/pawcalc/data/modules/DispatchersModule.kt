@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.dispatchers
+package com.sidgowda.pawcalc.data.modules
 
 import dagger.Module
 import dagger.Provides

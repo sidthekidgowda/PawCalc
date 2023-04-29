@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.settings.di
+package com.sidgowda.pawcalc.data.modules
 
 import com.sidgowda.pawcalc.data.settings.datasource.CachedSettingsDataSource
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -30,8 +31,8 @@ object SettingsModule {
     @Singleton
     fun providesSettingsDataSource(
         settingsDao: SettingsDao,
-        @Named("io") ioDispatcher: CoroutineDispatcher
+        @Named("ioScope") ioScope: CoroutineScope
     ): SettingsDataSource {
-        return CachedSettingsDataSource(settingsDao, ioDispatcher)
+        return CachedSettingsDataSource(settingsDao, ioScope)
     }
 }
