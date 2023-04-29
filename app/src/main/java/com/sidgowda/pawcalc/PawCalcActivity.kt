@@ -5,14 +5,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidgowda.pawcalc.db.settings.ThemeFormat
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -42,8 +40,14 @@ class PawCalcActivity : AppCompatActivity() {
             }
         }
         setContent {
+            val systemUiController = rememberSystemUiController()
+            val darkTheme = shouldUseDarkTheme(uiState)
+            DisposableEffect(systemUiController, darkTheme) {
+                systemUiController.systemBarsDarkContentEnabled = !darkTheme
+                onDispose {}
+            }
             PawCalcTheme(
-                darkTheme = shouldUseDarkTheme(uiState = uiState)
+                darkTheme = darkTheme
             ) {
                 PawCalc()
             }

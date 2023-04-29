@@ -29,15 +29,20 @@ class CachedSettingsDataSource @Inject constructor(
 
     init {
         scope.launch {
-            val savedSettingsList = settingsDao.settings().first()
-            //todo handle io error
-            updateSettings(
-                if (savedSettingsList.isEmpty()) {
-                    INITIAL_SETTINGS
-                } else {
-                    savedSettingsList.first().toSettings()
-                }
-            )
+            try {
+                val savedSettingsList = settingsDao.settings().first()
+                //todo handle io error
+                updateSettings(
+                    if (savedSettingsList.isEmpty()) {
+                        INITIAL_SETTINGS
+                    } else {
+                        savedSettingsList.first().toSettings()
+                    }
+                )
+            } catch (e: Exception) {
+                //todo add log for error
+                updateSettings(INITIAL_SETTINGS)
+            }
         }
     }
 

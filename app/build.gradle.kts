@@ -69,6 +69,7 @@ dependencies {
     implementation(projects.feature.settings)
     implementation(projects.common.navigation)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.accompanist.systemuicontroller)
     implementation(projects.common.ui)
     implementation(projects.core.data)
     implementation(projects.core.db)
