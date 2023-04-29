@@ -30,6 +30,8 @@ class DogListViewModel @Inject constructor(
         val cachedDogs: List<Dog>
     )
 
+    // todo add saved state handle for process death for local state
+
     val onboardingState: Flow<OnboardingState> = getOnboardingState()
     private val _navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
     private val _localDogListState = MutableStateFlow(
