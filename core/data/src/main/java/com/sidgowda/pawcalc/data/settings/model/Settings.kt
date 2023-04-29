@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.settings
+package com.sidgowda.pawcalc.data.settings.model
 
 data class Settings(
     val weightFormat: WeightFormat,

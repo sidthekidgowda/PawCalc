@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.settings
+package com.sidgowda.pawcalc.data.settings.model
 
 enum class ThemeFormat {
     SYSTEM, LIGHT, DARK

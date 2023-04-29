@@ -1,9 +1,9 @@
 package com.sidgowda.pawcalc.settings.ui
 
 import androidx.lifecycle.ViewModel
-import com.sidgowda.pawcalc.data.settings.DateFormat
-import com.sidgowda.pawcalc.data.settings.ThemeFormat
-import com.sidgowda.pawcalc.data.settings.WeightFormat
+import com.sidgowda.pawcalc.data.settings.model.DateFormat
+import com.sidgowda.pawcalc.data.settings.model.ThemeFormat
+import com.sidgowda.pawcalc.data.settings.model.WeightFormat
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
 import com.sidgowda.pawcalc.settings.model.SettingsState
 import kotlinx.coroutines.flow.MutableStateFlow

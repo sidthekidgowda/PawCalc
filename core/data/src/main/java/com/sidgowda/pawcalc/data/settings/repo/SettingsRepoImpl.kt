@@ -1,5 +1,7 @@
-package com.sidgowda.pawcalc.data.settings
+package com.sidgowda.pawcalc.data.settings.repo
 
+import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.data.settings.SettingsDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -7,8 +9,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SettingsRepoImpl @Inject constructor(
-    @Named("cached") private val cachedSettingsDataSource: SettingsDataSource,
-    @Named("disk") private val diskSettingsDataSource: SettingsDataSource,
+    private val settingsDataSource: SettingsDataSource,
     @Named("io") private val ioDispatcher: CoroutineDispatcher
 ) : SettingsRepo {
 
