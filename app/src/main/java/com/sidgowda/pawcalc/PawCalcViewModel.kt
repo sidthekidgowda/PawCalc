@@ -3,7 +3,7 @@ package com.sidgowda.pawcalc
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
-import com.sidgowda.pawcalc.domain.GetOnboardingStateUseCase
+import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*

@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.domain
+package com.sidgowda.pawcalc.domain.dogs
 
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo

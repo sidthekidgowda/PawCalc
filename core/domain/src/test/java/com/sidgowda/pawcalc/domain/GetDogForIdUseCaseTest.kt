@@ -8,6 +8,7 @@ import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
+import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

@@ -1,7 +1,7 @@
 package com.sidgowda.pawcalc
 
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
-import com.sidgowda.pawcalc.domain.GetOnboardingStateUseCase
+import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every

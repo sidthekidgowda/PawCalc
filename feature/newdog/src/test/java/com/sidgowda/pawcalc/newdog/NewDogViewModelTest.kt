@@ -6,7 +6,7 @@ import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
-import com.sidgowda.pawcalc.domain.AddDogUseCase
+import com.sidgowda.pawcalc.domain.dogs.AddDogUseCase
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.booleans.shouldBeFalse

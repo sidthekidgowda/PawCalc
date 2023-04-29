@@ -7,8 +7,8 @@ import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
-import com.sidgowda.pawcalc.domain.GetDogForIdUseCase
-import com.sidgowda.pawcalc.domain.UpdateDogUseCase
+import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
+import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*

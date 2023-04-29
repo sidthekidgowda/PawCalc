@@ -9,8 +9,8 @@ import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
-import com.sidgowda.pawcalc.domain.GetDogForIdUseCase
-import com.sidgowda.pawcalc.domain.UpdateDogUseCase
+import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
+import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import com.sidgowda.pawcalc.editdog.ui.EditDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.booleans.shouldBeFalse
