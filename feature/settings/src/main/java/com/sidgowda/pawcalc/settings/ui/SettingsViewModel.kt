@@ -1,9 +1,9 @@
 package com.sidgowda.pawcalc.settings.ui
 
 import androidx.lifecycle.ViewModel
-import com.sidgowda.pawcalc.settings.model.Theme
-import com.sidgowda.pawcalc.settings.model.WeightFormat
-import com.sidgowda.pawcalc.settings.model.DateFormat
+import com.sidgowda.pawcalc.data.settings.DateFormat
+import com.sidgowda.pawcalc.data.settings.ThemeFormat
+import com.sidgowda.pawcalc.data.settings.WeightFormat
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
 import com.sidgowda.pawcalc.settings.model.SettingsState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +45,7 @@ class SettingsViewModel @Inject constructor(
         // update to disk
     }
 
-    private fun updateTheme(theme: Theme) {
+    private fun updateTheme(theme: ThemeFormat) {
         _settings.update {
             it.copy(theme = theme)
         }

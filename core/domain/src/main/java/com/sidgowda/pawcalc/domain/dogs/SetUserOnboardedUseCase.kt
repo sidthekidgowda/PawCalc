@@ -6,7 +6,7 @@ import javax.inject.Inject
 class SetUserOnboardedUseCase @Inject constructor(
     private val onboardingRepo: OnboardingRepo
 ) {
-    operator suspend fun invoke() {
+    suspend operator fun invoke() {
         onboardingRepo.setUserOnboarded()
     }
 }
