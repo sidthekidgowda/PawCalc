@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.settings
+package com.sidgowda.pawcalc.settings.model
 
 enum class DateFormat {
     AMERICAN, INTERNATIONAL

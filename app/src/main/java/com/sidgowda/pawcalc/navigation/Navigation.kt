@@ -50,7 +50,7 @@ fun PawCalcNavGraph(
                 navController.popBackStack()
             }
         )
-        settingsScreenDestination()
+//        settingsScreenDestination()
         newDogScreenDestination(
             onSaveDog = {
                 navController.popBackStack()
