@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d0f22081bc5b0d149e136d58ca8aee81",
+    "identityHash": "7d97f19a7b3ee0903e4060acc3ba32c4",
     "entities": [
       {
         "tableName": "dogs",
@@ -49,8 +49,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "Settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `theme` TEXT NOT NULL, `dateFormat` TEXT NOT NULL, `weightFormat` TEXT NOT NULL)",
+        "tableName": "settings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `themeFormat` TEXT NOT NULL, `dateFormat` TEXT NOT NULL, `weightFormat` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -59,8 +59,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "theme",
-            "columnName": "theme",
+            "fieldPath": "themeFormat",
+            "columnName": "themeFormat",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -90,7 +90,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd0f22081bc5b0d149e136d58ca8aee81')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7d97f19a7b3ee0903e4060acc3ba32c4')"
     ]
   }
 }

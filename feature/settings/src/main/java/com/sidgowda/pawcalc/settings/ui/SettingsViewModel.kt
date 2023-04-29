@@ -22,26 +22,15 @@ class SettingsViewModel @Inject constructor(
      * All updates should be fast and synchronous.
      * Updated settings should be saved to disk.
      */
-    private val _settings = MutableStateFlow(
-        Settings(
-            weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN,
-            themeFormat = ThemeFormat.SYSTEM)
-    )
+    private val _settings = MutableStateFlow<Settings?>(null)
     val settings = _settings.asStateFlow()
 
     init {
         viewModelScope.launch {
             try {
-                // take the first
+                // we only need to use the first emitted settings.
                 val settings = getSettingsUseCase().first()
-                _settings.update {
-                    it.copy(
-                        weightFormat = settings.weightFormat,
-                        dateFormat = settings.dateFormat,
-                        themeFormat = settings.themeFormat
-                    )
-                }
+                _settings.update { settings }
             } catch (e: Exception) {
                 // could be exceptions from Room
             }
@@ -58,23 +47,23 @@ class SettingsViewModel @Inject constructor(
 
     private fun updateWeightFormat(weightFormat: WeightFormat) {
        val updatedSettings = _settings.updateAndGet {
-            it.copy(weightFormat = weightFormat)
+            it?.copy(weightFormat = weightFormat)
         }
-        saveUpdatedSettings(updatedSettings)
+        saveUpdatedSettings(updatedSettings!!)
     }
 
     private fun updateDateFormat(dateFormat: DateFormat) {
         val updatedSettings = _settings.updateAndGet {
-            it.copy(dateFormat = dateFormat)
+            it?.copy(dateFormat = dateFormat)
         }
-        saveUpdatedSettings(updatedSettings)
+        saveUpdatedSettings(updatedSettings!!)
     }
 
     private fun updateTheme(theme: ThemeFormat) {
         val updatedSettings = _settings.updateAndGet {
-            it.copy(themeFormat = theme)
+            it?.copy(themeFormat = theme)
         }
-        saveUpdatedSettings(updatedSettings)
+        saveUpdatedSettings(updatedSettings!!)
     }
 
     private fun saveUpdatedSettings(updatedSettings: Settings) {
