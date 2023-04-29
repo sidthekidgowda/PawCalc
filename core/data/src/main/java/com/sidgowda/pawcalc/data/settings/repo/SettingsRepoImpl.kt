@@ -1,7 +1,7 @@
 package com.sidgowda.pawcalc.data.settings.repo
 
+import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import com.sidgowda.pawcalc.data.settings.SettingsDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -14,14 +14,13 @@ class SettingsRepoImpl @Inject constructor(
 ) : SettingsRepo {
 
     override fun settings(): Flow<Settings> {
-        return cachedSettingsDataSource.settings()
+        return settingsDataSource.settings()
     }
 
     override suspend fun updateSettings(updatedSettings: Settings) {
         // change to io dispatcher
         withContext(ioDispatcher) {
-            cachedSettingsDataSource.updateSettings(updatedSettings)
-            diskSettingsDataSource.updateSettings(updatedSettings)
+            settingsDataSource.updateSettings(updatedSettings)
         }
     }
 }

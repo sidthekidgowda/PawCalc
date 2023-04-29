@@ -1,9 +1,10 @@
 package com.sidgowda.pawcalc.data.settings.di
 
-import com.sidgowda.pawcalc.data.settings.CachedSettingsDataSource
-import com.sidgowda.pawcalc.data.settings.SettingsDataSource
+import com.sidgowda.pawcalc.data.settings.datasource.CachedSettingsDataSource
+import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.repo.SettingsRepo
 import com.sidgowda.pawcalc.data.settings.repo.SettingsRepoImpl
+import com.sidgowda.pawcalc.db.settings.SettingsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +28,10 @@ object SettingsModule {
 
     @Provides
     @Singleton
-    fun providesSettingsDataSource(): SettingsDataSource {
-        return CachedSettingsDataSource()
+    fun providesSettingsDataSource(
+        settingsDao: SettingsDao,
+        @Named("io") ioDispatcher: CoroutineDispatcher
+    ): SettingsDataSource {
+        return CachedSettingsDataSource(settingsDao, ioDispatcher)
     }
 }

@@ -1,27 +1,52 @@
 package com.sidgowda.pawcalc.settings.ui
 
 import androidx.lifecycle.ViewModel
-import com.sidgowda.pawcalc.data.settings.model.DateFormat
-import com.sidgowda.pawcalc.data.settings.model.ThemeFormat
-import com.sidgowda.pawcalc.data.settings.model.WeightFormat
+import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.db.settings.DateFormat
+import com.sidgowda.pawcalc.db.settings.ThemeFormat
+import com.sidgowda.pawcalc.db.settings.WeightFormat
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
+import com.sidgowda.pawcalc.domain.settings.UpdateSettingsUseCase
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
-import com.sidgowda.pawcalc.settings.model.SettingsState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsViewModel @Inject constructor(
+    private val getSettingsUseCase: GetSettingsUseCase,
+    private val updateSettingsUseCase: UpdateSettingsUseCase
 ) : ViewModel() {
-
-    // settings should be loaded with onboarding when Splash Screen is shown
-    // all updates should be synchronous
-    // save changes on background thread to room
-
-
-    private val _settings = MutableStateFlow(SettingsState())
+    /**
+     * Settings should be loaded along with onboarding when Splash Screen is shown.
+     * All updates should be fast and synchronous.
+     * Updated settings should be saved to disk.
+     */
+    private val _settings = MutableStateFlow(
+        Settings(
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM)
+    )
     val settings = _settings.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            try {
+                // take the first
+                val settings = getSettingsUseCase().first()
+                _settings.update {
+                    it.copy(
+                        weightFormat = settings.weightFormat,
+                        dateFormat = settings.dateFormat,
+                        themeFormat = settings.themeFormat
+                    )
+                }
+            } catch (e: Exception) {
+                // could be exceptions from Room
+            }
+        }
+    }
 
     fun handleEvent(settingsEvent: SettingsEvent) {
         when (settingsEvent) {
@@ -32,24 +57,29 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun updateWeightFormat(weightFormat: WeightFormat) {
-        _settings.update {
+       val updatedSettings = _settings.updateAndGet {
             it.copy(weightFormat = weightFormat)
         }
-        // update to disk
+        saveUpdatedSettings(updatedSettings)
     }
 
     private fun updateDateFormat(dateFormat: DateFormat) {
-        _settings.update {
+        val updatedSettings = _settings.updateAndGet {
             it.copy(dateFormat = dateFormat)
         }
-        // update to disk
+        saveUpdatedSettings(updatedSettings)
     }
 
     private fun updateTheme(theme: ThemeFormat) {
-        _settings.update {
-            it.copy(theme = theme)
+        val updatedSettings = _settings.updateAndGet {
+            it.copy(themeFormat = theme)
         }
-        // update to disk
+        saveUpdatedSettings(updatedSettings)
     }
 
+    private fun saveUpdatedSettings(updatedSettings: Settings) {
+        viewModelScope.launch {
+            updateSettingsUseCase.invoke(updatedSettings)
+        }
+    }
 }
