@@ -22,9 +22,9 @@ class PawCalcViewModel @Inject constructor(
     @Named("io") ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    // combine onboarding with 
+
     val uiState: StateFlow<PawCalcActivityState> =
-        getOnboardingState().zip(getSettingsUseCase()) { onboarding, settings ->
+        combine(getOnboardingState(), getSettingsUseCase()) { onboarding, settings ->
             PawCalcActivityState.Initialized(
                 onboarding,
                 settings
