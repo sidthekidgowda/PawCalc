@@ -47,7 +47,10 @@ class PawCalcActivity : AppCompatActivity() {
             val statusBarColor = if (darkTheme) Grey900 else Green500
             DisposableEffect(systemUiController, darkTheme) {
                 systemUiController.systemBarsDarkContentEnabled = !darkTheme
-                systemUiController.setStatusBarColor(statusBarColor)
+                systemUiController.setStatusBarColor(
+                    color = statusBarColor,
+                    darkIcons = !darkTheme
+                )
                 onDispose {}
             }
             PawCalcTheme(
