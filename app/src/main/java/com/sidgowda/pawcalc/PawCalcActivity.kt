@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidgowda.pawcalc.db.settings.ThemeFormat
+import com.sidgowda.pawcalc.ui.theme.Green500
+import com.sidgowda.pawcalc.ui.theme.Grey900
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,8 +44,10 @@ class PawCalcActivity : AppCompatActivity() {
         setContent {
             val systemUiController = rememberSystemUiController()
             val darkTheme = shouldUseDarkTheme(uiState)
+            val statusBarColor = if (darkTheme) Grey900 else Green500
             DisposableEffect(systemUiController, darkTheme) {
                 systemUiController.systemBarsDarkContentEnabled = !darkTheme
+                systemUiController.setStatusBarColor(statusBarColor)
                 onDispose {}
             }
             PawCalcTheme(
