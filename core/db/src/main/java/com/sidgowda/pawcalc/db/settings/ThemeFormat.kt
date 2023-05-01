@@ -1,5 +1,13 @@
 package com.sidgowda.pawcalc.db.settings
 
-enum class ThemeFormat {
-    DARK, LIGHT, SYSTEM
+enum class ThemeFormat(val index: Int) {
+    SYSTEM(index = 0),
+    DARK(index = 1),
+    LIGHT(index = 2);
+
+    companion object {
+        fun from(index: Int): ThemeFormat {
+            return ThemeFormat.values().first { it.index == index }
+        }
+    }
 }

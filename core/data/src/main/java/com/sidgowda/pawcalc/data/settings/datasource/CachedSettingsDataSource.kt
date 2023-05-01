@@ -51,9 +51,7 @@ class CachedSettingsDataSource @Inject constructor(
     }
 
     override suspend fun updateSettings(updatedSettings: Settings) {
-        scope.launch {
-            settingsSharedFlow.emit(updatedSettings)
-            settingsDao.update(updatedSettings.toSettingsEntity())
-        }
+        settingsSharedFlow.emit(updatedSettings)
+        settingsDao.update(updatedSettings.toSettingsEntity())
     }
 }
