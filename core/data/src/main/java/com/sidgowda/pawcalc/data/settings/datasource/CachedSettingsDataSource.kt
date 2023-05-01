@@ -31,14 +31,11 @@ class CachedSettingsDataSource @Inject constructor(
         scope.launch {
             try {
                 val savedSettingsList = settingsDao.settings().first()
-                //todo handle io error
-                updateSettings(
-                    if (savedSettingsList.isEmpty()) {
-                        INITIAL_SETTINGS
-                    } else {
-                        savedSettingsList.first().toSettings()
-                    }
-                )
+                if (savedSettingsList.isEmpty()) {
+                    updateSettings(INITIAL_SETTINGS)
+                } else {
+                    settingsSharedFlow.emit(savedSettingsList.first().toSettings())
+                }
             } catch (e: Exception) {
                 //todo add log for error
                 updateSettings(INITIAL_SETTINGS)
@@ -52,6 +49,7 @@ class CachedSettingsDataSource @Inject constructor(
 
     override suspend fun updateSettings(updatedSettings: Settings) {
         settingsSharedFlow.emit(updatedSettings)
-        settingsDao.update(updatedSettings.toSettingsEntity())
+        // we overwrite the current settings
+        settingsDao.insert(updatedSettings.toSettingsEntity())
     }
 }
