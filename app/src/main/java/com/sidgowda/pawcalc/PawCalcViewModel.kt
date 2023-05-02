@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import com.sidgowda.pawcalc.db.settings.DateFormat
-import com.sidgowda.pawcalc.db.settings.ThemeFormat
-import com.sidgowda.pawcalc.db.settings.WeightFormat
+import com.sidgowda.pawcalc.common.setting.DateFormat
+import com.sidgowda.pawcalc.common.setting.ThemeFormat
+import com.sidgowda.pawcalc.common.setting.WeightFormat
 import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,9 +36,9 @@ class PawCalcViewModel @Inject constructor(
                 PawCalcActivityState.Initialized(
                     onboardingState = OnboardingState.NotOnboarded,
                     settings = Settings(
-                        weightFormat = WeightFormat.POUNDS,
-                        dateFormat = DateFormat.AMERICAN,
-                        themeFormat = ThemeFormat.SYSTEM
+                        weightFormat = com.sidgowda.pawcalc.common.setting.WeightFormat.POUNDS,
+                        dateFormat = com.sidgowda.pawcalc.common.setting.DateFormat.AMERICAN,
+                        themeFormat = com.sidgowda.pawcalc.common.setting.ThemeFormat.SYSTEM
                     )
                 )
             )

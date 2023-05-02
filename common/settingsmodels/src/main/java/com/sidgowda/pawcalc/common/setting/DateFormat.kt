@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.db.settings
+package com.sidgowda.pawcalc.common.setting
 
 enum class DateFormat(val index: Int) {
     AMERICAN(index = 0),

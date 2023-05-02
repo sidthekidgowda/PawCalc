@@ -11,7 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.sidgowda.pawcalc.db.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.setting.ThemeFormat
 import com.sidgowda.pawcalc.ui.theme.Green500
 import com.sidgowda.pawcalc.ui.theme.Grey900
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -69,9 +69,9 @@ private fun shouldUseDarkTheme(
     PawCalcActivityState.Loading -> isSystemInDarkTheme()
     is PawCalcActivityState.Initialized ->
         when (uiState.settings.themeFormat) {
-            ThemeFormat.SYSTEM -> isSystemInDarkTheme()
-            ThemeFormat.DARK -> true
-            ThemeFormat.LIGHT -> false
+            com.sidgowda.pawcalc.common.setting.ThemeFormat.SYSTEM -> isSystemInDarkTheme()
+            com.sidgowda.pawcalc.common.setting.ThemeFormat.DARK -> true
+            com.sidgowda.pawcalc.common.setting.ThemeFormat.LIGHT -> false
     }
 }
 
