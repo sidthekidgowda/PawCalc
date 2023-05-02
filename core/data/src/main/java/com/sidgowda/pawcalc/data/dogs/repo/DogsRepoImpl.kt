@@ -39,11 +39,12 @@ class DogsRepoImpl @Inject constructor(
         }
     }
     .onEach { dogState ->
+        // update disk for next session to use updated weight and date format
         if (dogState.dogs.isNotEmpty()) {
-            disk.clear()
-            disk.addDog(*dogState.dogs.toTypedArray())
+            disk.updateDog(*dogState.dogs.toTypedArray())
         }
     }
+    // buffer ensures onEach is emitted on a different coroutine as collect
     .buffer()
     .flowOn(computationDispatcher)
     .distinctUntilChanged()

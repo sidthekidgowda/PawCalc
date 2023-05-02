@@ -59,12 +59,15 @@ class DogsMemoryDataSource @Inject constructor(
        }
     }
 
-    override suspend fun updateDog(dog: Dog) {
+    override suspend fun updateDog(vararg dog: Dog) {
+        // memory should only update 1 dog at a time.
+        // disk should update mutliple dogs at a time.
+        if (dog.size > 1) return
         dogs.update { list ->
             list.update {
-                val indexToReplace = it.indexOfFirst { oldDog -> dog.id == oldDog.id }
+                val indexToReplace = it.indexOfFirst { oldDog -> dog.first().id == oldDog.id }
                 if (indexToReplace != -1) {
-                    it[indexToReplace] = dog
+                    it[indexToReplace] = dog.first()
                 }
             }
         }

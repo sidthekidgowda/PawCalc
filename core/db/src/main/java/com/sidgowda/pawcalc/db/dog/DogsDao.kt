@@ -15,7 +15,7 @@ interface DogsDao {
     suspend fun deleteDog(dog: DogEntity)
 
     @Update
-    suspend fun updateDog(dog: DogEntity)
+    suspend fun updateDog(vararg dog: DogEntity)
 
     @Query("DELETE FROM dogs")
     suspend fun deleteAll()

@@ -42,8 +42,9 @@ class DogsDiskDataSource @Inject constructor(
         dogsDao.deleteDog(dog.toDogEntity())
     }
 
-    override suspend fun updateDog(dog: Dog) {
-        dogsDao.updateDog(dog.toDogEntity())
+    override suspend fun updateDog(vararg dog: Dog) {
+        val dogEntitities = dog.map { it.toDogEntity() }
+        dogsDao.updateDog(*dogEntitities.toTypedArray())
     }
 
     override suspend fun clear() {
