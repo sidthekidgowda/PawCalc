@@ -124,9 +124,7 @@ class EditDogViewModel @Inject constructor(
                     humanYears = input.birthDate.toHumanYears(dateFormat = input.dateFormat)
                 )
             }?.let { updatedDog ->
-                updateDogUseCase(
-                    updatedDog
-                )
+                updateDogUseCase(updatedDog)
             }
         }
     }

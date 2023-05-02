@@ -1,5 +1,8 @@
 package com.sidgowda.pawcalc.data.settings.datasource
 
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.data.settings.model.toSettings
 import com.sidgowda.pawcalc.data.settings.model.toSettingsEntity
@@ -16,9 +19,9 @@ class CachedSettingsDataSource @Inject constructor(
 
     private companion object {
         private val INITIAL_SETTINGS = Settings(
-            weightFormat = com.sidgowda.pawcalc.common.settings.WeightFormat.POUNDS,
-            dateFormat = com.sidgowda.pawcalc.common.settings.DateFormat.AMERICAN,
-            themeFormat = com.sidgowda.pawcalc.common.settings.ThemeFormat.SYSTEM
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM
         )
     }
 
@@ -46,7 +49,7 @@ class CachedSettingsDataSource @Inject constructor(
 
     override suspend fun updateSettings(updatedSettings: Settings) {
         settingsSharedFlow.emit(updatedSettings)
-        // we overwrite the current settings
+        // overwrite the current settings
         settingsDao.insert(updatedSettings.toSettingsEntity())
     }
 }
