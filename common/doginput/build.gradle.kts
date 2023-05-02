@@ -51,7 +51,7 @@ android {
 dependencies {
     implementation(projects.common.ui)
     implementation(projects.common.camera)
-    implementation(projects.common.settingsmodels)
+    implementation(projects.common.settings)
     implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

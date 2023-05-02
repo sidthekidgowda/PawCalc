@@ -49,7 +49,7 @@ android {
 
 dependencies {
     implementation(projects.core.data)
-    implementation(projects.common.settingsmodels)
+    implementation(projects.common.settings)
     implementation(projects.core.domain)
     implementation(projects.common.ui)
     implementation(projects.common.navigation)

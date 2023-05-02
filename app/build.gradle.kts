@@ -68,7 +68,7 @@ dependencies {
     implementation(projects.feature.doglist)
     implementation(projects.feature.settings)
     implementation(projects.common.navigation)
-    implementation(projects.common.settingsmodels)
+    implementation(projects.common.settings)
     implementation(projects.common.ui)
     implementation(projects.core.data)
     implementation(projects.core.db)

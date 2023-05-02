@@ -50,7 +50,7 @@ android {
 dependencies {
     implementation(projects.core.data)
     implementation(projects.core.domain)
-    implementation(projects.common.settingsmodels)
+    implementation(projects.common.settings)
     implementation(projects.common.ui)
     implementation(projects.common.navigation)
     implementation(projects.common.doginput)

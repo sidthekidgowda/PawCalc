@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.common.settingsmodels)
+    implementation(projects.common.settings)
     implementation(projects.core.db)
     implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
