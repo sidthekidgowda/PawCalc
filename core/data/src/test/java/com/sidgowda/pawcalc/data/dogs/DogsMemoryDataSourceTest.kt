@@ -35,8 +35,8 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when dog is added, it should have dogYears and humanYears as well`() = runTest {
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -50,7 +50,7 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `add method should be able to add multiple dogs at a time`() = runTest {
-        dogsDataSource.addDog(
+        dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
             DOG_THREE_ENTITY.toDog()
@@ -69,7 +69,7 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when dog two is deleted, only dog one and dog three exists`() = runTest {
-        dogsDataSource.addDog(
+        dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
             DOG_THREE_ENTITY.toDog()
@@ -88,9 +88,9 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when update is called for dog two, then dog two is updated`() = runTest {
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
         dogsDataSource.updateDog(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
 
         dogsDataSource.dogs().test {
@@ -106,7 +106,7 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when clear is called, all dogs should be deleted and null should be returned`() = runTest {
-        dogsDataSource.addDog(
+        dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
             DOG_THREE_ENTITY.toDog()

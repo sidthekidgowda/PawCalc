@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.date
 
 import android.util.Log
+import com.sidgowda.pawcalc.common.setting.DateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -45,4 +46,25 @@ fun dateToLong(date: String): Long {
         Log.e("DateUtils", "Failed to parse date: $date", e)
         LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()
     }
+}
+
+fun String.dateToNewFormat(newDateFormat: DateFormat): String {
+    val dateSplit = split("/")
+    val stringBuilder = StringBuilder()
+    val years = dateSplit.last()
+    when (newDateFormat) {
+        DateFormat.AMERICAN -> {
+            // current date is international. convert to American
+            val days = dateSplit.first()
+            val months = dateSplit[1]
+            stringBuilder.append(months).append("/").append(days).append("/")
+        }
+        DateFormat.INTERNATIONAL -> {
+            // current date is American. convert to International
+            val months = dateSplit.first()
+            val days = dateSplit[1]
+            stringBuilder.append(days).append("/").append(months).append("/")
+        }
+    }
+    return stringBuilder.append(years).toString()
 }

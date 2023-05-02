@@ -1,6 +1,8 @@
 package com.sidgowda.pawcalc.data.dogs.model
 
 import android.net.Uri
+import com.sidgowda.pawcalc.common.setting.DateFormat
+import com.sidgowda.pawcalc.common.setting.WeightFormat
 import com.sidgowda.pawcalc.data.date.Age
 
 data class Dog(
@@ -8,7 +10,9 @@ data class Dog(
     val profilePic: Uri,
     val name: String,
     val weight: Double,
+    val weightFormat: WeightFormat,
     val birthDate: String,
+    val dateFormat: DateFormat,
     val dogYears: Age,
     val humanYears: Age
 )

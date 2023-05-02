@@ -38,6 +38,12 @@ class DogsRepoImpl @Inject constructor(
             )
         }
     }
+    .onEach { dogState ->
+        if (dogState.dogs.isNotEmpty()) {
+            disk.clear()
+            disk.addDog(*dogState.dogs.toTypedArray())
+        }
+    }
     .flowOn(computationDispatcher)
     .distinctUntilChanged()
 
@@ -68,7 +74,9 @@ class DogsRepoImpl @Inject constructor(
             id = id,
             name = dogInput.name,
             birthDate = dogInput.birthDate,
+            dateFormat = dogInput.dateFormat,
             weight = dogInput.weight.toDouble(),
+            weightFormat = dogInput.weightFormat,
             dogYears = dogInput.birthDate.toDogYears(),
             humanYears = dogInput.birthDate.toHumanYears(),
             profilePic = dogInput.profilePic

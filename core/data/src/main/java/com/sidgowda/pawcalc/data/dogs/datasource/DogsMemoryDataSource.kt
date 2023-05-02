@@ -1,18 +1,45 @@
 package com.sidgowda.pawcalc.data.dogs.datasource
 
 import com.sidgowda.pawcalc.data.dogs.model.Dog
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
+import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
+import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.date.dateToNewFormat
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class DogsMemoryDataSource @Inject constructor() : DogsDataSource {
+class DogsMemoryDataSource @Inject constructor(
+    private val settingsDataSource: SettingsDataSource
+) : DogsDataSource {
 
     private val dogs = MutableStateFlow<List<Dog>?>(null)
 
     override fun dogs(): Flow<List<Dog>?> {
-        return dogs.asStateFlow()
+        return combine(dogs.asStateFlow(), settingsDataSource.settings()) { dogs, settings ->
+            dogs?.transformWithSettings(settings)
+        }
+    }
+
+    private fun List<Dog>.transformWithSettings(settings: Settings): List<Dog> {
+        return map { dog ->
+            // if date format or weight format does not match -> convert
+            val date = if (settings.dateFormat != dog.dateFormat) {
+                dog.birthDate.dateToNewFormat(settings.dateFormat)
+            } else {
+                dog.birthDate
+            }
+            val weight = if (settings.weightFormat != dog.weightFormat) {
+                dog.weight.toNewWeight(settings.weightFormat)
+            } else {
+                dog.weight
+            }
+            dog.copy(
+                birthDate = date,
+                dateFormat = settings.dateFormat,
+                weight = weight,
+                weightFormat = settings.weightFormat
+            )
+        }
     }
 
     override suspend fun addDog(vararg dog: Dog) {

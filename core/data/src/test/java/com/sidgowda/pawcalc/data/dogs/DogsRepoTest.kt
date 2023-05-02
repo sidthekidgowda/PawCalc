@@ -43,7 +43,7 @@ class DogsRepoTest {
             }
         }
 
-        override suspend fun addDog(vararg dog: Dog) {
+        override suspend fun addDogs(vararg dog: Dog) {
            listOfDogs.addAll(dog)
         }
 
@@ -51,10 +51,10 @@ class DogsRepoTest {
             listOfDogs.remove(dog)
         }
 
-        override suspend fun updateDog(dog: Dog) {
-            val indexToReplace = listOfDogs.indexOfFirst { oldDog -> dog.id == oldDog.id }
+        override suspend fun updateDog(dogs: Dog) {
+            val indexToReplace = listOfDogs.indexOfFirst { oldDog -> dogs.id == oldDog.id }
             if (indexToReplace != -1) {
-                listOfDogs[indexToReplace] = dog
+                listOfDogs[indexToReplace] = dogs
             }
         }
 
@@ -115,7 +115,7 @@ class DogsRepoTest {
 
     @Test
     fun `when dogs exist in disk, then verify dogs are emitted from disk`() = testScope.runTest {
-        dogsDiskDataSource.addDog(
+        dogsDiskDataSource.addDogs(
             DOG_ONE, DOG_TWO
         )
         val spyDisk = spyk(dogsDiskDataSource)
@@ -144,7 +144,7 @@ class DogsRepoTest {
 
     @Test
     fun `given dogs exist in disk, when subscribers collect, memory will get updated from disk and new subscribers will collect from memory`() = testScope.runTest {
-        dogsDiskDataSource.addDog(
+        dogsDiskDataSource.addDogs(
             DOG_ONE, DOG_TWO
         )
         val spyDisk = spyk(dogsDiskDataSource)
@@ -159,7 +159,7 @@ class DogsRepoTest {
         dogsRepo.fetchDogs().also { advanceUntilIdle() }
         coVerify {
             spyDisk.dogs()
-            spyMemory.addDog(*anyVararg())
+            spyMemory.addDogs(*anyVararg())
         }
 
         dogsRepo.fetchDogs().also { advanceUntilIdle() }
@@ -189,8 +189,8 @@ class DogsRepoTest {
         ).also { advanceUntilIdle() }
 
         coVerify {
-            spyMemory.addDog(*anyVararg())
-            spyDisk.addDog(*anyVararg())
+            spyMemory.addDogs(*anyVararg())
+            spyDisk.addDogs(*anyVararg())
         }
     }
 
@@ -303,7 +303,7 @@ class DogsRepoTest {
 
     @Test
     fun `when dog 3 is updated, it should be reflected in new state`() = testScope.runTest {
-        dogsDiskDataSource.addDog(DOG_ONE, DOG_TWO, DOG_THREE)
+        dogsDiskDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
         val history = dogsRepo.createStateHistory()
         dogsRepo.fetchDogs()
         dogsRepo.updateDog(DOG_THREE.copy( name = "Dog_3_Update")).also { advanceUntilIdle() }
@@ -350,7 +350,7 @@ class DogsRepoTest {
 
     @Test
     fun `given 6 dogs, when clear is called, then no dogs should be emitted`() = testScope.runTest {
-        dogsDiskDataSource.addDog(
+        dogsDiskDataSource.addDogs(
             DOG_ONE,
             DOG_TWO,
             DOG_THREE,

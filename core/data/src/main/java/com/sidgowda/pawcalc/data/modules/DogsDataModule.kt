@@ -5,6 +5,7 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsDiskDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
+import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.db.dog.DogsDao
 import dagger.Module
 import dagger.Provides
@@ -21,8 +22,8 @@ object DogsDataModule {
     @Named("memory")
     @Singleton
     @Provides
-    fun providesMemoryDogsDataSource(): DogsDataSource {
-        return DogsMemoryDataSource()
+    fun providesMemoryDogsDataSource(settingsDataSource: SettingsDataSource): DogsDataSource {
+        return DogsMemoryDataSource(settingsDataSource)
     }
 
     @Named("disk")

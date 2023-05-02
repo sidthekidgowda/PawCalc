@@ -54,8 +54,8 @@ class DogsDiskDataSourceTest {
             listOfDogs.add(dog)
         }
 
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
 
         dogsDataSource.dogs().test {
             assertEquals(listOf(DOG_ONE_ENTITY.toDog(), DOG_TWO_ENTITY.toDog()), awaitItem())
@@ -73,7 +73,7 @@ class DogsDiskDataSourceTest {
             val dog = firstArg<DogEntity>()
             listOfDogs.add(dog)
         }
-        dogsDataSource.addDog(
+        dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
             DOG_THREE_ENTITY.toDog()
@@ -105,9 +105,9 @@ class DogsDiskDataSourceTest {
             val dog = firstArg<DogEntity>()
             listOfDogs.remove(dog)
         }
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
         dogsDataSource.deleteDog(DOG_TWO_ENTITY.toDog())
 
         dogsDataSource.dogs().test {
@@ -133,9 +133,9 @@ class DogsDiskDataSourceTest {
                 listOfDogs[indexToReplace] = dog
             }
         }
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
         dogsDataSource.updateDog(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
 
         dogsDataSource.dogs().test {
@@ -163,9 +163,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.deleteAll() } answers {
             listOfDogs.clear()
         }
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
 
         dogsDataSource.clear()
 
