@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.sidgowda.pawcalc.common.setting.ThemeFormat
 import com.sidgowda.pawcalc.ui.theme.Green500
 import com.sidgowda.pawcalc.ui.theme.Grey900
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview

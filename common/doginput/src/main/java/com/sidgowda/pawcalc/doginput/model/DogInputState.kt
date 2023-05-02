@@ -1,16 +1,20 @@
 package com.sidgowda.pawcalc.doginput.model
 
 import android.net.Uri
+import com.sidgowda.pawcalc.common.setting.DateFormat
+import com.sidgowda.pawcalc.common.setting.WeightFormat
 
 data class DogInputState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val isError: Boolean = false,
     val profilePic: Uri? = null,
     val name: String = "",
     val isNameValid: Boolean = true,
     val weight: String = "",
+    val weightFormat: WeightFormat = WeightFormat.POUNDS,
     val isWeightValid: Boolean = true,
     val birthDate: String = "",
+    val dateFormat: DateFormat = DateFormat.AMERICAN,
     val isBirthDateValid: Boolean = true,
     val birthDateDialogShown: Boolean = false,
     val inputRequirements: Set<DogInputRequirements> = emptySet()

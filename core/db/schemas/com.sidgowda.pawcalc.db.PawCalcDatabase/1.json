@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4fa7c2f86526849e7ae3c2cb6bab9f83",
+    "identityHash": "ecfa4eeebbec98371dc111fb89d1f5d8",
     "entities": [
       {
         "tableName": "dogs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `weight` REAL NOT NULL, `birthDate` TEXT NOT NULL, `profilePic` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `weight` REAL NOT NULL, `weightFormat` TEXT NOT NULL, `birthDate` TEXT NOT NULL, `dateFormat` TEXT NOT NULL, `profilePic` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -27,8 +27,20 @@
             "notNull": true
           },
           {
+            "fieldPath": "weightFormat",
+            "columnName": "weightFormat",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "birthDate",
             "columnName": "birthDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateFormat",
+            "columnName": "dateFormat",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -90,7 +102,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4fa7c2f86526849e7ae3c2cb6bab9f83')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ecfa4eeebbec98371dc111fb89d1f5d8')"
     ]
   }
 }

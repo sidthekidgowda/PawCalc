@@ -57,6 +57,7 @@ dependencies {
     implementation(projects.common.ui)
     implementation(projects.common.doginput)
     implementation(projects.common.navigation)
+    implementation(projects.common.settingsmodels)
     implementation(projects.core.domain)
     implementation(projects.core.data)
     implementation(libs.androidx.core.ktx)

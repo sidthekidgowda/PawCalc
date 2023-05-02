@@ -9,6 +9,7 @@ import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -20,6 +21,7 @@ import javax.inject.Named
 class EditDogViewModel @Inject constructor(
     private val getDogForIdUseCase: GetDogForIdUseCase,
     private val updateDogUseCase: UpdateDogUseCase,
+    private val settingsUseCase: GetSettingsUseCase,
     @Named("io") private val ioDispatcher: CoroutineDispatcher,
     @Named("computation") private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {

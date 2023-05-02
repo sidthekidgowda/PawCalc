@@ -15,6 +15,7 @@ class DogsMemoryDataSource @Inject constructor(
     private val dogs = MutableStateFlow<List<Dog>?>(null)
 
     override fun dogs(): Flow<List<Dog>?> {
+        // transform list any time settings is updated
         return combine(dogs.asStateFlow(), settingsDataSource.settings()) { dogs, settings ->
             dogs?.transformWithSettings(settings)
         }

@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.newdog
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -34,12 +35,17 @@ internal fun NewDogScreen(
 ) {
     val dogInputState: DogInputState by viewModel.inputState.collectAsStateWithLifecycle()
 
-    DogInput(
-        modifier = modifier.testTag(NEW_DOG_SCREEN_ROUTE),
-        dogInputState = dogInputState,
-        onSaveDog = onSaveDog,
-        handleEvent = viewModel::handleEvent
-    )
+    when {
+        dogInputState.isLoading -> CircularProgressIndicator()
+        else -> {
+            DogInput(
+                modifier = modifier.testTag(NEW_DOG_SCREEN_ROUTE),
+                dogInputState = dogInputState,
+                onSaveDog = onSaveDog,
+                handleEvent = viewModel::handleEvent
+            )
+        }
+    }
 }
 
 //--------Preview-----------------------------------------------------------------------------------

@@ -6,10 +6,12 @@ import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.dogs.AddDogUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -17,11 +19,26 @@ import javax.inject.Named
 @HiltViewModel
 class NewDogViewModel @Inject constructor(
     private val addDogUseCase: AddDogUseCase,
+    private val settingsUseCase: GetSettingsUseCase,
     @Named("io") private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _inputState = MutableStateFlow(DogInputState())
     val inputState = _inputState.asStateFlow()
+
+    init {
+        viewModelScope.launch(ioDispatcher) {
+            settingsUseCase().collect { settings ->
+                _inputState.update {
+                    it.copy(
+                        isLoading = false,
+                        weightFormat = settings.weightFormat,
+                        dateFormat = settings.dateFormat
+                    )
+                }
+            }
+        }
+    }
 
     fun handleEvent(dogInputEvent: DogInputEvent) {
         when (dogInputEvent) {
@@ -37,10 +54,12 @@ class NewDogViewModel @Inject constructor(
     private fun saveDogInfo() {
         viewModelScope.launch(ioDispatcher) {
             val dogInput = DogInput(
-                profilePic = inputState.value.profilePic!!,
-                name = inputState.value.name,
-                weight = inputState.value.weight,
-                birthDate = inputState.value.birthDate
+                profilePic = _inputState.value.profilePic!!,
+                name = _inputState.value.name,
+                weight = _inputState.value.weight,
+                weightFormat = _inputState.value.weightFormat,
+                birthDate = _inputState.value.birthDate,
+                dateFormat = _inputState.value.dateFormat
             )
             addDogUseCase(dogInput)
         }

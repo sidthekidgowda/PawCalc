@@ -44,6 +44,7 @@ class DogsRepoImpl @Inject constructor(
             disk.addDog(*dogState.dogs.toTypedArray())
         }
     }
+    .buffer()
     .flowOn(computationDispatcher)
     .distinctUntilChanged()
 
