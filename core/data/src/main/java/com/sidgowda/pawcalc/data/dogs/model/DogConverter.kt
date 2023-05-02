@@ -4,9 +4,12 @@ import com.sidgowda.pawcalc.common.setting.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.db.dog.DogEntity
+import java.text.DecimalFormat
 
 private const val ONE_KG_TO_LB = 2.20462
 private const val ONE_LB_TO_KG = 0.45392
+private const val WEIGHT_FORMAT = "#.##"
+
 fun DogEntity.toDog(): Dog {
     return Dog(
         id = id,
@@ -16,8 +19,8 @@ fun DogEntity.toDog(): Dog {
         weightFormat = weightFormat,
         birthDate = birthDate,
         dateFormat = dateFormat,
-        dogYears = birthDate.toDogYears(),
-        humanYears = birthDate.toHumanYears()
+        dogYears = birthDate.toDogYears(dateFormat = dateFormat),
+        humanYears = birthDate.toHumanYears(dateFormat = dateFormat)
     )
 }
 
@@ -45,4 +48,10 @@ fun Double.toNewWeight(weightFormat: WeightFormat): Double {
             this * ONE_LB_TO_KG
         }
     }
+}
+
+fun weightFormattedToString(weight: Double): String {
+    //DecimalFormat formater = new DecimalFormat("#.##");
+    val formatter = DecimalFormat(WEIGHT_FORMAT)
+    return formatter.format(weight)
 }

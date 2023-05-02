@@ -83,8 +83,8 @@ class DogsRepoImpl @Inject constructor(
             dateFormat = dogInput.dateFormat,
             weight = dogInput.weight.toDouble(),
             weightFormat = dogInput.weightFormat,
-            dogYears = dogInput.birthDate.toDogYears(),
-            humanYears = dogInput.birthDate.toHumanYears(),
+            dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
+            humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),
             profilePic = dogInput.profilePic
         )
         memory.addDog(dog)

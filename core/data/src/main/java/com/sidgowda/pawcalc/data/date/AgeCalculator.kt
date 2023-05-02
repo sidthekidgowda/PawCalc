@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.data.date
 
+import com.sidgowda.pawcalc.common.setting.DateFormat
 import com.sidgowda.pawcalc.date.dateFromLong
 import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import kotlin.math.round
@@ -58,11 +59,19 @@ fun Age.toText(): String {
  * days = Absolute difference remaining when there is leftover from birth date till today.
  */
 fun String.toDogYears(
-    today: String = dateFromLong(localDateTimeInMilliseconds())
+    today: String = dateFromLong(localDateTimeInMilliseconds()),
+    dateFormat: DateFormat = DateFormat.AMERICAN
 ): Age {
     val dateSplit = split("/")
-    val monthsOfBirthDate = dateSplit.first().toInt()
-    val daysOfBirthDate = dateSplit[1].toInt()
+    val monthsOfBirthDate: Int
+    val daysOfBirthDate: Int
+    if (dateFormat == DateFormat.AMERICAN) {
+        monthsOfBirthDate = dateSplit.first().toInt()
+        daysOfBirthDate = dateSplit[1].toInt()
+    } else {
+        daysOfBirthDate = dateSplit.first().toInt()
+        monthsOfBirthDate = dateSplit[1].toInt()
+    }
     val yearsOfBirthDate = dateSplit.last().toInt()
 
     val todaySplit = today.split("/")
@@ -134,12 +143,20 @@ fun String.toDogYears(
  * days = round(decimalPortionOfMonths * 30) (Averaging 30 days per month)
  */
 fun String.toHumanYears(
-    today: String = dateFromLong(localDateTimeInMilliseconds())
+    today: String = dateFromLong(localDateTimeInMilliseconds()),
+    dateFormat: DateFormat = DateFormat.AMERICAN
 ): Age {
     val dateSplit = split("/")
-    val monthsOfBirthDate = dateSplit.first().toInt()
-    val daysOfBirthDate = dateSplit[1].toInt()
-    val dogYears = toDogYears(today)
+    val monthsOfBirthDate: Int
+    val daysOfBirthDate: Int
+    if (dateFormat == DateFormat.AMERICAN) {
+        monthsOfBirthDate = dateSplit.first().toInt()
+        daysOfBirthDate = dateSplit[1].toInt()
+    } else {
+        daysOfBirthDate = dateSplit.first().toInt()
+        monthsOfBirthDate = dateSplit[1].toInt()
+    }
+    val dogYears = toDogYears(today, dateFormat)
     val yearsToday = today.split("/").last().toInt()
     val humanYearsToMonthsRatio = 7.0 / 12.0
     val numberOfDaysInYear =

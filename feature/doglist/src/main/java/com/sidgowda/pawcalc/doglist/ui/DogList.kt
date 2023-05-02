@@ -48,8 +48,10 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.date.toText
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.weightFormattedToString
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.doglist.R
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
@@ -362,7 +364,11 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = "${dog.weight} lbs"
+                        text = if (dog.weightFormat == WeightFormat.POUNDS) {
+                            stringResource(id = R.string.dog_list_lb, weightFormattedToString(dog.weight))
+                        } else {
+                            stringResource(id = R.string.dog_list_kg, weightFormattedToString(dog.weight))
+                        }
                     )
                 }
             )

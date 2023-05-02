@@ -80,8 +80,8 @@ class EditDogViewModel @Inject constructor(
                     weight = input.weight.toDouble(),
                     birthDate = input.birthDate,
                     profilePic = input.profilePic!!,
-                    dogYears = input.birthDate.toDogYears(),
-                    humanYears = input.birthDate.toHumanYears()
+                    dogYears = input.birthDate.toDogYears(dateFormat = input.dateFormat),
+                    humanYears = input.birthDate.toHumanYears(dateFormat = input.dateFormat)
                 )
             }?.let { updatedDog ->
                 updateDogUseCase(
