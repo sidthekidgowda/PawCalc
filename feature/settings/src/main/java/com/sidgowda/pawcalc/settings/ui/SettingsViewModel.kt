@@ -2,6 +2,9 @@ package com.sidgowda.pawcalc.settings.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.domain.settings.UpdateSettingsUseCase
@@ -44,21 +47,21 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun updateWeightFormat(weightFormat: com.sidgowda.pawcalc.common.settings.WeightFormat) {
+    private fun updateWeightFormat(weightFormat: WeightFormat) {
        val updatedSettings = _settings.updateAndGet {
             it?.copy(weightFormat = weightFormat)
         }
         saveUpdatedSettings(updatedSettings!!)
     }
 
-    private fun updateDateFormat(dateFormat: com.sidgowda.pawcalc.common.settings.DateFormat) {
+    private fun updateDateFormat(dateFormat: DateFormat) {
         val updatedSettings = _settings.updateAndGet {
             it?.copy(dateFormat = dateFormat)
         }
         saveUpdatedSettings(updatedSettings!!)
     }
 
-    private fun updateTheme(theme: com.sidgowda.pawcalc.common.settings.ThemeFormat) {
+    private fun updateTheme(theme: ThemeFormat) {
         val updatedSettings = _settings.updateAndGet {
             it?.copy(themeFormat = theme)
         }

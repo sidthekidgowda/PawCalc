@@ -2,6 +2,7 @@ package com.sidgowda.pawcalc
 
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every
@@ -27,10 +28,12 @@ class PawCalcViewModelTest {
     private lateinit var testDispatcher: TestDispatcher
     private lateinit var pawCalcViewModel: PawCalcViewModel
     private lateinit var onboardingStateUseCase: GetOnboardingStateUseCase
+    private lateinit var getSettingsUseCase: GetSettingsUseCase
 
     @Before
     fun setup() {
         onboardingStateUseCase = mockk()
+        getSettingsUseCase = mockk()
         testDispatcher = StandardTestDispatcher()
         scope = TestScope()
     }
@@ -38,7 +41,7 @@ class PawCalcViewModelTest {
     @Test
     fun `initial state should be Loading`() {
         every { onboardingStateUseCase.invoke() } returns emptyFlow()
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, testDispatcher)
+        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         history shouldContainExactly listOf(
@@ -49,7 +52,7 @@ class PawCalcViewModelTest {
     @Test
     fun `when onboarding is not onboarded then state should contain loading and not onboarded`() {
         every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.NotOnboarded)
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, testDispatcher)
+        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         scope.advanceUntilIdle()
@@ -63,7 +66,7 @@ class PawCalcViewModelTest {
     @Test
     fun `when onboarding is onboarded then state should contain loading and onboarded`() {
         every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.Onboarded)
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, testDispatcher)
+        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         scope.advanceUntilIdle()
@@ -79,7 +82,7 @@ class PawCalcViewModelTest {
         every { onboardingStateUseCase.invoke() } returns flow {
             throw Exception()
         }
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, testDispatcher)
+        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         scope.advanceUntilIdle()
