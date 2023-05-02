@@ -3,6 +3,7 @@ package com.sidgowda.pawcalc.newdog.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
+import com.sidgowda.pawcalc.date.dateToNewFormat
 import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.dogs.AddDogUseCase
@@ -32,6 +33,11 @@ class NewDogViewModel @Inject constructor(
                 _inputState.update {
                     it.copy(
                         isLoading = false,
+                        birthDate = if (_inputState.value.dateFormat != settings.dateFormat) {
+                            _inputState.value.birthDate.dateToNewFormat(settings.dateFormat)
+                        } else {
+                            _inputState.value.birthDate
+                        },
                         weightFormat = settings.weightFormat,
                         dateFormat = settings.dateFormat
                     )
