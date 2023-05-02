@@ -26,6 +26,7 @@ class DatePickerDialogFragment : Fragment() {
 
     companion object {
         const val BUNDLE_DATE_KEY = "date"
+        const val BUNDLE_IS_DATE_FORMAT_INTERNATIONAL = "date_format_international"
     }
 
     @Inject
@@ -87,7 +88,8 @@ class DatePickerDialogFragment : Fragment() {
 
     private fun convertDateFromLongAndSend(date: Long) {
         viewLifecycleOwner.lifecycleScope.launch(computationDispatcher) {
-            val birthDate: String = dateFromLong(date)
+            val isDateFormatInternational = arguments?.getBoolean(BUNDLE_IS_DATE_FORMAT_INTERNATIONAL) ?: false
+            val birthDate: String = dateFromLong(date, isDateFormatInternational)
             withContext(Dispatchers.Main.immediate) {
                 datePickerListener?.dateSelected(birthDate)
             }
