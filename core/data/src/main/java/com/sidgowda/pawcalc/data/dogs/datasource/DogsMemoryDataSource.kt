@@ -5,20 +5,22 @@ import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.date.dateToNewFormat
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class DogsMemoryDataSource @Inject constructor(
-    private val settingsDataSource: SettingsDataSource
+    private val settingsDataSource: SettingsDataSource,
+    private val computationDispatcher: CoroutineDispatcher
 ) : DogsDataSource {
 
     private val dogs = MutableStateFlow<List<Dog>>(emptyList())
 
     override fun dogs(): Flow<List<Dog>> {
-        // transform list any time settings is updated
+        // transform current list of dogs any time settings is updated
         return combine(dogs.asStateFlow(), settingsDataSource.settings()) { dogs, settings ->
             dogs.transformWithSettings(settings)
-        }
+        }.flowOn(computationDispatcher)
     }
 
     private fun List<Dog>.transformWithSettings(settings: Settings): List<Dog> {
@@ -61,7 +63,7 @@ class DogsMemoryDataSource @Inject constructor(
 
     override suspend fun updateDog(vararg dog: Dog) {
         // memory should only update 1 dog at a time.
-        // disk should update mutliple dogs at a time.
+        // only disk should be able to update multiple dogs at a time.
         if (dog.size > 1) return
         dogs.update { list ->
             list.update {

@@ -51,7 +51,6 @@ fun Double.toNewWeight(weightFormat: WeightFormat): Double {
 }
 
 fun weightFormattedToString(weight: Double): String {
-    //DecimalFormat formater = new DecimalFormat("#.##");
     val formatter = DecimalFormat(WEIGHT_FORMAT)
     return formatter.format(weight)
 }

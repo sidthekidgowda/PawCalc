@@ -22,8 +22,11 @@ object DogsDataModule {
     @Named("memory")
     @Singleton
     @Provides
-    fun providesMemoryDogsDataSource(settingsDataSource: SettingsDataSource): DogsDataSource {
-        return DogsMemoryDataSource(settingsDataSource)
+    fun providesMemoryDogsDataSource(
+        settingsDataSource: SettingsDataSource,
+        @Named ("computation") computationDispatcher: CoroutineDispatcher
+    ): DogsDataSource {
+        return DogsMemoryDataSource(settingsDataSource, computationDispatcher)
     }
 
     @Named("disk")
