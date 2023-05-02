@@ -1,6 +1,6 @@
 package com.sidgowda.pawcalc.data.date
 
-import com.sidgowda.pawcalc.common.setting.DateFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.date.dateFromLong
 import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import kotlin.math.round

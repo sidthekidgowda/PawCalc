@@ -38,8 +38,8 @@ import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.camera.CameraMediaActivity
-import com.sidgowda.pawcalc.common.setting.DateFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.date.DatePickerDialogFragment
 import com.sidgowda.pawcalc.date.DatePickerListener
 import com.sidgowda.pawcalc.date.dateToLong

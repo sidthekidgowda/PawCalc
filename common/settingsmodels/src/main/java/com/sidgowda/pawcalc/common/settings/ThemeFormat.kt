@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.common.setting
+package com.sidgowda.pawcalc.common.settings
 
 enum class ThemeFormat(val index: Int) {
     SYSTEM(index = 0),

@@ -1,8 +1,8 @@
 package com.sidgowda.pawcalc.doginput.model
 
 import android.net.Uri
-import com.sidgowda.pawcalc.common.setting.DateFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 
 data class DogInputState(
     val isLoading: Boolean = true,

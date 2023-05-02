@@ -3,8 +3,8 @@ package com.sidgowda.pawcalc.db.dog
 import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.sidgowda.pawcalc.common.setting.DateFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 
 @Entity(tableName = "dogs")
 data class DogEntity(

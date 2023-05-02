@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.common.setting
+package com.sidgowda.pawcalc.common.settings
 
 enum class WeightFormat(val index: Int) {
     POUNDS(index = 0),

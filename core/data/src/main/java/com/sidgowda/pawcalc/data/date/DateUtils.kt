@@ -1,7 +1,7 @@
 package com.sidgowda.pawcalc.date
 
 import android.util.Log
-import com.sidgowda.pawcalc.common.setting.DateFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*

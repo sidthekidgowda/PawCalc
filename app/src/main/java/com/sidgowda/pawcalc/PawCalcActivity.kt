@@ -68,9 +68,9 @@ private fun shouldUseDarkTheme(
     PawCalcActivityState.Loading -> isSystemInDarkTheme()
     is PawCalcActivityState.Initialized ->
         when (uiState.settings.themeFormat) {
-            com.sidgowda.pawcalc.common.setting.ThemeFormat.SYSTEM -> isSystemInDarkTheme()
-            com.sidgowda.pawcalc.common.setting.ThemeFormat.DARK -> true
-            com.sidgowda.pawcalc.common.setting.ThemeFormat.LIGHT -> false
+            com.sidgowda.pawcalc.common.settings.ThemeFormat.SYSTEM -> isSystemInDarkTheme()
+            com.sidgowda.pawcalc.common.settings.ThemeFormat.DARK -> true
+            com.sidgowda.pawcalc.common.settings.ThemeFormat.LIGHT -> false
     }
 }
 

@@ -1,8 +1,8 @@
 package com.sidgowda.pawcalc.data.settings.model
 
-import com.sidgowda.pawcalc.common.setting.DateFormat
-import com.sidgowda.pawcalc.common.setting.ThemeFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 
 data class Settings(
     val weightFormat: WeightFormat,

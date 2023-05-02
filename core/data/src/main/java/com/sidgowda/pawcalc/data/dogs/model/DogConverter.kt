@@ -1,6 +1,6 @@
 package com.sidgowda.pawcalc.data.dogs.model
 
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.db.dog.DogEntity

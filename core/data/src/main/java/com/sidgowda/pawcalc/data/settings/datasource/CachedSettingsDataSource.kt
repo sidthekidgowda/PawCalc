@@ -3,10 +3,7 @@ package com.sidgowda.pawcalc.data.settings.datasource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.data.settings.model.toSettings
 import com.sidgowda.pawcalc.data.settings.model.toSettingsEntity
-import com.sidgowda.pawcalc.common.setting.DateFormat
 import com.sidgowda.pawcalc.db.settings.SettingsDao
-import com.sidgowda.pawcalc.common.setting.ThemeFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -19,9 +16,9 @@ class CachedSettingsDataSource @Inject constructor(
 
     private companion object {
         private val INITIAL_SETTINGS = Settings(
-            weightFormat = com.sidgowda.pawcalc.common.setting.WeightFormat.POUNDS,
-            dateFormat = com.sidgowda.pawcalc.common.setting.DateFormat.AMERICAN,
-            themeFormat = com.sidgowda.pawcalc.common.setting.ThemeFormat.SYSTEM
+            weightFormat = com.sidgowda.pawcalc.common.settings.WeightFormat.POUNDS,
+            dateFormat = com.sidgowda.pawcalc.common.settings.DateFormat.AMERICAN,
+            themeFormat = com.sidgowda.pawcalc.common.settings.ThemeFormat.SYSTEM
         )
     }
 

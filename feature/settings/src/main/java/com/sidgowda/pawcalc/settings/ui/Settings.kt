@@ -16,9 +16,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sidgowda.pawcalc.common.setting.DateFormat
-import com.sidgowda.pawcalc.common.setting.ThemeFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.settings.R
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
@@ -89,7 +89,7 @@ internal fun ChooseDate(
 @Composable
 internal fun ChooseWeight(
     modifier: Modifier = Modifier,
-    weightFormat: com.sidgowda.pawcalc.common.setting.WeightFormat,
+    weightFormat: com.sidgowda.pawcalc.common.settings.WeightFormat,
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     val weightOptions = stringArrayResource(id = R.array.settings_options_weight)
@@ -211,7 +211,7 @@ fun PreviewSettingsScreen() {
     PawCalcTheme {
         SettingsScreen(
             settings = Settings(
-                weightFormat = com.sidgowda.pawcalc.common.setting.WeightFormat.POUNDS,
+                weightFormat = com.sidgowda.pawcalc.common.settings.WeightFormat.POUNDS,
                 dateFormat = DateFormat.AMERICAN,
                 themeFormat = ThemeFormat.SYSTEM
             ),

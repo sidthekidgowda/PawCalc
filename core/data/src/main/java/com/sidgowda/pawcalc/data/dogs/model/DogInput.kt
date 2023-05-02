@@ -1,8 +1,8 @@
 package com.sidgowda.pawcalc.data.dogs.model
 
 import android.net.Uri
-import com.sidgowda.pawcalc.common.setting.DateFormat
-import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 
 data class DogInput(
     val profilePic: Uri,
