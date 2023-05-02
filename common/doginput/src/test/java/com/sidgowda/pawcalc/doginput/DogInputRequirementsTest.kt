@@ -404,7 +404,7 @@ class DogInputRequirementsTest {
 
     @Test
     fun `when birth date is shown and birth date is not empty, then input requirements are met`() {
-        dogInputState.updateBirthDate("12/20/2021")
+        dogInputState.updateBirthDateDialogShown()
         dogInputState.updateBirthDate("12/20/2021")
 
         dogInputState.value shouldBe DogInputState(
