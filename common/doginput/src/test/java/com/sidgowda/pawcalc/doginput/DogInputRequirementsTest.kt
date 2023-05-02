@@ -1,10 +1,9 @@
 package com.sidgowda.pawcalc.doginput
 
+import android.net.Uri
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
-import com.sidgowda.pawcalc.doginput.model.DogInputState
-import com.sidgowda.pawcalc.doginput.model.updateName
-import com.sidgowda.pawcalc.doginput.model.updateWeight
+import com.sidgowda.pawcalc.doginput.model.*
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,8 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(AndroidJUnit4::class)
 class DogInputRequirementsTest {
 
     private lateinit var dogInputState: MutableStateFlow<DogInputState>
@@ -353,7 +354,76 @@ class DogInputRequirementsTest {
                 weightFormat = WeightFormat.KILOGRAMS,
                 isWeightValid = true,
                 inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
-            ),
+            )
+        )
+    }
+
+    @Test
+    fun `when profile pic is set then input requirements are met`() {
+        dogInputState.updateProfilePic(Uri.parse("pic"))
+
+        dogInputState.value shouldBe DogInputState(
+            isLoading = false,
+            profilePic = Uri.parse("pic"),
+            inputRequirements = setOf(DogInputRequirements.OnePicture)
+        )
+    }
+
+    @Test
+    fun `when birth date dialog is shown, then value is set to true`() {
+        dogInputState.updateBirthDateDialogShown()
+
+        dogInputState.value shouldBe DogInputState(
+            isLoading = false,
+            birthDateDialogShown = true
+        )
+    }
+
+    @Test
+    fun `when birth date dialog is not shown and birth date is empty, then birth date is valid`() {
+        dogInputState.value shouldBe DogInputState(
+            isLoading = false,
+            birthDateDialogShown = false,
+            birthDate = "",
+            isBirthDateValid = true
+        )
+    }
+
+    @Test
+    fun `when birth date dialog is shown and birth date is empty, then birthDate is not valid`() {
+        dogInputState.updateBirthDateDialogShown()
+        dogInputState.updateBirthDate("")
+
+        dogInputState.value shouldBe DogInputState(
+            isLoading = false,
+            birthDateDialogShown = true,
+            birthDate = "",
+            isBirthDateValid = false
+        )
+    }
+
+    @Test
+    fun `when birth date is shown and birth date is not empty, then input requirements are met`() {
+        dogInputState.updateBirthDate("12/20/2021")
+        dogInputState.updateBirthDate("12/20/2021")
+
+        dogInputState.value shouldBe DogInputState(
+            isLoading = false,
+            birthDateDialogShown = true,
+            birthDate = "12/20/2021",
+            inputRequirements = setOf(DogInputRequirements.BirthDate)
+        )
+    }
+
+    @Test
+    fun `when birth date is not shown and birth date is not empty, then input requirements are met`() {
+        dogInputState.updateBirthDate("5/20/2021")
+
+        dogInputState.value shouldBe DogInputState(
+            isLoading = false,
+            birthDateDialogShown = false,
+            birthDate = "5/20/2021",
+            inputRequirements = setOf(DogInputRequirements.BirthDate)
         )
     }
 
