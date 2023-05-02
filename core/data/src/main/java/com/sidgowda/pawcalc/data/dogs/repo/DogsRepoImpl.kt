@@ -29,12 +29,12 @@ class DogsRepoImpl @Inject constructor(
     ) { dogs, loadState ->
         when (loadState) {
             LoadState.Loading -> DogState(
-                isLoading = dogs?.isEmpty() ?: true,
-                dogs = dogs ?: emptyList()
+                isLoading = true,
+                dogs = dogs
             )
             LoadState.Idle -> DogState(
                 isLoading = false,
-                dogs = dogs ?: emptyList()
+                dogs = dogs
             )
         }
     }
@@ -51,14 +51,14 @@ class DogsRepoImpl @Inject constructor(
     override suspend fun fetchDogs() {
         // if dogs exists in memory, do nothing
         val inMemoryDogs = memory.dogs().first()
-        if (inMemoryDogs != null) {
+        if (inMemoryDogs.isNotEmpty()) {
             loadState.update { LoadState.Idle }
             // add log statement
         } else {
             loadState.update { LoadState.Loading }
             try {
                 val inDiskDogs = disk.dogs().first()
-                if (inDiskDogs != null) {
+                if (inDiskDogs.isNotEmpty()) {
                    memory.addDog(*inDiskDogs.toTypedArray())
                 }
             } catch (e: Exception) {
@@ -70,7 +70,12 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun addDog(dogInput: DogInput) {
-        val id = memory.dogs().first()?.maxOf { it.id }?.plus(1) ?: 1
+        val dogs = memory.dogs().first()
+        val id = if (dogs.isNotEmpty()) {
+            dogs.maxOf { it.id }.plus(1)
+        } else {
+            1
+        }
         val dog = Dog(
             id = id,
             name = dogInput.name,

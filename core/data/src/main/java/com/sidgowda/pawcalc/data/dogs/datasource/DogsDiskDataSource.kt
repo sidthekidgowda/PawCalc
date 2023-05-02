@@ -16,7 +16,7 @@ class DogsDiskDataSource @Inject constructor(
     private val dogsDao: DogsDao
 ) : DogsDataSource {
 
-    override fun dogs(): Flow<List<Dog>?> {
+    override fun dogs(): Flow<List<Dog>> {
         return dogsDao.dogs()
             .catch { exception ->
                 if (exception is IOException) {

@@ -12,12 +12,12 @@ class DogsMemoryDataSource @Inject constructor(
     private val settingsDataSource: SettingsDataSource
 ) : DogsDataSource {
 
-    private val dogs = MutableStateFlow<List<Dog>?>(null)
+    private val dogs = MutableStateFlow<List<Dog>>(emptyList())
 
-    override fun dogs(): Flow<List<Dog>?> {
+    override fun dogs(): Flow<List<Dog>> {
         // transform list any time settings is updated
         return combine(dogs.asStateFlow(), settingsDataSource.settings()) { dogs, settings ->
-            dogs?.transformWithSettings(settings)
+            dogs.transformWithSettings(settings)
         }
     }
 
@@ -45,15 +45,15 @@ class DogsMemoryDataSource @Inject constructor(
 
     override suspend fun addDog(vararg dog: Dog) {
         dogs.update { list ->
-            list?.update {
+            list.update {
                 it.addAll(dog)
-            } ?: dog.asList()
+            }
         }
     }
 
     override suspend fun deleteDog(dog: Dog) {
        dogs.update { list ->
-           list?.update {
+           list.update {
                it.remove(dog)
            }
        }
@@ -61,7 +61,7 @@ class DogsMemoryDataSource @Inject constructor(
 
     override suspend fun updateDog(dog: Dog) {
         dogs.update { list ->
-            list?.update {
+            list.update {
                 val indexToReplace = it.indexOfFirst { oldDog -> dog.id == oldDog.id }
                 if (indexToReplace != -1) {
                     it[indexToReplace] = dog
@@ -71,8 +71,8 @@ class DogsMemoryDataSource @Inject constructor(
     }
 
     override suspend fun clear() {
-        dogs.update {
-            null
+        dogs.update { list ->
+            list.update { it.clear() }
         }
     }
 
