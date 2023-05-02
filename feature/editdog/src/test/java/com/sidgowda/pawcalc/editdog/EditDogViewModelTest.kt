@@ -212,7 +212,7 @@ class EditDogViewModelTest {
                 inputRequirements = setOf(
                     DogInputRequirements.BirthDate,
                     DogInputRequirements.OnePicture,
-                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500
+                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg
                 )
             )
         )
@@ -296,7 +296,7 @@ class EditDogViewModelTest {
                 inputRequirements = setOf(
                     DogInputRequirements.NameBetweenZeroAndFifty,
                     DogInputRequirements.OnePicture,
-                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500
+                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg
                 )
             )
         )

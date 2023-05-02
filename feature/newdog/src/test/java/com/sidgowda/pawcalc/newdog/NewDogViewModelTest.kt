@@ -164,7 +164,7 @@ class NewDogViewModelTest {
             INITIAL_STATE,
             DogInputState(
                 weight = "50",
-                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500)
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             )
         )
     }
@@ -206,7 +206,7 @@ class NewDogViewModelTest {
             INITIAL_STATE,
             DogInputState(
                 weight = "100",
-                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500)
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             )
         )
     }
@@ -221,7 +221,7 @@ class NewDogViewModelTest {
             INITIAL_STATE,
             DogInputState(
                 weight = "100",
-                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500)
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
             DogInputState(
                 weight = "100.25-23",
