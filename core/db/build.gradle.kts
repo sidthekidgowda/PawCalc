@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.common.settingsmodels)
     implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
     implementation(libs.androidx.room.runtime)

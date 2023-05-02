@@ -16,10 +16,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.common.setting.DateFormat
 import com.sidgowda.pawcalc.common.setting.ThemeFormat
 import com.sidgowda.pawcalc.common.setting.WeightFormat
+import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.settings.R
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
 import com.sidgowda.pawcalc.ui.theme.Grey200
@@ -69,7 +69,7 @@ internal fun SettingsScreen(
 @Composable
 internal fun ChooseDate(
     modifier: Modifier = Modifier,
-    dateFormat: com.sidgowda.pawcalc.common.setting.DateFormat,
+    dateFormat: DateFormat,
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     val dateOptions = stringArrayResource(id = R.array.settings_options_date)
@@ -80,7 +80,7 @@ internal fun ChooseDate(
         radioGroupOptions = dateOptions,
         selectedOptionIndex = dateFormat.index,
         onOptionSelected = { index ->
-            onSettingsEvent(SettingsEvent.DateFormatChange(com.sidgowda.pawcalc.common.setting.DateFormat.from(index)))
+            onSettingsEvent(SettingsEvent.DateFormatChange(DateFormat.from(index)))
 
         }
     )
@@ -100,7 +100,7 @@ internal fun ChooseWeight(
         radioGroupOptions = weightOptions,
         selectedOptionIndex = weightFormat.index,
         onOptionSelected = { index ->
-            onSettingsEvent(SettingsEvent.WeightFormatChange(com.sidgowda.pawcalc.common.setting.WeightFormat.from(index)))
+            onSettingsEvent(SettingsEvent.WeightFormatChange(WeightFormat.from(index)))
         }
     )
 }
@@ -108,7 +108,7 @@ internal fun ChooseWeight(
 @Composable
 internal fun ChooseTheme(
     modifier: Modifier = Modifier,
-    themeFormat: com.sidgowda.pawcalc.common.setting.ThemeFormat,
+    themeFormat: ThemeFormat,
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     val themeOptions = stringArrayResource(id = R.array.settings_options_theme)
@@ -119,7 +119,7 @@ internal fun ChooseTheme(
         radioGroupOptions = themeOptions,
         selectedOptionIndex = themeFormat.index,
         onOptionSelected = { index ->
-            onSettingsEvent(SettingsEvent.ThemeChange(com.sidgowda.pawcalc.common.setting.ThemeFormat.from(index)))
+            onSettingsEvent(SettingsEvent.ThemeChange(ThemeFormat.from(index)))
         }
     )
 }
@@ -212,8 +212,8 @@ fun PreviewSettingsScreen() {
         SettingsScreen(
             settings = Settings(
                 weightFormat = com.sidgowda.pawcalc.common.setting.WeightFormat.POUNDS,
-                dateFormat = com.sidgowda.pawcalc.common.setting.DateFormat.AMERICAN,
-                themeFormat = com.sidgowda.pawcalc.common.setting.ThemeFormat.SYSTEM
+                dateFormat = DateFormat.AMERICAN,
+                themeFormat = ThemeFormat.SYSTEM
             ),
             onSettingsEvent = {}
         )
