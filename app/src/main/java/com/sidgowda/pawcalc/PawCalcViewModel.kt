@@ -22,25 +22,23 @@ class PawCalcViewModel @Inject constructor(
     @Named("io") ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    private companion object {
+        private val DEFAULT_SETTINGS = Settings(
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM
+        )
+    }
+
 
     val uiState: StateFlow<PawCalcActivityState> =
-        combine(getOnboardingState(), getSettingsUseCase()) { onboarding, settings ->
+        combine(
+            getOnboardingState().catch { emit(OnboardingState.NotOnboarded) },
+            getSettingsUseCase().catch { emit(DEFAULT_SETTINGS) }
+        ) { onboarding, settings ->
             PawCalcActivityState.Initialized(
                 onboarding,
                 settings
-            )
-        }
-        .catch {
-            // any errors shouldn't crash app. Treat as uninitialized
-            emit(
-                PawCalcActivityState.Initialized(
-                    onboardingState = OnboardingState.NotOnboarded,
-                    settings = Settings(
-                        weightFormat = WeightFormat.POUNDS,
-                        dateFormat = DateFormat.AMERICAN,
-                        themeFormat = ThemeFormat.SYSTEM
-                    )
-                )
             )
         }
         .flowOn(ioDispatcher)

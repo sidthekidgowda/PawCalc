@@ -1,6 +1,10 @@
 package com.sidgowda.pawcalc
 
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.test.MainDispatcherRule
@@ -8,6 +12,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -41,7 +46,9 @@ class PawCalcViewModelTest {
     @Test
     fun `initial state should be Loading`() {
         every { onboardingStateUseCase.invoke() } returns emptyFlow()
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        every { getSettingsUseCase.invoke() } returns emptyFlow()
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         history shouldContainExactly listOf(
@@ -52,28 +59,38 @@ class PawCalcViewModelTest {
     @Test
     fun `when onboarding is not onboarded then state should contain loading and not onboarded`() {
         every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.NotOnboarded)
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        every { getSettingsUseCase.invoke() } returns flowOf(DEFAULT_SETTINGS)
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         scope.advanceUntilIdle()
 
         history shouldContainExactly listOf(
             PawCalcActivityState.Loading,
-            PawCalcActivityState.Initialized(onboardingState = OnboardingState.NotOnboarded)
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.NotOnboarded,
+                settings = DEFAULT_SETTINGS
+            )
         )
     }
 
     @Test
     fun `when onboarding is onboarded then state should contain loading and onboarded`() {
         every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.Onboarded)
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        every { getSettingsUseCase.invoke() } returns flowOf(DEFAULT_SETTINGS)
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         scope.advanceUntilIdle()
 
         history shouldContainExactly listOf(
             PawCalcActivityState.Loading,
-            PawCalcActivityState.Initialized(onboardingState = OnboardingState.Onboarded)
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS
+            )
         )
     }
 
@@ -82,14 +99,117 @@ class PawCalcViewModelTest {
         every { onboardingStateUseCase.invoke() } returns flow {
             throw Exception()
         }
-        pawCalcViewModel = PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        every { getSettingsUseCase.invoke() } returns flowOf(DEFAULT_SETTINGS)
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
         val history = pawCalcViewModel.createStateHistory()
 
         scope.advanceUntilIdle()
 
         history shouldContainExactly listOf(
             PawCalcActivityState.Loading,
-            PawCalcActivityState.Initialized(onboardingState = OnboardingState.NotOnboarded)
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.NotOnboarded,
+                settings = DEFAULT_SETTINGS
+            )
+        )
+    }
+
+    @Test
+    fun `when settings flow throws error, then state should emit default settings`() {
+        every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.Onboarded)
+        every { getSettingsUseCase.invoke() } returns flow {
+            throw Exception()
+        }
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        val history = pawCalcViewModel.createStateHistory()
+
+        scope.advanceUntilIdle()
+
+        history shouldContainExactly listOf(
+            PawCalcActivityState.Loading,
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS
+            )
+        )
+    }
+
+    @Test
+    fun `when settings has value in disk, it shoudl be emitted first over default settings`() {
+        every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.Onboarded)
+        every { getSettingsUseCase.invoke() } returns flowOf(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        val history = pawCalcViewModel.createStateHistory()
+
+        scope.advanceUntilIdle()
+
+        history shouldContainExactly listOf(
+            PawCalcActivityState.Loading,
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL)
+            )
+        )
+    }
+
+    @Test
+    fun `when settings is updated, then state should emit all updated settings`() = scope.runTest {
+        every { onboardingStateUseCase.invoke() } returns flowOf(OnboardingState.Onboarded)
+        every { getSettingsUseCase.invoke() } returns flow {
+            emit(DEFAULT_SETTINGS)
+            delay(5_000)
+            emit(
+                DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS)
+            )
+            delay(5_000)
+            emit(
+                DEFAULT_SETTINGS.copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL
+                )
+            )
+            delay(1_000)
+            emit(
+                DEFAULT_SETTINGS.copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.DARK)
+            )
+        }
+        pawCalcViewModel =
+            PawCalcViewModel(onboardingStateUseCase, getSettingsUseCase, testDispatcher)
+        val history = pawCalcViewModel.createStateHistory()
+
+        scope.advanceUntilIdle()
+
+        history shouldContainExactly listOf(
+            PawCalcActivityState.Loading,
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS
+            ),
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS)
+            ),
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS.copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL
+                )
+            ),
+            PawCalcActivityState.Initialized(
+                onboardingState = OnboardingState.Onboarded,
+                settings = DEFAULT_SETTINGS.copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.DARK)
+            )
         )
     }
 
@@ -99,5 +219,13 @@ class PawCalcViewModelTest {
             uiState.toCollection(history)
         }
         return history
+    }
+
+    private companion object {
+        private val DEFAULT_SETTINGS = Settings(
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM
+        )
     }
 }
