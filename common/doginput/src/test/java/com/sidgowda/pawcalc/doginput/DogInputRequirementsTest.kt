@@ -182,6 +182,52 @@ class DogInputRequirementsTest {
     }
 
     @Test
+    fun `when weight is in lbs and is valid then updated to invalid, no input requirements should be met`() {
+        val history = createStateHistory()
+        dogInputState.updateWeight("50")
+        dogInputState.updateWeight("-500")
+
+        history shouldContainExactly listOf(
+            DogInputState(isLoading = false),
+            DogInputState(
+                isLoading = false,
+                weight = "50",
+                isWeightValid = true,
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            ),
+            DogInputState(
+                isLoading = false,
+                weight = "-500",
+                isWeightValid = false,
+                inputRequirements = emptySet()
+            )
+        )
+    }
+
+    @Test
+    fun `when weight is in lbs and is invalid then updated to valid, then input requirements should be met`() {
+        val history = createStateHistory()
+        dogInputState.updateWeight("-500")
+        dogInputState.updateWeight("50")
+
+        history shouldContainExactly listOf(
+            DogInputState(isLoading = false),
+            DogInputState(
+                isLoading = false,
+                weight = "-500",
+                isWeightValid = false,
+                inputRequirements = emptySet()
+            ),
+            DogInputState(
+                isLoading = false,
+                weight = "50",
+                isWeightValid = true,
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            )
+        )
+    }
+
+    @Test
     fun `when weight is in kg and less than 225kg, then it is valid`() {
         dogInputState.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }
         dogInputState.updateWeight("100.0")
@@ -248,6 +294,66 @@ class DogInputRequirementsTest {
             weightFormat = WeightFormat.KILOGRAMS,
             isWeightValid = false,
             inputRequirements = emptySet()
+        )
+    }
+
+    @Test
+    fun `when weight is in kg and is valid then updated to invalid, no input requirements should be met`() {
+        val history = createStateHistory()
+        dogInputState.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }
+        dogInputState.updateWeight("100")
+        dogInputState.updateWeight("10000")
+
+        history shouldContainExactly listOf(
+            DogInputState(isLoading = false),
+            DogInputState(
+                isLoading = false,
+                weightFormat = WeightFormat.KILOGRAMS
+            ),
+            DogInputState(
+                isLoading = false,
+                weight = "100",
+                weightFormat = WeightFormat.KILOGRAMS,
+                isWeightValid = true,
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            ),
+            DogInputState(
+                isLoading = false,
+                weight = "10000",
+                weightFormat = WeightFormat.KILOGRAMS,
+                isWeightValid = false,
+                inputRequirements = emptySet()
+            )
+        )
+    }
+
+    @Test
+    fun `when weight is in kg and is invalid then updated to valid, then input requirements should be met`() {
+        val history = createStateHistory()
+        dogInputState.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }
+        dogInputState.updateWeight("10000")
+        dogInputState.updateWeight("100")
+
+        history shouldContainExactly listOf(
+            DogInputState(isLoading = false),
+            DogInputState(
+                isLoading = false,
+                weightFormat = WeightFormat.KILOGRAMS
+            ),
+            DogInputState(
+                isLoading = false,
+                weight = "10000",
+                weightFormat = WeightFormat.KILOGRAMS,
+                isWeightValid = false,
+                inputRequirements = emptySet()
+            ),
+            DogInputState(
+                isLoading = false,
+                weight = "100",
+                weightFormat = WeightFormat.KILOGRAMS,
+                isWeightValid = true,
+                inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            ),
         )
     }
 
