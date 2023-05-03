@@ -32,7 +32,7 @@ class DogsDiskDataSource @Inject constructor(
             }.flowOn(Dispatchers.Default)
     }
 
-    override suspend fun addDog(vararg dog: Dog) {
+    override suspend fun addDogs(vararg dog: Dog) {
         dog.forEach {
             dogsDao.addDog(it.toDogEntity())
         }

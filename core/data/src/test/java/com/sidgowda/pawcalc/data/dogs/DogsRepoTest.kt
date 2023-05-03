@@ -2,6 +2,9 @@ package com.sidgowda.pawcalc.data.dogs
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
@@ -11,6 +14,8 @@ import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
+import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
+import com.sidgowda.pawcalc.data.settings.model.Settings
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.mockk.*
@@ -18,9 +23,9 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
@@ -32,51 +37,22 @@ import java.io.IOException
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class DogsRepoTest {
-
-    private object DogsDiskDataSource : DogsDataSource {
-
-        val listOfDogs = mutableListOf<Dog>()
-
-        override fun dogs(): Flow<List<Dog>?> {
-            return flow {
-                emit(listOfDogs)
-            }
-        }
-
-        override suspend fun addDogs(vararg dog: Dog) {
-           listOfDogs.addAll(dog)
-        }
-
-        override suspend fun deleteDog(dog: Dog) {
-            listOfDogs.remove(dog)
-        }
-
-        override suspend fun updateDog(dogs: Dog) {
-            val indexToReplace = listOfDogs.indexOfFirst { oldDog -> dogs.id == oldDog.id }
-            if (indexToReplace != -1) {
-                listOfDogs[indexToReplace] = dogs
-            }
-        }
-
-        override suspend fun clear() {
-            listOfDogs.clear()
-        }
-
-    }
-
     private lateinit var dogsRepo: DogsRepo
     private lateinit var dogsMemoryDataSource: DogsDataSource
     private lateinit var dogsDiskDataSource: DogsDataSource
     private lateinit var testCoroutineDispatcher: CoroutineDispatcher
+    private lateinit var settingsDataSource: SettingsDataSource
     private lateinit var testScope: TestScope
 
     @Before
     fun setup() {
         testCoroutineDispatcher = UnconfinedTestDispatcher()
+        settingsDataSource = mockk()
         testScope = TestScope(testCoroutineDispatcher)
-        DogsDiskDataSource.listOfDogs.clear()
-        dogsDiskDataSource = DogsDiskDataSource
-        dogsMemoryDataSource = DogsMemoryDataSource()
+        DogsFakeDataSource.listOfDogs.clear()
+        dogsDiskDataSource = DogsFakeDataSource
+        every { settingsDataSource.settings() } returns flowOf(DEFAULT_SETTINGS)
+        dogsMemoryDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
         dogsRepo = DogsRepoImpl(
             memory = dogsMemoryDataSource,
             disk = dogsDiskDataSource,
@@ -184,7 +160,9 @@ class DogsRepoTest {
                 profilePic = Uri.EMPTY,
                 name = "dog",
                 weight = 89.0.toString(),
-                birthDate = "1/1/2021"
+                birthDate = "1/1/2021",
+                weightFormat = WeightFormat.POUNDS,
+                dateFormat = DateFormat.AMERICAN
             )
         ).also { advanceUntilIdle() }
 
@@ -208,7 +186,9 @@ class DogsRepoTest {
                 profilePic = Uri.EMPTY,
                 name = "dog",
                 weight = 89.0.toString(),
-                birthDate = "1/1/2021"
+                birthDate = "1/1/2021",
+                weightFormat = WeightFormat.POUNDS,
+                dateFormat = DateFormat.AMERICAN
             )
         ).also { advanceUntilIdle() }
 
@@ -266,7 +246,9 @@ class DogsRepoTest {
                 profilePic = Uri.EMPTY,
                 name = "Dog_7",
                 weight = 68.0.toString(),
-                birthDate = "12/7/2021"
+                birthDate = "12/7/2021",
+                weightFormat = WeightFormat.POUNDS,
+                dateFormat = DateFormat.AMERICAN
             )
         ).also { advanceUntilIdle() }
 
@@ -277,7 +259,9 @@ class DogsRepoTest {
             profilePic = Uri.EMPTY,
             birthDate = "12/7/2021",
             dogYears = "12/7/2021".toDogYears(),
-            humanYears = "12/7/2021".toHumanYears()
+            humanYears = "12/7/2021".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
     }
 
@@ -427,7 +411,9 @@ class DogsRepoTest {
                     profilePic = Uri.EMPTY,
                     name = "Dog_$i",
                     weight = 68.0.toString(),
-                    birthDate = "12/$i/2021"
+                    birthDate = "12/$i/2021",
+                    weightFormat = WeightFormat.POUNDS,
+                    dateFormat = DateFormat.AMERICAN
                 )
             )
         }
@@ -442,7 +428,9 @@ class DogsRepoTest {
              profilePic = Uri.EMPTY,
              birthDate = "12/1/2021",
              dogYears = "12/1/2021".toDogYears(),
-             humanYears = "12/1/2021".toHumanYears()
+             humanYears = "12/1/2021".toHumanYears(),
+             weightFormat = WeightFormat.POUNDS,
+             dateFormat = DateFormat.AMERICAN
          )
         val DOG_TWO = Dog(
             id = 2,
@@ -451,7 +439,9 @@ class DogsRepoTest {
             profilePic = Uri.EMPTY,
             birthDate = "12/2/2021",
             dogYears = "12/2/2021".toDogYears(),
-            humanYears = "12/2/2021".toHumanYears()
+            humanYears = "12/2/2021".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_THREE = Dog(
             id = 3,
@@ -460,7 +450,14 @@ class DogsRepoTest {
             profilePic = Uri.EMPTY,
             birthDate = "12/3/2021",
             dogYears = "12/3/2021".toDogYears(),
-            humanYears = "12/3/2021".toHumanYears()
+            humanYears = "12/3/2021".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
+        )
+        val DEFAULT_SETTINGS = Settings(
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM
         )
     }
 }

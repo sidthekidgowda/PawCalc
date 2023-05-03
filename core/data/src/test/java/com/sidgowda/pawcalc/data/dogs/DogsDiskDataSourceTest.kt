@@ -3,6 +3,8 @@ package com.sidgowda.pawcalc.data.dogs
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDiskDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
@@ -181,21 +183,27 @@ class DogsDiskDataSourceTest {
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021"
+            birthDate = "12/22/2021",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_TWO_ENTITY = DogEntity(
             id = 2,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/12/2021"
+            birthDate = "12/12/2021",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_THREE_ENTITY = DogEntity(
             id = 3,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/12/2021"
+            birthDate = "12/12/2021",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
     }
 }

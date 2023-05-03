@@ -45,7 +45,7 @@ class DogsMemoryDataSource @Inject constructor(
         }
     }
 
-    override suspend fun addDog(vararg dog: Dog) {
+    override suspend fun addDogs(vararg dog: Dog) {
         dogs.update { list ->
             list.update {
                 it.addAll(dog)

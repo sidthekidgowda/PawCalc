@@ -60,7 +60,7 @@ class DogsRepoImpl @Inject constructor(
             try {
                 val inDiskDogs = disk.dogs().first()
                 if (inDiskDogs.isNotEmpty()) {
-                   memory.addDog(*inDiskDogs.toTypedArray())
+                   memory.addDogs(*inDiskDogs.toTypedArray())
                 }
             } catch (e: Exception) {
                 // todo add log statement
@@ -88,8 +88,8 @@ class DogsRepoImpl @Inject constructor(
             humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),
             profilePic = dogInput.profilePic
         )
-        memory.addDog(dog)
-        disk.addDog(dog)
+        memory.addDogs(dog)
+        disk.addDogs(dog)
     }
 
     override suspend fun deleteDog(dog: Dog) {
