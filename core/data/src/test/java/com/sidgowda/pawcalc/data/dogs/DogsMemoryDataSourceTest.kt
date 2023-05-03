@@ -8,6 +8,7 @@ import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
+import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.toDog
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
@@ -15,12 +16,11 @@ import com.sidgowda.pawcalc.db.dog.DogEntity
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -33,11 +33,13 @@ class DogsMemoryDataSourceTest {
     private lateinit var dogsDataSource: DogsDataSource
     private lateinit var settingsDataSource: SettingsDataSource
     private lateinit var testCoroutineDispatcher: CoroutineDispatcher
+    private lateinit var testScope: TestScope
 
     @Before
     fun setup() {
         settingsDataSource = mockk()
         testCoroutineDispatcher = StandardTestDispatcher()
+        testScope = TestScope(testCoroutineDispatcher)
         every { settingsDataSource.settings() } returns flowOf(
             Settings(
                 weightFormat = WeightFormat.POUNDS,
@@ -49,13 +51,14 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `assert MemoryDataSource returns null if it has no dogs`() = runTest {
-        val dogs = dogsDataSource.dogs().first()
-        assertNull(dogs)
+    fun `assert MemoryDataSource returns nothing if it has no dogs`() = testScope.runTest {
+        dogsDataSource.dogs().test {
+            expectNoEvents()
+        }
     }
 
     @Test
-    fun `when dog is added, it should have dogYears and humanYears as well`() = runTest {
+    fun `when dog is added, it should have dogYears and humanYears as well`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
 
@@ -70,7 +73,7 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `add method should be able to add multiple dogs at a time`() = runTest {
+    fun `add method should be able to add multiple dogs at a time`() = testScope.runTest {
         dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
@@ -89,7 +92,7 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `when dog two is deleted, only dog one and dog three exists`() = runTest {
+    fun `when dog two is deleted, only dog one and dog three exists`() = testScope.runTest {
         dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
@@ -108,7 +111,7 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `when update is called for dog two, then dog two is updated`() = runTest {
+    fun `when update is called for dog two, then dog two is updated`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
@@ -125,8 +128,16 @@ class DogsMemoryDataSourceTest {
         }
     }
 
+    // mulitple dog updates
     @Test
-    fun `when clear is called, all dogs should be deleted and null should be returned`() = runTest {
+    fun `when update is called with multiple dogs, then multiple dogs should be updated`() = testScope.runTest {
+        
+    }
+    // transform weight
+    // transform date
+
+    @Test
+    fun `when clear is called, all dogs should be deleted and null should be returned`() = testScope.runTest {
         dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
@@ -135,8 +146,9 @@ class DogsMemoryDataSourceTest {
 
         dogsDataSource.clear()
 
-        val dogs = dogsDataSource.dogs().first()
-        assertNull(dogs)
+        dogsDataSource.dogs().test {
+            assertEquals(emptyList<Dog>(), awaitItem())
+        }
     }
 
     private companion object {
