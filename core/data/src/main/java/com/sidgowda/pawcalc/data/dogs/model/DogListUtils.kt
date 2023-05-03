@@ -1,12 +1,12 @@
 package com.sidgowda.pawcalc.data.dogs
 
-inline fun <T> MutableList<T>.mapInPlace(mutator: (T)->T) {
-    val iterate = this.listIterator()
-    while (iterate.hasNext()) {
-        val oldValue = iterate.next()
+inline fun <T> MutableList<T>.mapInPlace(mutator: (T) -> T) {
+    val iterator = this.listIterator()
+    while (iterator.hasNext()) {
+        val oldValue = iterator.next()
         val newValue = mutator(oldValue)
         if (newValue !== oldValue) {
-            iterate.set(newValue)
+            iterator.set(newValue)
         }
     }
 }

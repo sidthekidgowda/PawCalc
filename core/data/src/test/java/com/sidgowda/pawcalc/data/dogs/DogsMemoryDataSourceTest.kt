@@ -6,13 +6,13 @@ import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
+import com.sidgowda.pawcalc.data.date.toDogYears
+import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
-import com.sidgowda.pawcalc.data.dogs.model.toDog
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import com.sidgowda.pawcalc.db.dog.DogEntity
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -59,14 +59,14 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when dog is added, it should have dogYears and humanYears as well`() = testScope.runTest {
-        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE)
+        dogsDataSource.addDogs(DOG_TWO)
 
         dogsDataSource.dogs().test {
             assertEquals(
                 listOf(
-                    DOG_ONE_ENTITY.toDog(),
-                    DOG_TWO_ENTITY.toDog()
+                    DOG_ONE,
+                    DOG_TWO
                 ), awaitItem()
             )
         }
@@ -75,17 +75,17 @@ class DogsMemoryDataSourceTest {
     @Test
     fun `add method should be able to add multiple dogs at a time`() = testScope.runTest {
         dogsDataSource.addDogs(
-            DOG_ONE_ENTITY.toDog(),
-            DOG_TWO_ENTITY.toDog(),
-            DOG_THREE_ENTITY.toDog()
+            DOG_ONE,
+            DOG_TWO,
+            DOG_THREE
         )
 
         dogsDataSource.dogs().test {
             assertEquals(
                 listOf(
-                    DOG_ONE_ENTITY.toDog(),
-                    DOG_TWO_ENTITY.toDog(),
-                    DOG_THREE_ENTITY.toDog()
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
                 ), awaitItem()
             )
         }
@@ -94,17 +94,17 @@ class DogsMemoryDataSourceTest {
     @Test
     fun `when dog two is deleted, only dog one and dog three exists`() = testScope.runTest {
         dogsDataSource.addDogs(
-            DOG_ONE_ENTITY.toDog(),
-            DOG_TWO_ENTITY.toDog(),
-            DOG_THREE_ENTITY.toDog()
+            DOG_ONE,
+            DOG_TWO,
+            DOG_THREE
         )
-        dogsDataSource.deleteDog(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.deleteDog(DOG_TWO)
 
         dogsDataSource.dogs().test {
             assertEquals(
                 listOf(
-                    DOG_ONE_ENTITY.toDog(),
-                    DOG_THREE_ENTITY.toDog()
+                    DOG_ONE,
+                    DOG_THREE
                 ), awaitItem()
             )
         }
@@ -112,17 +112,17 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when update is called for dog two, then dog two is updated`() = testScope.runTest {
-        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
-        dogsDataSource.updateDog(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
+        dogsDataSource.addDogs(DOG_ONE)
+        dogsDataSource.addDogs(DOG_TWO)
+        dogsDataSource.addDogs(DOG_THREE)
+        dogsDataSource.updateDog(DOG_TWO.copy(name = "Updated Name"))
 
         dogsDataSource.dogs().test {
             assertEquals(
                 listOf(
-                    DOG_ONE_ENTITY.toDog(),
-                    DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
-                    DOG_THREE_ENTITY.toDog()
+                    DOG_ONE,
+                    DOG_TWO.copy(name = "Updated Name"),
+                    DOG_THREE
                 ), awaitItem()
             )
         }
@@ -130,6 +130,24 @@ class DogsMemoryDataSourceTest {
 
     @Test
     fun `when update is called with multiple dogs, then multiple dogs should be updated`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE)
+        dogsDataSource.addDogs(DOG_TWO)
+        dogsDataSource.addDogs(DOG_THREE)
+
+        dogsDataSource.updateDog(
+            DOG_TWO.copy(name = "dog_two_update"),
+            DOG_ONE.copy(name = "dog_one_update")
+        )
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE.copy(name = "dog_one_update"),
+                    DOG_TWO.copy(name = "dog_two_update"),
+                    DOG_THREE
+                ), awaitItem()
+            )
+        }
 
     }
     // transform weight
@@ -138,9 +156,9 @@ class DogsMemoryDataSourceTest {
     @Test
     fun `when clear is called, all dogs should be deleted and null should be returned`() = testScope.runTest {
         dogsDataSource.addDogs(
-            DOG_ONE_ENTITY.toDog(),
-            DOG_TWO_ENTITY.toDog(),
-            DOG_THREE_ENTITY.toDog()
+            DOG_ONE,
+            DOG_TWO,
+            DOG_THREE
         )
 
         dogsDataSource.clear()
@@ -151,30 +169,36 @@ class DogsMemoryDataSourceTest {
     }
 
     private companion object {
-        val DOG_ONE_ENTITY = DogEntity(
+        val DOG_ONE = Dog(
             id = 1,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
             birthDate = "12/22/2021",
+            dogYears = "12/22/2021".toDogYears(),
+            humanYears = "12/22/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN
         )
-        val DOG_TWO_ENTITY = DogEntity(
+        val DOG_TWO = Dog(
             id = 2,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
             birthDate = "12/12/2021",
+            dogYears = "12/12/2021".toDogYears(),
+            humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN
         )
-        val DOG_THREE_ENTITY = DogEntity(
+        val DOG_THREE = Dog(
             id = 3,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
             birthDate = "12/12/2021",
+            dogYears = "12/12/2021".toDogYears(),
+            humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN
         )
