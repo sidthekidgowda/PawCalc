@@ -138,7 +138,7 @@ class DogsDiskDataSourceTest {
         dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
-        dogsDataSource.updateDog(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
+        dogsDataSource.updateDogs(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -172,7 +172,7 @@ class DogsDiskDataSourceTest {
         dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
         dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
-        dogsDataSource.updateDog(
+        dogsDataSource.updateDogs(
             DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
             DOG_THREE_ENTITY.copy(name = "Updated Dog 3").toDog()
         )

@@ -63,11 +63,11 @@ class DogsMemoryDataSource @Inject constructor(
        }
     }
 
-    override suspend fun updateDog(vararg dog: Dog) {
+    override suspend fun updateDogs(vararg dog: Dog) {
         val updatedDogIdsMap: Map<Int, Dog> = dog.associateBy { it.id }
         dogs.update { list ->
             list.update {
-                it.mapInPlace { dog -> updatedDogIdsMap[dog.id] ?: dog }
+                it.mapInPlace { oldDog -> updatedDogIdsMap[oldDog.id] ?: oldDog }
             }
         }
     }

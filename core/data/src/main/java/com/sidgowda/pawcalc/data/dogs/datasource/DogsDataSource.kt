@@ -11,7 +11,7 @@ interface DogsDataSource {
 
     suspend fun deleteDog(dog: Dog)
 
-    suspend fun updateDog(vararg dog: Dog)
+    suspend fun updateDogs(vararg dog: Dog)
 
     suspend fun clear()
 }

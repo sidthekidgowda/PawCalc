@@ -115,7 +115,7 @@ class EditDogViewModel @Inject constructor(
                 val input = _inputState.value
                 oldDog?.copy(
                     name = input.name,
-                    weight = input.weight.toDouble(),
+                    weight = input.weight.toDouble().toNewWeight(input.weightFormat),
                     weightFormat = input.weightFormat,
                     birthDate = input.birthDate,
                     dateFormat = input.dateFormat,

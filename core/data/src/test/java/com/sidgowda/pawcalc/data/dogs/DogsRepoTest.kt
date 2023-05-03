@@ -14,6 +14,7 @@ import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
+import com.sidgowda.pawcalc.data.fakes.DogsFakeDataSource
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import io.kotest.matchers.collections.shouldContainExactly
@@ -49,8 +50,7 @@ class DogsRepoTest {
         testCoroutineDispatcher = UnconfinedTestDispatcher()
         settingsDataSource = mockk()
         testScope = TestScope(testCoroutineDispatcher)
-        DogsFakeDataSource.listOfDogs.clear()
-        dogsDiskDataSource = DogsFakeDataSource
+        dogsDiskDataSource = DogsFakeDataSource()
         every { settingsDataSource.settings() } returns flowOf(DEFAULT_SETTINGS)
         dogsMemoryDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
         dogsRepo = DogsRepoImpl(
@@ -280,8 +280,8 @@ class DogsRepoTest {
         dogsRepo.updateDog(DOG_THREE.copy( name = "Dog_3_Update")).also { advanceUntilIdle() }
 
         coVerify {
-            spyMemory.updateDog(any())
-            spyDisk.updateDog(any())
+            spyMemory.updateDogs(any())
+            spyDisk.updateDogs(any())
         }
     }
 

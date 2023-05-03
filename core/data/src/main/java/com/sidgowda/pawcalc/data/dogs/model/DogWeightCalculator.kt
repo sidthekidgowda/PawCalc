@@ -19,10 +19,10 @@ fun Double.toNewWeight(newWeightFormat: WeightFormat): Double {
         }
     }
     // round new weight to 2 digits
-    return weightFormattedToString(newWeight).toDouble()
+    return newWeight.formattedToTwoDecimals()
 }
 
-private fun weightFormattedToString(weight: Double): String {
+private fun Double.formattedToTwoDecimals(): Double {
     val formatter = DecimalFormat(WEIGHT_FORMAT)
-    return formatter.format(weight)
+    return formatter.format(this).toDouble()
 }

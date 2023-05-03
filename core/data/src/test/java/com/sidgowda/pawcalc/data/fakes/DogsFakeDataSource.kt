@@ -1,11 +1,13 @@
-package com.sidgowda.pawcalc.data.dogs
+package com.sidgowda.pawcalc.data.fakes
 
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
+import com.sidgowda.pawcalc.data.dogs.mapInPlace
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-internal object DogsFakeDataSource : DogsDataSource {
+class DogsFakeDataSource : DogsDataSource {
+
     val listOfDogs = mutableListOf<Dog>()
 
     override fun dogs(): Flow<List<Dog>> {
@@ -22,13 +24,9 @@ internal object DogsFakeDataSource : DogsDataSource {
         listOfDogs.remove(dog)
     }
 
-    override suspend fun updateDog(vararg dog: Dog) {
-        if (dog.size == 1) {
-            val indexToReplace = listOfDogs.indexOfFirst { oldDog -> dog.first().id == oldDog.id }
-            if (indexToReplace != -1) {
-                listOfDogs[indexToReplace] = dog.first()
-            }
-        }
+    override suspend fun updateDogs(vararg dog: Dog) {
+        val updatedDogIdsMap: Map<Int, Dog> = dog.associateBy { it.id }
+        listOfDogs.mapInPlace { oldDog -> updatedDogIdsMap[oldDog.id] ?: oldDog }
     }
 
     override suspend fun clear() {

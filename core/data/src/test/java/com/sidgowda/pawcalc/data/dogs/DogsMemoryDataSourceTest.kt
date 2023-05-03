@@ -11,14 +11,13 @@ import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
+import com.sidgowda.pawcalc.data.fakes.FakeSettingsDataSource
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import io.mockk.every
-import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -37,16 +36,9 @@ class DogsMemoryDataSourceTest {
 
     @Before
     fun setup() {
-        settingsDataSource = mockk()
+        settingsDataSource = FakeSettingsDataSource()
         testCoroutineDispatcher = StandardTestDispatcher()
         testScope = TestScope(testCoroutineDispatcher)
-        every { settingsDataSource.settings() } returns flowOf(
-            Settings(
-                weightFormat = WeightFormat.POUNDS,
-                dateFormat = DateFormat.AMERICAN,
-                themeFormat = ThemeFormat.SYSTEM
-            )
-        )
         dogsDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
     }
 
@@ -115,7 +107,7 @@ class DogsMemoryDataSourceTest {
         dogsDataSource.addDogs(DOG_ONE)
         dogsDataSource.addDogs(DOG_TWO)
         dogsDataSource.addDogs(DOG_THREE)
-        dogsDataSource.updateDog(DOG_TWO.copy(name = "Updated Name"))
+        dogsDataSource.updateDogs(DOG_TWO.copy(name = "Updated Name"))
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -134,7 +126,7 @@ class DogsMemoryDataSourceTest {
         dogsDataSource.addDogs(DOG_TWO)
         dogsDataSource.addDogs(DOG_THREE)
 
-        dogsDataSource.updateDog(
+        dogsDataSource.updateDogs(
             DOG_TWO.copy(name = "dog_two_update"),
             DOG_ONE.copy(name = "dog_one_update")
         )
@@ -148,13 +140,157 @@ class DogsMemoryDataSourceTest {
                 ), awaitItem()
             )
         }
-
     }
-    // transform weight
-    // transform date
 
     @Test
-    fun `when clear is called, all dogs should be deleted and null should be returned`() = testScope.runTest {
+    fun `when weight format is changed to kilograms, all dog weights should be in kilograms`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE.copy(
+                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_TWO.copy(
+                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_THREE.copy(
+                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when weight format is changed back to lbs from kilograms, all dog weights should be in lbs`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.POUNDS))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when settings theme is changed, weight should not be changed`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(themeFormat = ThemeFormat.LIGHT))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when weight is changed first to Kilograms and settings theme is changed, weight should not be changed back`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS, themeFormat = ThemeFormat.LIGHT))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE.copy(
+                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_TWO.copy(
+                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_THREE.copy(
+                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when date format is changed to international, all dogs birth dates should be updated to international format`() = testScope.runTest {
+        dogsDataSource.addDogs(
+            DOG_ONE,
+            DOG_TWO.copy(
+                birthDate = "4/20/2023",
+                dogYears = "4/20/2023".toDogYears(),
+                humanYears = "4/20/2023".toHumanYears()
+            ),
+            DOG_THREE.copy(
+                birthDate = "10/30/2019",
+                dogYears = "10/30/2019".toDogYears(),
+                humanYears = "10/30/2019".toHumanYears()
+            )
+        )
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE.copy(
+                        birthDate = "22/12/2021",
+                        dogYears = "22/12/2021".toDogYears(dateFormat = DateFormat.INTERNATIONAL),
+                        humanYears = "22/12/2021".toHumanYears(dateFormat = DateFormat.INTERNATIONAL),
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_TWO.copy(
+                        birthDate = "20/4/2023",
+                        dogYears = "20/4/2023".toDogYears(dateFormat = DateFormat.INTERNATIONAL),
+                        humanYears = "20/4/2023".toHumanYears(dateFormat = DateFormat.INTERNATIONAL),
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_THREE.copy(
+                        birthDate = "30/10/2019",
+                        dogYears = "30/10/2019".toDogYears(dateFormat = DateFormat.INTERNATIONAL),
+                        humanYears = "30/10/2019".toHumanYears(dateFormat = DateFormat.INTERNATIONAL),
+                        dateFormat = DateFormat.INTERNATIONAL
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `when date format is changed to international and backg, all dogs birth dates should be back to american format`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.AMERICAN))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE, DOG_TWO, DOG_THREE
+                ),
+                awaitItem()
+            )
+        }
+    }
+    @Test
+    fun `when clear is called, all dogs should be deleted and empty list should be returned`() = testScope.runTest {
         dogsDataSource.addDogs(
             DOG_ONE,
             DOG_TWO,

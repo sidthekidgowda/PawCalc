@@ -6,6 +6,7 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class DogsRepoImpl @Inject constructor(
     .onEach { dogState ->
         // update disk for next session to use updated weight and date format
         if (dogState.dogs.isNotEmpty()) {
-            disk.updateDog(*dogState.dogs.toTypedArray())
+            disk.updateDogs(*dogState.dogs.toTypedArray())
         }
     }
     // buffer ensures onEach is emitted on a different coroutine as collect
@@ -82,7 +83,7 @@ class DogsRepoImpl @Inject constructor(
             name = dogInput.name,
             birthDate = dogInput.birthDate,
             dateFormat = dogInput.dateFormat,
-            weight = dogInput.weight.toDouble(),
+            weight = dogInput.weight.toDouble().toNewWeight(dogInput.weightFormat),
             weightFormat = dogInput.weightFormat,
             dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
             humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),
@@ -98,8 +99,8 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun updateDog(dog: Dog) {
-        memory.updateDog(dog)
-        disk.updateDog(dog)
+        memory.updateDogs(dog)
+        disk.updateDogs(dog)
     }
 
     override suspend fun clear() {
