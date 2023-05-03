@@ -1,7 +1,9 @@
 package com.sidgowda.pawcalc.data.dogs.datasource
 
+import com.sidgowda.pawcalc.data.dogs.mapInPlace
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
+import com.sidgowda.pawcalc.data.dogs.update
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.date.dateToNewFormat
@@ -62,15 +64,10 @@ class DogsMemoryDataSource @Inject constructor(
     }
 
     override suspend fun updateDog(vararg dog: Dog) {
-        // memory should only update 1 dog at a time.
-        // only disk should be able to update multiple dogs at a time.
-        if (dog.size > 1) return
+        val updatedDogIdsMap: Map<Int, Dog> = dog.associateBy { it.id }
         dogs.update { list ->
             list.update {
-                val indexToReplace = it.indexOfFirst { oldDog -> dog.first().id == oldDog.id }
-                if (indexToReplace != -1) {
-                    it[indexToReplace] = dog.first()
-                }
+                it.mapInPlace { dog -> updatedDogIdsMap[dog.id] ?: dog }
             }
         }
     }
@@ -78,12 +75,6 @@ class DogsMemoryDataSource @Inject constructor(
     override suspend fun clear() {
         dogs.update { list ->
             list.update { it.clear() }
-        }
-    }
-
-    private fun List<Dog>.update(action: (MutableList<Dog>) -> Unit): List<Dog> {
-        return toMutableList().apply {
-            action(this)
         }
     }
 }

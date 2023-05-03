@@ -129,10 +129,10 @@ class DogsDiskDataSourceTest {
             listOfDogs.add(dog)
         }
         coEvery { dogsDao.updateDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            val indexToReplace = listOfDogs.indexOfFirst { oldDog -> dog.id == oldDog.id }
-            if (indexToReplace != -1) {
-                listOfDogs[indexToReplace] = dog
+            val updatedDogs = firstArg<Array<DogEntity>>()
+            val dogIdMap: Map<Int, DogEntity> = updatedDogs.associateBy { it.id }
+            listOfDogs.mapInPlace {
+                dogIdMap[it.id] ?: it
             }
         }
         dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
@@ -146,6 +146,43 @@ class DogsDiskDataSourceTest {
                     DOG_ONE_ENTITY.toDog(),
                     DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
                     DOG_THREE_ENTITY.toDog()
+                ), awaitItem()
+            )
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `when update is called for multiple dogs, then multiple dogs are updated`() = runTest {
+        val listOfDogs = mutableListOf<DogEntity>()
+        coEvery { dogsDao.dogs() } returns flow {
+            emit(listOfDogs)
+        }
+        coEvery { dogsDao.addDog(any()) } answers {
+            val dog = firstArg<DogEntity>()
+            listOfDogs.add(dog)
+        }
+        coEvery { dogsDao.updateDog(*anyVararg()) } answers {
+            val updatedDogs = firstArg<Array<DogEntity>>()
+            val dogIdMap: Map<Int, DogEntity> = updatedDogs.associateBy { it.id }
+            listOfDogs.mapInPlace {
+                dogIdMap[it.id] ?: it
+            }
+        }
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.updateDog(
+            DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
+            DOG_THREE_ENTITY.copy(name = "Updated Dog 3").toDog()
+        )
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE_ENTITY.toDog(),
+                    DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
+                    DOG_THREE_ENTITY.copy(name = "Updated Dog 3").toDog()
                 ), awaitItem()
             )
             awaitComplete()
