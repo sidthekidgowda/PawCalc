@@ -128,10 +128,9 @@ class DogsMemoryDataSourceTest {
         }
     }
 
-    // mulitple dog updates
     @Test
     fun `when update is called with multiple dogs, then multiple dogs should be updated`() = testScope.runTest {
-        
+
     }
     // transform weight
     // transform date

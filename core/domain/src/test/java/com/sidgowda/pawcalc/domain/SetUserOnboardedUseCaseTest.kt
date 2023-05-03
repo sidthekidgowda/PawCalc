@@ -1,7 +1,7 @@
 package com.sidgowda.pawcalc.domain
 
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
-import com.sidgowda.pawcalc.domain.dogs.SetUserOnboardedUseCase
+import com.sidgowda.pawcalc.domain.onboarding.SetUserOnboardedUseCase
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

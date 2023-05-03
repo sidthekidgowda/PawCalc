@@ -1,6 +1,6 @@
 package com.sidgowda.pawcalc.onboarding
 
-import com.sidgowda.pawcalc.domain.dogs.SetUserOnboardedUseCase
+import com.sidgowda.pawcalc.domain.onboarding.SetUserOnboardedUseCase
 import com.sidgowda.pawcalc.onboarding.ui.OnboardingViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.mockk.*

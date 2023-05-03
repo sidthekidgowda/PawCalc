@@ -8,7 +8,7 @@ import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
-import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
+import com.sidgowda.pawcalc.domain.onboarding.GetOnboardingStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

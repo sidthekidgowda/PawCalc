@@ -7,7 +7,7 @@ import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import com.sidgowda.pawcalc.domain.dogs.GetOnboardingStateUseCase
+import com.sidgowda.pawcalc.domain.onboarding.GetOnboardingStateUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher

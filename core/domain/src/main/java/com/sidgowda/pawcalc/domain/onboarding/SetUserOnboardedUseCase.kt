@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.domain.dogs
+package com.sidgowda.pawcalc.domain.onboarding
 
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
 import javax.inject.Inject

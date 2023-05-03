@@ -6,7 +6,6 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
-import com.sidgowda.pawcalc.data.dogs.model.weightFormattedToString
 import com.sidgowda.pawcalc.date.dateToNewFormat
 import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
@@ -52,9 +51,10 @@ class EditDogViewModel @Inject constructor(
                             currentInput.weightFormat != settings.weightFormat &&
                             currentInput.weight.isNotEmpty() && currentInput.isWeightValid
                         ) {
-                            weightFormattedToString(
-                                currentInput.weight.toDouble().toNewWeight(settings.weightFormat)
-                            )
+                            currentInput.weight
+                                .toDouble()
+                                .toNewWeight(settings.weightFormat)
+                                .toString()
                         } else {
                             currentInput.weight
                         },
