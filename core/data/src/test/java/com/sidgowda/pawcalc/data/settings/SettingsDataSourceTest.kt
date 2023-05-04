@@ -6,6 +6,7 @@ import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.datasource.CachedSettingsDataSource
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
+import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.data.settings.model.toSettings
 import com.sidgowda.pawcalc.db.settings.SettingsDao
 import com.sidgowda.pawcalc.db.settings.SettingsEntity
@@ -191,6 +192,36 @@ class SettingsDataSourceTest {
             )
         }
     }
+
+    @Test
+    fun `updated settings should have same primary key as previous settings`() = scope.runTest {
+        every { settingsDao.settings() } returns flowOf(
+            listOf(
+                DEFAULT_SETTINGS_ENTITY
+            )
+        )
+        coEvery { settingsDao.insert(capture(capturedSettings)) } just runs
+        settingsDataSource = CachedSettingsDataSource(
+            settingsDao = settingsDao,
+            scope = scope
+        )
+
+        settingsDataSource.updateSettings(
+            Settings(
+                weightFormat = WeightFormat.KILOGRAMS,
+                themeFormat = ThemeFormat.SYSTEM,
+                dateFormat = DateFormat.INTERNATIONAL
+            )
+        )
+
+        capturedSettings.captured shouldBe SettingsEntity(
+            id = 1,
+            weightFormat = WeightFormat.KILOGRAMS,
+            themeFormat = ThemeFormat.SYSTEM,
+            dateFormat = DateFormat.INTERNATIONAL
+        )
+    }
+
 
     private companion object {
         private val DEFAULT_SETTINGS_ENTITY = SettingsEntity(
