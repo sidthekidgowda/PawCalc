@@ -71,7 +71,7 @@ class SettingsDataSourceTest {
 
     @Test
     fun `when database emits error then default settings is added and emitted`() = scope.runTest {
-        every { settingsDao.settings() } returns flow {
+       every { settingsDao.settings() } returns flow {
             throw IOException()
         }
         coEvery { settingsDao.insert(capture(capturedSettings)) } just runs
@@ -84,6 +84,112 @@ class SettingsDataSourceTest {
 
         coVerify(exactly = 1) { settingsDao.insert(DEFAULT_SETTINGS_ENTITY) }
         capturedSettings.captured shouldBe DEFAULT_SETTINGS_ENTITY
+    }
+
+    @Test
+    fun `when settings exist in database then settings is returned but not added to database`() = scope.runTest {
+        every { settingsDao.settings() } returns flowOf(
+            listOf(
+                DEFAULT_SETTINGS_ENTITY.copy(
+                    weightFormat = WeightFormat.KILOGRAMS
+                )
+            )
+        )
+        settingsDataSource = CachedSettingsDataSource(
+            settingsDao = settingsDao,
+            scope = scope
+        )
+
+        settingsDataSource.settings().test {
+            assertEquals(
+                DEFAULT_SETTINGS_ENTITY.toSettings().copy(
+                    weightFormat = WeightFormat.KILOGRAMS
+                ), awaitItem()
+            )
+        }
+        coVerify(exactly = 0) { settingsDao.insert(any()) }
+    }
+
+    @Test
+    fun `when update settings is called, then it should overwrite current settings and be returned`() = scope.runTest {
+        every { settingsDao.settings() } returns flowOf(
+            listOf(
+                DEFAULT_SETTINGS_ENTITY.copy(
+                    themeFormat = ThemeFormat.LIGHT
+                )
+            )
+        )
+        coEvery { settingsDao.insert(any()) } just runs
+
+        settingsDataSource = CachedSettingsDataSource(
+            settingsDao = settingsDao,
+            scope = scope
+        )
+
+        settingsDataSource.settings().test {
+            assertEquals(
+                DEFAULT_SETTINGS_ENTITY.copy(themeFormat = ThemeFormat.LIGHT).toSettings(), awaitItem()
+            )
+            settingsDataSource.updateSettings(
+                DEFAULT_SETTINGS_ENTITY.toSettings().copy(
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.LIGHT
+                )
+            )
+            assertEquals(
+                DEFAULT_SETTINGS_ENTITY.toSettings().copy(
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.LIGHT
+                ), awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `new collectors should get last settings emitted`() = scope.runTest {
+        every { settingsDao.settings() } returns flowOf(
+            listOf(
+                DEFAULT_SETTINGS_ENTITY.copy(
+                    weightFormat = WeightFormat.KILOGRAMS
+                )
+            )
+        )
+        coEvery { settingsDao.insert(any()) } just runs
+
+        settingsDataSource = CachedSettingsDataSource(
+            settingsDao = settingsDao,
+            scope = scope
+        )
+        settingsDataSource.settings().test {
+            assertEquals(
+                DEFAULT_SETTINGS_ENTITY.copy(weightFormat = WeightFormat.KILOGRAMS).toSettings(), awaitItem()
+            )
+            settingsDataSource.updateSettings(
+                DEFAULT_SETTINGS_ENTITY.toSettings().copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.DARK
+                )
+            )
+            assertEquals(
+                DEFAULT_SETTINGS_ENTITY.toSettings().copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.DARK
+                ), awaitItem()
+            )
+        }
+
+        //new collector
+        settingsDataSource.settings().test {
+            assertEquals(
+                DEFAULT_SETTINGS_ENTITY.toSettings().copy(
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL,
+                    themeFormat = ThemeFormat.DARK
+                ), awaitItem()
+            )
+        }
     }
 
     private companion object {

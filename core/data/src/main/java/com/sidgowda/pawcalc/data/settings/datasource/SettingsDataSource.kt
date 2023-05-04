@@ -8,5 +8,4 @@ interface SettingsDataSource {
     fun settings(): Flow<Settings>
 
     suspend fun updateSettings(updatedSettings: Settings)
-
 }
