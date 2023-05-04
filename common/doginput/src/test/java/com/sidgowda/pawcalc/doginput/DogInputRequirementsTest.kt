@@ -370,16 +370,6 @@ class DogInputRequirementsTest {
     }
 
     @Test
-    fun `when birth date dialog is shown, then value is set to true`() {
-        dogInputState.updateBirthDateDialogShown()
-
-        dogInputState.value shouldBe DogInputState(
-            isLoading = false,
-            birthDateDialogShown = true
-        )
-    }
-
-    @Test
     fun `when birth date dialog is not shown and birth date is empty, then birth date is valid`() {
         dogInputState.value shouldBe DogInputState(
             isLoading = false,
@@ -392,7 +382,6 @@ class DogInputRequirementsTest {
     @Test
     fun `when birth date dialog is shown and birth date is empty, then birthDate is not valid`() {
         dogInputState.updateBirthDateDialogShown()
-        dogInputState.updateBirthDate("")
 
         dogInputState.value shouldBe DogInputState(
             isLoading = false,
@@ -404,8 +393,8 @@ class DogInputRequirementsTest {
 
     @Test
     fun `when birth date is shown and birth date is not empty, then input requirements are met`() {
-        dogInputState.updateBirthDateDialogShown()
         dogInputState.updateBirthDate("12/20/2021")
+        dogInputState.updateBirthDateDialogShown()
 
         dogInputState.value shouldBe DogInputState(
             isLoading = false,
