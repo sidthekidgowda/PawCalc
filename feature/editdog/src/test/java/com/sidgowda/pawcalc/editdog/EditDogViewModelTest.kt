@@ -238,10 +238,8 @@ class EditDogViewModelTest {
     @Test
     fun `when birthdate is updated then input state is updated as well`() = scope.runTest {
         val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3)
-        advanceUntilIdle()
-        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
-        viewModel.handleEvent(DogInputEvent.BirthDateChanged("12/20/2021"))
+        viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+        updateDate("12/20/2021")
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -258,8 +256,8 @@ class EditDogViewModelTest {
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
-                birthDateDialogShown = true,
+                birthDateDialogShown = false,
+                birthDate = "12/20/2021",
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
@@ -267,8 +265,8 @@ class EditDogViewModelTest {
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
-                birthDateDialogShown = true,
                 birthDate = "12/20/2021",
+                birthDateDialogShown = true,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -277,10 +275,8 @@ class EditDogViewModelTest {
     @Test
     fun `when birthdate is an empty string, then input state is invalid`() = scope.runTest {
         val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3)
-        advanceUntilIdle()
-        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
-        viewModel.handleEvent(DogInputEvent.BirthDateChanged(""))
+        viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+        updateDate("")
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -297,9 +293,13 @@ class EditDogViewModelTest {
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
-                birthDateDialogShown = true,
-                inputRequirements = DogInputRequirements.values().toSet()
+                birthDate = "",
+                birthDateDialogShown = false,
+                inputRequirements = setOf(
+                    DogInputRequirements.NameBetweenZeroAndFifty,
+                    DogInputRequirements.OnePicture,
+                    DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg
+                )
             ),
             DogInputState(
                 isLoading = false,
@@ -455,8 +455,7 @@ class EditDogViewModelTest {
         advanceUntilIdle()
 
         viewModel.handleEvent(DogInputEvent.WeightChanged("29"))
-        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
-        viewModel.handleEvent(DogInputEvent.BirthDateChanged("2/2/2021"))
+        updateDate("2/2/2021")
         viewModel.handleEvent(DogInputEvent.NameChanged("Mowgs"))
         viewModel.handleEvent(DogInputEvent.PicChanged("http://newpic".toUri()))
 
@@ -756,12 +755,17 @@ class EditDogViewModelTest {
         capturedDog.captured shouldBe expectedDog
     }
 
+    private fun updateDate(date: String) {
+        viewModel.handleEvent(DogInputEvent.BirthDateChanged(date))
+        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
+    }
+
     private fun updatedDog(): Dog {
         val uri = "http://pic".toUri()
         viewModel.handleEvent(DogInputEvent.PicChanged(uri))
         viewModel.handleEvent(DogInputEvent.NameChanged("Mowgli"))
         viewModel.handleEvent(DogInputEvent.WeightChanged("100.0"))
-        viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
+        updateDate("7/30/2019")
 
         return Dog(
             id = 2,
