@@ -3,14 +3,19 @@ package com.sidgowda.pawcalc.editdog
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.ThemeFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.editdog.ui.EditDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -37,6 +42,7 @@ class EditDogViewModelTest {
 
     private lateinit var scope: TestScope
     private lateinit var ioTestDispatcher: TestDispatcher
+    private lateinit var getSettingsUseCase: GetSettingsUseCase
     private lateinit var computationTestDispatcher: TestDispatcher
     private lateinit var viewModel: EditDogViewModel
     private lateinit var getDogForIdUseCase: GetDogForIdUseCase
@@ -47,8 +53,10 @@ class EditDogViewModelTest {
     @Before
     fun setup() {
         updateDogUseCase = mockk()
+        getSettingsUseCase = mockk()
         getDogForIdUseCase = mockk()
         capturedDog = slot()
+        every { getSettingsUseCase.invoke() } returns flowOf(DEFAULT_SETTINGS)
         coEvery { updateDogUseCase.invoke(capture(capturedDog)) } returns Unit
         coEvery { getDogForIdUseCase.invoke(any()) } answers {
             val id = firstArg<Int>()
@@ -62,9 +70,10 @@ class EditDogViewModelTest {
         computationTestDispatcher = StandardTestDispatcher()
         viewModel = EditDogViewModel(
             getDogForIdUseCase = getDogForIdUseCase,
+            settingsUseCase = getSettingsUseCase,
             updateDogUseCase = updateDogUseCase,
             ioDispatcher = ioTestDispatcher,
-            computationDispatcher = computationTestDispatcher
+            computationDispatcher = computationTestDispatcher,
         )
         scope = TestScope()
     }
@@ -486,7 +495,9 @@ class EditDogViewModelTest {
             profilePic = uri,
             birthDate = "7/30/2019",
             dogYears = "7/30/2019".toDogYears(),
-            humanYears = "7/30/2019".toHumanYears()
+            humanYears = "7/30/2019".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
     }
 
@@ -506,7 +517,9 @@ class EditDogViewModelTest {
             birthDate = "7/30/2019",
             weight = 75.0,
             dogYears = "7/30/2019".toDogYears(),
-            humanYears = "7/30/2019".toHumanYears()
+            humanYears = "7/30/2019".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         private val DOG_TWO = Dog(
             id = 2,
@@ -515,7 +528,9 @@ class EditDogViewModelTest {
             birthDate = "4/15/2019",
             weight = 85.0,
             dogYears = "4/15/2019".toDogYears(),
-            humanYears = "4/15/2019".toHumanYears()
+            humanYears = "4/15/2019".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         private val DOG_THREE = Dog(
             id = 3,
@@ -524,10 +539,17 @@ class EditDogViewModelTest {
             birthDate = "12/1/2022",
             weight = 65.0,
             dogYears = "12/1/2022".toDogYears(),
-            humanYears = "12/1/2022".toHumanYears()
+            humanYears = "12/1/2022".toHumanYears(),
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         private val INITIAL_STATE = DogInputState(
             isLoading = true
+        )
+        private val DEFAULT_SETTINGS = Settings(
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM
         )
     }
 }
