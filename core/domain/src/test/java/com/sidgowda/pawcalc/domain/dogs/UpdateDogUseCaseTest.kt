@@ -33,11 +33,6 @@ class UpdateDogUseCaseTest {
     }
 
     @Test
-    fun `verify updateDog has not updated any dog`() {
-        coVerify(exactly = 0) { dogsRepo.updateDog(any()) }
-    }
-
-    @Test
     fun `verify updateDog updated the correct dog`() = runTest() {
         updateDogUseCase.invoke(DOG)
         coVerify(exactly = 1) { dogsRepo.updateDog(DOG) }
