@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.formattedToString
 import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.date.dateToNewFormat
@@ -50,12 +51,12 @@ class EditDogViewModel @Inject constructor(
                         },
                         weight = if (
                             currentInput.weightFormat != settings.weightFormat &&
-                            currentInput.weight.isNotEmpty() && currentInput.isWeightValid
+                            currentInput.weight.isNotEmpty() && currentInput.weight.toDoubleOrNull() != null
                         ) {
                             currentInput.weight
                                 .toDouble()
                                 .toNewWeight(settings.weightFormat)
-                                .toString()
+                                .formattedToString()
                         } else {
                             currentInput.weight
                         },

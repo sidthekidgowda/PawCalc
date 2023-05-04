@@ -9,6 +9,9 @@ import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.formattedToString
+import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
@@ -24,8 +27,10 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toCollection
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.Before
@@ -48,6 +53,7 @@ class EditDogViewModelTest {
     private lateinit var getDogForIdUseCase: GetDogForIdUseCase
     private lateinit var updateDogUseCase: UpdateDogUseCase
     private lateinit var capturedDog: CapturingSlot<Dog>
+    private lateinit var settingsFlow: MutableStateFlow<Settings>
     private val dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE)
 
     @Before
@@ -56,7 +62,8 @@ class EditDogViewModelTest {
         getSettingsUseCase = mockk()
         getDogForIdUseCase = mockk()
         capturedDog = slot()
-        every { getSettingsUseCase.invoke() } returns flowOf(DEFAULT_SETTINGS)
+        settingsFlow = MutableStateFlow(DEFAULT_SETTINGS)
+        every { getSettingsUseCase.invoke() } returns settingsFlow
         coEvery { updateDogUseCase.invoke(capture(capturedDog)) } returns Unit
         coEvery { getDogForIdUseCase.invoke(any()) } answers {
             val id = firstArg<Int>()
@@ -491,6 +498,259 @@ class EditDogViewModelTest {
 
         val expectedDog = DOG_ONE.copy(
             weight = 73.29
+        )
+        coVerify { updateDogUseCase.invoke(expectedDog) }
+        capturedDog.captured shouldBe expectedDog
+    }
+
+    @Test
+    fun `when weight is changed to kilograms, weight input should be changed to kilograms`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+
+        //change to kilograms
+        settingsFlow.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }.also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toString(),
+                birthDate = DOG_THREE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_THREE.profilePic,
+                name = DOG_THREE.name,
+                weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToString(),
+                weightFormat = WeightFormat.KILOGRAMS,
+                birthDate = DOG_THREE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            )
+        )
+    }
+
+    @Test
+    fun `when weight is changed to kilograms and changed back to lbs, weight input should be in lbs`() =
+        scope.runTest {
+            val history = viewModel.createStateHistory()
+            viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+
+            //change to kilograms
+            settingsFlow.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }
+                .also { advanceUntilIdle() }
+            settingsFlow.update { it.copy(weightFormat = WeightFormat.POUNDS) }
+                .also { advanceUntilIdle() }
+
+            history shouldContainExactly listOf(
+                INITIAL_STATE,
+                DogInputState(
+                    isLoading = false,
+                    profilePic = DOG_THREE.profilePic,
+                    name = DOG_THREE.name,
+                    weight = DOG_THREE.weight.toString(),
+                    birthDate = DOG_THREE.birthDate,
+                    inputRequirements = DogInputRequirements.values().toSet()
+                ),
+                DogInputState(
+                    isLoading = false,
+                    profilePic = DOG_THREE.profilePic,
+                    name = DOG_THREE.name,
+                    weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS)
+                        .formattedToString(),
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    birthDate = DOG_THREE.birthDate,
+                    inputRequirements = DogInputRequirements.values().toSet()
+                ),
+                DogInputState(
+                    isLoading = false,
+                    profilePic = DOG_THREE.profilePic,
+                    name = DOG_THREE.name,
+                    weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS)
+                        .formattedToTwoDecimals().toNewWeight(WeightFormat.POUNDS)
+                        .formattedToString(),
+                    birthDate = DOG_THREE.birthDate,
+                    inputRequirements = DogInputRequirements.values().toSet()
+                )
+            )
+        }
+
+    @Test
+    fun `when weight is invalid in lbs and changed to kilograms, then it is invalid in kilograms`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(2).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogInputEvent.WeightChanged("8500"))
+
+        // change to kilograms
+        settingsFlow.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }.also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = "8500",
+                isWeightValid = false,
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+                    .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                isWeightValid = false,
+                weightFormat = WeightFormat.KILOGRAMS,
+                weight = "8500".toDouble().toNewWeight(WeightFormat.KILOGRAMS).formattedToString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+                    .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            )
+        )
+    }
+
+    @Test
+    fun `when weight is not a number in lbs and changed to kilograms, then it is not converted in kilograms`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(2).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogInputEvent.WeightChanged("5.5.5"))
+
+        //change to kilograms
+        settingsFlow.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }.also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = DOG_TWO.weight.toString(),
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                weight = "5.5.5",
+                isWeightValid = false,
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+                    .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_TWO.profilePic,
+                name = DOG_TWO.name,
+                isWeightValid = false,
+                weightFormat = WeightFormat.KILOGRAMS,
+                weight = "5.5.5",
+                birthDate = DOG_TWO.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+                    .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
+            )
+        )
+    }
+
+    @Test
+    fun `when date format is changed to international, then date input is changed to days first`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(1).also { advanceUntilIdle() }
+
+        // change date to international
+        settingsFlow.update { it.copy(dateFormat = DateFormat.INTERNATIONAL) }.also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = DOG_ONE.weight.toString(),
+                birthDate = DOG_ONE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = DOG_ONE.weight.toString(),
+                birthDate = "30/7/2019",
+                dateFormat = DateFormat.INTERNATIONAL,
+                inputRequirements = DogInputRequirements.values().toSet()
+            )
+        )
+    }
+
+    @Test
+    fun `when date format is changed to international and back to american, then date input is in months first`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        viewModel.fetchDogForId(1).also { advanceUntilIdle() }
+
+        // change date to international
+        settingsFlow.update { it.copy(dateFormat = DateFormat.INTERNATIONAL) }.also { advanceUntilIdle() }
+        // change back to american
+        settingsFlow.update { it.copy(dateFormat = DateFormat.AMERICAN) }.also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = DOG_ONE.weight.toString(),
+                birthDate = DOG_ONE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = DOG_ONE.weight.toString(),
+                birthDate = "30/7/2019",
+                dateFormat = DateFormat.INTERNATIONAL,
+                inputRequirements = DogInputRequirements.values().toSet()
+            ),
+            DogInputState(
+                isLoading = false,
+                profilePic = DOG_ONE.profilePic,
+                name = DOG_ONE.name,
+                weight = DOG_ONE.weight.toString(),
+                birthDate = DOG_ONE.birthDate,
+                inputRequirements = DogInputRequirements.values().toSet()
+            )
+        )
+    }
+
+    @Test
+    fun `verify save dog is called with settings date format international and kilograms format`() = scope.runTest {
+        viewModel.fetchDogForId(2).also { advanceUntilIdle() }
+        settingsFlow.update {
+            it.copy(
+                weightFormat = WeightFormat.KILOGRAMS,
+                dateFormat = DateFormat.INTERNATIONAL
+            )
+        }.also { advanceUntilIdle() }
+
+        viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
+
+        val expectedDog = DOG_TWO.copy(
+            birthDate = "15/4/2019",
+            dateFormat = DateFormat.INTERNATIONAL,
+            weight = 85.0.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+            weightFormat = WeightFormat.KILOGRAMS
         )
         coVerify { updateDogUseCase.invoke(expectedDog) }
         capturedDog.captured shouldBe expectedDog
