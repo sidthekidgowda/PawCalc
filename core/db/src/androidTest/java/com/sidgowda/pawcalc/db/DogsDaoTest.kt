@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.db.dog.DogEntity
 import com.sidgowda.pawcalc.db.dog.DogsDao
 import junit.framework.TestCase.assertEquals
@@ -135,29 +137,37 @@ class DogsDaoTest {
             id = 1,
             name = "Dog",
             weight = 65.0,
+            weightFormat = WeightFormat.POUNDS,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021"
+            birthDate = "12/22/2021",
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_TWO = DogEntity(
             id = 2,
             name = "Dog",
             weight = 65.0,
+            weightFormat = WeightFormat.POUNDS,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021"
+            birthDate = "12/22/2021",
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_THREE = DogEntity(
             id = 3,
             name = "Dog",
             weight = 65.0,
+            weightFormat = WeightFormat.POUNDS,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021"
+            birthDate = "12/22/2021",
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_FOUR = DogEntity(
             id = 4,
             name = "Dog",
             weight = 65.0,
+            weightFormat = WeightFormat.POUNDS,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021"
+            birthDate = "12/22/2021",
+            dateFormat = DateFormat.AMERICAN
         )
     }
 }
