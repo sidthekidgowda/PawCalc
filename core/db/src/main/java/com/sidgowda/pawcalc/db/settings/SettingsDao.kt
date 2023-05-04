@@ -10,7 +10,4 @@ interface SettingsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(settings: SettingsEntity)
-
-    @Delete
-    suspend fun delete(settings: SettingsEntity)
 }
