@@ -22,7 +22,11 @@ fun Double.toNewWeight(newWeightFormat: WeightFormat): Double {
     return newWeight.formattedToTwoDecimals()
 }
 
-private fun Double.formattedToTwoDecimals(): Double {
+fun Double.formattedToTwoDecimals(): Double {
+    return formattedToString().toDouble()
+}
+
+fun Double.formattedToString(): String {
     val formatter = DecimalFormat(WEIGHT_FORMAT)
-    return formatter.format(this).toDouble()
+    return formatter.format(this)
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.date.dateToNewFormat
 import com.sidgowda.pawcalc.doginput.*
@@ -115,7 +116,7 @@ class EditDogViewModel @Inject constructor(
                 val input = _inputState.value
                 oldDog?.copy(
                     name = input.name,
-                    weight = input.weight.toDouble().toNewWeight(input.weightFormat),
+                    weight = input.weight.toDouble().formattedToTwoDecimals(),
                     weightFormat = input.weightFormat,
                     birthDate = input.birthDate,
                     dateFormat = input.dateFormat,

@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.domain
+package com.sidgowda.pawcalc.domain.dogs
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -6,7 +6,6 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
-import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import io.kotest.matchers.shouldBe
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

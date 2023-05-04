@@ -12,21 +12,21 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
 import com.sidgowda.pawcalc.data.fakes.DogsFakeDataSource
+import com.sidgowda.pawcalc.data.fakes.FakeSettingsDataSource
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.mockk.*
-import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
@@ -48,10 +48,9 @@ class DogsRepoTest {
     @Before
     fun setup() {
         testCoroutineDispatcher = UnconfinedTestDispatcher()
-        settingsDataSource = mockk()
+        settingsDataSource = FakeSettingsDataSource()
         testScope = TestScope(testCoroutineDispatcher)
         dogsDiskDataSource = DogsFakeDataSource()
-        every { settingsDataSource.settings() } returns flowOf(DEFAULT_SETTINGS)
         dogsMemoryDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
         dogsRepo = DogsRepoImpl(
             memory = dogsMemoryDataSource,
@@ -109,6 +108,12 @@ class DogsRepoTest {
                 dogs = emptyList()
             ),
             DogState(
+                isLoading = true,
+                dogs = listOf(
+                    DOG_ONE, DOG_TWO
+                )
+            ),
+            DogState(
                 isLoading = false,
                 dogs = listOf(
                     DOG_ONE, DOG_TWO
@@ -131,7 +136,7 @@ class DogsRepoTest {
             computationDispatcher = testCoroutineDispatcher
         )
         var dogs = spyMemory.dogs().first()
-        assertNull(dogs)
+        assertEquals(emptyList<Dog>(), dogs)
         dogsRepo.fetchDogs().also { advanceUntilIdle() }
         coVerify {
             spyDisk.dogs()
@@ -227,7 +232,7 @@ class DogsRepoTest {
         createDogInputs(2).forEach {
             dogsRepo.addDog(it)
         }
-        dogsRepo.deleteDog(DOG_ONE)
+        dogsRepo.deleteDog(DOG_ONE).also { advanceUntilIdle() }
         dogsRepo.fetchDogs().also { advanceUntilIdle() }
 
         dogsRepo.dogState().first().dogs shouldContainExactly listOf(
@@ -298,6 +303,12 @@ class DogsRepoTest {
                 dogs = emptyList()
             ),
             DogState(
+                isLoading = true,
+                dogs = listOf(
+                    DOG_ONE, DOG_TWO, DOG_THREE
+                )
+            ),
+            DogState(
                 isLoading = false,
                 dogs = listOf(
                     DOG_ONE, DOG_TWO, DOG_THREE
@@ -352,6 +363,17 @@ class DogsRepoTest {
                 dogs = emptyList()
             ),
             DogState(
+                isLoading = true,
+                dogs = listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE,
+                    DOG_TWO.copy(id = 4),
+                    DOG_ONE.copy(id = 5),
+                    DOG_THREE.copy(id = 6)
+                )
+            ),
+            DogState(
                 isLoading = false,
                 dogs = listOf(
                     DOG_ONE,
@@ -394,6 +416,174 @@ class DogsRepoTest {
             )
         )
     }
+
+    @Test
+    fun `when weight format is changed to kilograms, memory should emit updated weight`() = testScope.runTest {
+        dogsDiskDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        val history = dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs().also { advanceUntilIdle() }
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
+            .also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogState(
+                isLoading = true,
+                dogs = emptyList()
+            ),
+            DogState(
+                isLoading = true,
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
+                )
+            ),
+            DogState(
+                isLoading = false,
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
+                )
+            ),
+            DogState(
+                isLoading = false,
+                listOf(
+                    DOG_ONE.copy(
+                        weightFormat = WeightFormat.KILOGRAMS,
+                        weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                    ),
+                    DOG_TWO.copy(
+                        weightFormat = WeightFormat.KILOGRAMS,
+                        weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                    ),
+                    DOG_THREE.copy(
+                        weightFormat = WeightFormat.KILOGRAMS,
+                        weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `when weight format is changed to Kilograms, disk is updated as well`() = testScope.runTest {
+        dogsDiskDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        val spyDisk = spyk(dogsDiskDataSource)
+        dogsRepo = DogsRepoImpl(
+            memory = dogsMemoryDataSource,
+            disk = spyDisk,
+            computationDispatcher = testCoroutineDispatcher
+        )
+
+        // start collecting
+        dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs().also { advanceUntilIdle() }
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
+        advanceUntilIdle()
+
+        coVerify {
+            spyDisk.updateDogs(*anyVararg())
+        }
+        spyDisk.dogs().first() shouldContainExactly listOf(
+            DOG_ONE.copy(
+                weightFormat = WeightFormat.KILOGRAMS,
+                weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+            ),
+            DOG_TWO.copy(
+                weightFormat = WeightFormat.KILOGRAMS,
+                weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+            ),
+            DOG_THREE.copy(
+                weightFormat = WeightFormat.KILOGRAMS,
+                weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+            )
+        )
+    }
+
+    @Test
+    fun `when date format is changed then memory should emit updated date`() = testScope.runTest {
+        dogsDiskDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        val history = dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs().also { advanceUntilIdle() }
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+
+        history shouldContainExactly listOf(
+            DogState(
+                isLoading = true,
+                dogs = emptyList()
+            ),
+            DogState(
+                isLoading = true,
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
+                )
+            ),
+            DogState(
+                isLoading = false,
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO,
+                    DOG_THREE
+                )
+            ),
+            DogState(
+                isLoading = false,
+                listOf(
+                    DOG_ONE.copy(
+                        dateFormat = DateFormat.INTERNATIONAL,
+                        birthDate = "1/12/2021"
+                    ),
+                    DOG_TWO.copy(
+                        dateFormat = DateFormat.INTERNATIONAL,
+                        birthDate = "2/12/2021"
+                    ),
+                    DOG_THREE.copy(
+                        dateFormat = DateFormat.INTERNATIONAL,
+                        birthDate = "3/12/2021"
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `when date format is changed to international, disk should be updated as well`() = testScope.runTest {
+        dogsDiskDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        val spyDisk = spyk(dogsDiskDataSource)
+        dogsRepo = DogsRepoImpl(
+            memory = dogsMemoryDataSource,
+            disk = spyDisk,
+            computationDispatcher = testCoroutineDispatcher
+        )
+
+        // start collecting
+        dogsRepo.createStateHistory()
+        dogsRepo.fetchDogs().also { advanceUntilIdle() }
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+            .also { advanceUntilIdle() }
+
+        coVerify {
+            spyDisk.updateDogs(*anyVararg())
+        }
+        spyDisk.dogs().first() shouldContainExactly listOf(
+            DOG_ONE.copy(
+                dateFormat = DateFormat.INTERNATIONAL,
+                birthDate = "1/12/2021"
+            ),
+            DOG_TWO.copy(
+                dateFormat = DateFormat.INTERNATIONAL,
+                birthDate = "2/12/2021"
+            ),
+            DOG_THREE.copy(
+                dateFormat = DateFormat.INTERNATIONAL,
+                birthDate = "3/12/2021"
+            )
+        )
+    }
+
 
     private fun DogsRepo.createStateHistory(): List<DogState> {
         val history = mutableListOf<DogState>()

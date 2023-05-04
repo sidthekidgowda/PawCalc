@@ -3,10 +3,7 @@ package com.sidgowda.pawcalc.data.dogs.repo
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.model.Dog
-import com.sidgowda.pawcalc.data.dogs.model.DogInput
-import com.sidgowda.pawcalc.data.dogs.model.DogState
-import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
+import com.sidgowda.pawcalc.data.dogs.model.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -24,6 +21,7 @@ class DogsRepoImpl @Inject constructor(
     }
 
     private val loadState = MutableStateFlow<LoadState>(LoadState.Loading)
+
     override fun dogState(): Flow<DogState> = combine(
         memory.dogs(),
         loadState
@@ -83,7 +81,7 @@ class DogsRepoImpl @Inject constructor(
             name = dogInput.name,
             birthDate = dogInput.birthDate,
             dateFormat = dogInput.dateFormat,
-            weight = dogInput.weight.toDouble().toNewWeight(dogInput.weightFormat),
+            weight = dogInput.weight.toDouble().formattedToTwoDecimals(),
             weightFormat = dogInput.weightFormat,
             dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
             humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),

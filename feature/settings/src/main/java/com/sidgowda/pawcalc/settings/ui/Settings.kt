@@ -184,7 +184,7 @@ internal fun RadioGroup(
                     role = Role.RadioButton
                 )
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         )
         {
