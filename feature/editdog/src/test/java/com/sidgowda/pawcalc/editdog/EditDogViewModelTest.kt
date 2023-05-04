@@ -481,6 +481,21 @@ class EditDogViewModelTest {
         capturedDog.captured shouldBe updatedDog
     }
 
+    @Test
+    fun `when weight input has 4 decimals and save dog is called, it is formatted to 2 decimals`() = scope.runTest {
+        viewModel.fetchDogForId(1).also { advanceUntilIdle() }
+
+        viewModel.handleEvent(DogInputEvent.WeightChanged("73.289222"))
+
+        viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
+
+        val expectedDog = DOG_ONE.copy(
+            weight = 73.29
+        )
+        coVerify { updateDogUseCase.invoke(expectedDog) }
+        capturedDog.captured shouldBe expectedDog
+    }
+
     private fun updatedDog(): Dog {
         val uri = "http://pic".toUri()
         viewModel.handleEvent(DogInputEvent.PicChanged(uri))

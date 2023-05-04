@@ -2,11 +2,14 @@ package com.sidgowda.pawcalc.newdog
 
 import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputRequirements
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.dogs.AddDogUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.newdog.ui.NewDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -33,6 +36,7 @@ class NewDogViewModelTest {
     private lateinit var scope: TestScope
     private lateinit var testDispatcher: TestDispatcher
     private lateinit var viewModel: NewDogViewModel
+    private lateinit var settingsUseCase: GetSettingsUseCase
     private lateinit var addDogUseCase: AddDogUseCase
     private lateinit var capturedDog: CapturingSlot<DogInput>
 
@@ -40,9 +44,10 @@ class NewDogViewModelTest {
     fun setup() {
         addDogUseCase = mockk()
         capturedDog = slot()
+        settingsUseCase = mockk()
         coEvery { addDogUseCase.invoke(capture(capturedDog)) } returns Unit
         testDispatcher = StandardTestDispatcher()
-        viewModel = NewDogViewModel(addDogUseCase, testDispatcher)
+        viewModel = NewDogViewModel(addDogUseCase, settingsUseCase, testDispatcher)
         scope = TestScope()
     }
 
@@ -358,7 +363,9 @@ class NewDogViewModelTest {
             profilePic = uri,
             name = "Mowgli",
             weight = "100",
-            birthDate = "7/30/2019"
+            birthDate = "7/30/2019",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
 
     }
