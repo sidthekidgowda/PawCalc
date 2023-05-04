@@ -51,7 +51,7 @@ class SettingsDaoTest {
     }
 
     @Test
-    fun givenNoSettingsInDatabase_whenSettingsIsAdded_thenDatabaseShouldHaveSettings() = runTest{
+    fun givenNoSettingsInDatabase_whenSettingsIsAdded_thenDatabaseShouldHaveSettings() = runTest {
         settingsDao.settings().test {
             assertEquals(emptyList<SettingsEntity>(), awaitItem())
             settingsDao.insert(
@@ -73,47 +73,47 @@ class SettingsDaoTest {
                 ), awaitItem()
             )
         }
+    }
 
-        @Test
-        fun whenSettingsExistAndNewSettingsIsAddedWithSamePrimaryKey_thenNewSettingsWillOverwriteCurrentSettings() = runTest {
+    @Test
+    fun whenSettingsExistAndNewSettingsIsAddedWithSamePrimaryKey_thenNewSettingsWillOverwriteCurrentSettings() = runTest {
+        settingsDao.insert(
+            SettingsEntity(
+                id = 1,
+                weightFormat = WeightFormat.POUNDS,
+                dateFormat = DateFormat.AMERICAN,
+                themeFormat = ThemeFormat.SYSTEM
+            )
+        )
+        settingsDao.settings().test {
+            assertEquals(
+                listOf(
+                    SettingsEntity(
+                        id = 1,
+                        weightFormat = WeightFormat.POUNDS,
+                        dateFormat = DateFormat.AMERICAN,
+                        themeFormat = ThemeFormat.SYSTEM
+                    )
+                ), awaitItem()
+            )
             settingsDao.insert(
                 SettingsEntity(
                     id = 1,
-                    weightFormat = WeightFormat.POUNDS,
-                    dateFormat = DateFormat.AMERICAN,
+                    weightFormat = WeightFormat.KILOGRAMS,
+                    dateFormat = DateFormat.INTERNATIONAL,
                     themeFormat = ThemeFormat.SYSTEM
                 )
             )
-            settingsDao.settings().test {
-                assertEquals(
-                    listOf(
-                        SettingsEntity(
-                            id = 1,
-                            weightFormat = WeightFormat.POUNDS,
-                            dateFormat = DateFormat.AMERICAN,
-                            themeFormat = ThemeFormat.SYSTEM
-                        )
-                    ), awaitItem()
-                )
-                settingsDao.insert(
+            assertEquals(
+                listOf(
                     SettingsEntity(
                         id = 1,
                         weightFormat = WeightFormat.KILOGRAMS,
                         dateFormat = DateFormat.INTERNATIONAL,
                         themeFormat = ThemeFormat.SYSTEM
                     )
-                )
-                assertEquals(
-                    listOf(
-                        SettingsEntity(
-                            id = 1,
-                            weightFormat = WeightFormat.KILOGRAMS,
-                            dateFormat = DateFormat.INTERNATIONAL,
-                            themeFormat = ThemeFormat.SYSTEM
-                        )
-                    ), awaitItem()
-                )
-            }
+                ), awaitItem()
+            )
         }
     }
 }
