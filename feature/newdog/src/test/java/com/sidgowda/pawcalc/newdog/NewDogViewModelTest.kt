@@ -498,10 +498,51 @@ class NewDogViewModelTest {
     fun `when date is invalid and changed to international, then it should still be invalid`() = scope.runTest {
         val history = viewModel.createStateHistory()
         updateDate("")
-        viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
-        viewModel.handleEvent(DogInputEvent.BirthDateChanged(""))
 
+        settingsFlow.update { it.copy(dateFormat = DateFormat.INTERNATIONAL) }.also { advanceUntilIdle() }
 
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogInputState(
+                birthDate = "",
+                birthDateDialogShown = true,
+                isBirthDateValid = false,
+                inputRequirements = emptySet()
+            ),
+            DogInputState(
+                birthDateDialogShown = true,
+                isBirthDateValid = false,
+                birthDate = "",
+                dateFormat = DateFormat.INTERNATIONAL,
+                inputRequirements = emptySet()
+            )
+        )
+    }
+
+    @Test
+    fun `verify saveDog is called with date format international and kilograms format`() = scope.runTest {
+        val dogInput = dogInput()
+
+        settingsFlow.update {
+            it.copy(
+                dateFormat = DateFormat.INTERNATIONAL,
+                weightFormat = WeightFormat.KILOGRAMS
+            )
+        }.also { advanceUntilIdle() }
+
+        viewModel.inputState.value.isInputValid().shouldBeTrue()
+
+        // all input is valid
+        viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
+
+        val expectedDogInput = dogInput.copy(
+            weightFormat = WeightFormat.KILOGRAMS,
+            dateFormat = DateFormat.INTERNATIONAL,
+            birthDate = "30/7/2019"
+        )
+
+        coVerify { addDogUseCase.invoke(expectedDogInput) }
+        capturedDog.captured shouldBe expectedDogInput
     }
 
     private fun updateDate(date: String) {
@@ -509,20 +550,12 @@ class NewDogViewModelTest {
         viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
     }
 
-
-
-    // test in error with birtth date
-    // test convert birth date from mm/dd/yyyy to dd/mm/yyyy
-    // test convert birth date from mm/dd/yyyy to dd/mm/yyyy
-
-
-
     private fun dogInput(): DogInput {
         val uri = "http://pic".toUri()
         viewModel.handleEvent(DogInputEvent.PicChanged(uri))
         viewModel.handleEvent(DogInputEvent.NameChanged("Mowgli"))
         viewModel.handleEvent(DogInputEvent.WeightChanged("100"))
-        viewModel.handleEvent(DogInputEvent.BirthDateChanged("7/30/2019"))
+        updateDate("7/30/2019")
 
         return DogInput(
             profilePic = uri,
