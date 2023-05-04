@@ -25,6 +25,7 @@ class CachedSettingsDataSource @Inject constructor(
         )
     }
 
+    // SharedFlow will act like a cache and replay most recent update to new collectors
     private val settingsSharedFlow = MutableSharedFlow<Settings>(replay = 1)
 
     init {

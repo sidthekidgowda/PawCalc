@@ -2,6 +2,8 @@ package com.sidgowda.pawcalc.domain.dogs
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import io.kotest.matchers.shouldBe
@@ -45,7 +47,9 @@ class AddDogUseCaseTest {
             profilePic = Uri.EMPTY,
             name = "dog",
             weight = "84",
-            birthDate = "12/20/1999"
+            birthDate = "12/20/1999",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
     }
 }
