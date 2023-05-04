@@ -44,6 +44,20 @@ class UpdateDogUseCaseTest {
         capturedDog.captured shouldBe DOG
     }
 
+    @Test
+    fun `verify updateDog updated with correct weight format`() = runTest {
+        updateDogUseCase.invoke(DOG.copy(weightFormat = WeightFormat.KILOGRAMS))
+        coVerify(exactly = 1) { dogsRepo.updateDog(DOG.copy(weightFormat = WeightFormat.KILOGRAMS)) }
+        capturedDog.captured shouldBe DOG.copy(weightFormat = WeightFormat.KILOGRAMS)
+    }
+
+    @Test
+    fun `verify updateDog updated with correct date format`() = runTest {
+        updateDogUseCase.invoke(DOG.copy(birthDate = "20/5/2000", dateFormat = DateFormat.INTERNATIONAL))
+        coVerify(exactly = 1) { dogsRepo.updateDog(DOG.copy(birthDate = "20/5/2000", dateFormat = DateFormat.INTERNATIONAL)) }
+        capturedDog.captured shouldBe DOG.copy(birthDate = "20/5/2000", dateFormat = DateFormat.INTERNATIONAL)
+    }
+
     private companion object {
         val DOG = Dog(
             id = 1,

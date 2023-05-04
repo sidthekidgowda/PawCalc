@@ -36,10 +36,26 @@ class AddDogUseCaseTest {
     }
 
     @Test
-    fun `verify addDog added the correct dog input`() = runTest() {
+    fun `verify addDog added the correct dog input`() = runTest {
         addDogUseCase.invoke(DOG_INPUT)
         coVerify(exactly = 1) { dogsRepo.addDog(DOG_INPUT) }
         capturedDogInput.captured shouldBe DOG_INPUT
+    }
+
+    @Test
+    fun `verify addDog added correct date format`() = runTest {
+        addDogUseCase.invoke(DOG_INPUT.copy(birthDate = "20/12/1999", dateFormat = DateFormat.INTERNATIONAL))
+
+        coVerify(exactly = 1) { dogsRepo.addDog(DOG_INPUT.copy(birthDate = "20/12/1999", dateFormat = DateFormat.INTERNATIONAL)) }
+        capturedDogInput.captured shouldBe DOG_INPUT.copy(birthDate = "20/12/1999", dateFormat = DateFormat.INTERNATIONAL)
+    }
+
+    @Test
+    fun `verify addDog added correct weight format`() = runTest {
+        addDogUseCase.invoke(DOG_INPUT.copy(weight = "55.0", weightFormat = WeightFormat.KILOGRAMS))
+
+        coVerify(exactly = 1) { dogsRepo.addDog(DOG_INPUT.copy(weight = "55.0", weightFormat = WeightFormat.KILOGRAMS)) }
+        capturedDogInput.captured shouldBe DOG_INPUT.copy(weight = "55.0", weightFormat = WeightFormat.KILOGRAMS)
     }
 
     private companion object {
