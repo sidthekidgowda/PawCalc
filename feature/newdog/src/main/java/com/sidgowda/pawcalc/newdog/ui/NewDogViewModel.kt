@@ -32,7 +32,6 @@ class NewDogViewModel @Inject constructor(
             settingsUseCase().collect { settings ->
                 _inputState.update {
                     it.copy(
-                        isLoading = false,
                         birthDate = if (
                             _inputState.value.dateFormat != settings.dateFormat &&
                             _inputState.value.birthDate.isNotEmpty()

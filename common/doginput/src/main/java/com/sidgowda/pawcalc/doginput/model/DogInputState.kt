@@ -5,7 +5,7 @@ import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 
 data class DogInputState(
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val isError: Boolean = false,
     val profilePic: Uri? = null,
     val name: String = "",
