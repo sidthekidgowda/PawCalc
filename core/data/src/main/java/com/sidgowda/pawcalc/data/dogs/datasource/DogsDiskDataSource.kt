@@ -33,9 +33,7 @@ class DogsDiskDataSource @Inject constructor(
     }
 
     override suspend fun addDogs(vararg dog: Dog) {
-        dog.forEach {
-            dogsDao.addDog(it.toDogEntity())
-        }
+        dogsDao.addDog(*dog.map { it.toDogEntity() }.toTypedArray())
     }
 
     override suspend fun deleteDog(dog: Dog) {

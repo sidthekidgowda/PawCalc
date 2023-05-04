@@ -42,4 +42,11 @@ class DogWeightCalculatorTest {
         val weight = 75.0
         weight.toNewWeight(WeightFormat.KILOGRAMS) shouldBeExactly 34.02
     }
+
+    @Test
+    fun `65 lbs should be 29dot48 kg`() {
+        val weight = 65.0
+
+        weight.toNewWeight(WeightFormat.KILOGRAMS) shouldBeExactly 29.48
+    }
 }

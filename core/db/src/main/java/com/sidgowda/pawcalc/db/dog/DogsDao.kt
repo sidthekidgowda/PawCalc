@@ -9,7 +9,7 @@ interface DogsDao {
     fun dogs(): Flow<List<DogEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addDog(dog: DogEntity)
+    suspend fun addDog(vararg dog: DogEntity)
 
     @Delete
     suspend fun deleteDog(dog: DogEntity)

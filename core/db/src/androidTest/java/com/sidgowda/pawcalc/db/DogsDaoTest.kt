@@ -131,6 +131,78 @@ class DogsDaoTest {
         }
     }
 
+    @Test
+    fun addShouldBeToAddMultipleDogsAtAtTime() = runTest {
+        dogsDao.addDog(DOG_ONE, DOG_TWO, DOG_THREE, DOG_FOUR)
+
+        dogsDao.dogs().test {
+            assertEquals(listOf(DOG_ONE, DOG_TWO, DOG_THREE, DOG_FOUR), awaitItem())
+        }
+    }
+
+    @Test
+    fun whenWeightFormatIsUpdatedThenCollectingOnDogsShouldGetUpdatedWeightFormat() = runTest {
+        dogsDao.addDog(DOG_TWO, DOG_THREE)
+        dogsDao.updateDog(
+            DOG_TWO.copy(
+                weight = 29.48,
+                weightFormat = WeightFormat.KILOGRAMS
+            ),
+            DOG_THREE.copy(
+                weight = 29.48,
+                weightFormat = WeightFormat.KILOGRAMS
+            )
+
+        )
+
+        dogsDao.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_TWO.copy(
+                        weight = 29.48,
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_THREE.copy(
+                        weight = 29.48,
+                        weightFormat = WeightFormat.KILOGRAMS
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun whenDateFormatIsUpdatedThenCollectingOnDogsShouldGetUpdatedDateFormat() = runTest {
+        dogsDao.addDog(DOG_TWO, DOG_THREE)
+        dogsDao.updateDog(
+            DOG_TWO.copy(
+                birthDate = "22/12/2021",
+                dateFormat = DateFormat.INTERNATIONAL
+            ),
+            DOG_THREE.copy(
+                birthDate = "28/2/2021",
+                dateFormat = DateFormat.INTERNATIONAL
+            )
+        )
+
+        dogsDao.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_TWO.copy(
+                        birthDate = "22/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_THREE.copy(
+                        birthDate = "28/2/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
 
     private companion object {
         val DOG_ONE = DogEntity(
