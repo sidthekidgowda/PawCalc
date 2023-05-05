@@ -13,9 +13,13 @@ import kotlinx.coroutines.flow.*
 class FakeDogsRepo(private val dogsDataSource: DogsDataSource) : DogsRepo {
 
     private val loadState = MutableStateFlow(true)
+    private val errorState = MutableStateFlow(false)
 
     override fun dogState(): Flow<DogState> {
-        return combine(loadState, dogsDataSource.dogs()) { loadState, dogs ->
+        return combine(loadState, dogsDataSource.dogs(), errorState) { loadState, dogs, error ->
+            if (error) {
+                throw NoSuchElementException()
+            }
             DogState(
                 isLoading = loadState,
                 dogs = dogs
@@ -24,9 +28,11 @@ class FakeDogsRepo(private val dogsDataSource: DogsDataSource) : DogsRepo {
     }
 
     override suspend fun fetchDogs() {
-        loadState.update { true }
-        dogsDataSource.addDogs()
         loadState.update { false }
+    }
+
+    fun forceError() {
+        errorState.update { true }
     }
 
     override suspend fun addDog(dogInput: DogInput) {
