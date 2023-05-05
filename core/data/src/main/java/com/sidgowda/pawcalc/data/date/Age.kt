@@ -1,13 +1,11 @@
 package com.sidgowda.pawcalc.data.date
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Age(
     val years: Int,
     val months: Int,
     val days: Int
-) {
-    companion object {
-        const val DATE_FORMAT_AMERICAN = "M/d/yyyy"
-        const val DATE_FORMAT_INTERNATIONAL = "d/M/yyyy"
-        const val TIME_ZONE = "UTC"
-    }
-}
+) : Parcelable
