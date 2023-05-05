@@ -16,6 +16,7 @@ import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
+import com.sidgowda.pawcalc.doglist.model.NavigateEvent
 import com.sidgowda.pawcalc.doglist.ui.DogListViewModel
 import com.sidgowda.pawcalc.domain.onboarding.GetOnboardingStateUseCase
 import com.sidgowda.pawcalc.test.MainDispatcherRule
@@ -97,7 +98,7 @@ class DogListViewModelTest {
     }
 
     @Test
-    fun `when no dogs exist and viewmodel is subscribed, then state will consist of loading and no dogs`() = scope.runTest {
+    fun `initial state of viewmodel consists of loading and no dogs`() = scope.runTest {
         val history = viewModel.createStateHistory()
 
         history shouldContainExactly listOf(
@@ -131,13 +132,18 @@ class DogListViewModelTest {
     @Test
     fun `when fetch dogs returns dogs, then loading is false and dogs will be returned`() = scope.runTest {
         val history = viewModel.createStateHistory()
-        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE).also { advanceUntilIdle() }
         viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
 
         history shouldContainExactly listOf(
             DogListState(
                 isLoading = true,
                 dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = true,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
                 navigateEvent = null
             ),
             DogListState(
@@ -170,14 +176,290 @@ class DogListViewModelTest {
         )
     }
 
+    @Test
+    fun `when fetch dogs returns an error but there exists dogs then cached dogs will be emitted`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
 
-    // test event fetchDogs - error
-    // test event fetchDogs - dogs
-    // test event fetchDogs - error use cache
-    // test event navigate to add Dog and local state
-    // test event add dog and see if dog is added
-    // test event navigate to dog details and local state
+        (dogsRepo as FakeDogsRepo).forceError().also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = true,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when fetch dogs returns an error but there exists dogs in localState then cached dogs will be emitted`() = scope.runTest {
+        // start collecting to update local state
+        viewModel.createStateHistory()
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+        (dogsRepo as FakeDogsRepo).forceError().also { advanceUntilIdle() }
+
+
+        // start collecting again, new subscribers will use cached dogs from local state
+        val history = viewModel.createStateHistory()
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when navigateEvent Add Dog is called, it is emitted as state`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        // call fetch dogs to clear loading state
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.AddDog).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = NavigateEvent.AddDog
+            )
+        )
+    }
+
+    @Test
+    fun `when navigated to Add Dog, then navigateEvent is reset to null`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        // call fetch dogs to clear loading state
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.AddDog).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.OnNavigated).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = NavigateEvent.AddDog
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when navigated to Add Dog and dog is added then navigateEvent is reset to null and dog is emitted`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        // call fetch dogs to clear loading state
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.AddDog).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.OnNavigated).also { advanceUntilIdle() }
+        dogsDataSource.addDogs(DOG_THREE).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = NavigateEvent.AddDog
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when navigate to dog 2 is called then navigate to dog detail is emitted as state`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE).also { advanceUntilIdle() }
+        // call fetch dogs to clear loading state
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.DogDetails(2)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = true,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = NavigateEvent.DogDetails(2)
+            )
+        )
+    }
+
+    @Test
+    fun `when navigated to dog 2 then navigate event is reset as null`() = scope.runTest {
+        val history = viewModel.createStateHistory()
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE).also { advanceUntilIdle() }
+        // call fetch dogs to clear loading state
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.DogDetails(2)).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.OnNavigated).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = true,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = NavigateEvent.DogDetails(2)
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when dogs exist in repo then it loading state is emitted initially and dogs`() = scope.runTest {
+        dogsDataSource = FakeDogsDataSource(listOf(DOG_ONE, DOG_TWO, DOG_THREE))
+        dogsRepo = FakeDogsRepo(
+            dogsDataSource,
+            isLoading = false
+        )
+        viewModel = DogListViewModel(
+            getOnboardingState = getOnboardingState,
+            dogsRepo = dogsRepo,
+            savedStateHandle = SavedStateHandle(),
+            ioDispatcher = ioDispatcher,
+            computationDispatcher = computationDispatcher
+        )
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+
+    }
+
+    @Test
+    fun `when dogs exist in repo and fetch dogs is called, state is not emitted after fetch dogs`() = scope.runTest {
+        dogsDataSource = FakeDogsDataSource(listOf(DOG_ONE, DOG_TWO, DOG_THREE))
+        dogsRepo = FakeDogsRepo(
+            dogsDataSource,
+            isLoading = false
+        )
+        viewModel = DogListViewModel(
+            getOnboardingState = getOnboardingState,
+            dogsRepo = dogsRepo,
+            savedStateHandle = SavedStateHandle(),
+            ioDispatcher = ioDispatcher,
+            computationDispatcher = computationDispatcher
+        )
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+        viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+
+
+
+    
     // test event delete dog and see if dog is deleted
+    // test weight format and date format
 
 
 

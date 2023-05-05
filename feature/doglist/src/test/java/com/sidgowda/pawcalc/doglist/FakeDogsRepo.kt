@@ -10,9 +10,12 @@ import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import kotlinx.coroutines.flow.*
 
-class FakeDogsRepo(private val dogsDataSource: DogsDataSource) : DogsRepo {
+class FakeDogsRepo(
+    private val dogsDataSource: DogsDataSource,
+    isLoading: Boolean = true
+) : DogsRepo {
 
-    private val loadState = MutableStateFlow(true)
+    private val loadState = MutableStateFlow(isLoading)
     private val errorState = MutableStateFlow(false)
 
     override fun dogState(): Flow<DogState> {
