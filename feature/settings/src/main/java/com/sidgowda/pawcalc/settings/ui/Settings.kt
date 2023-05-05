@@ -7,6 +7,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,10 +28,9 @@ import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
-internal fun Settings(
-) {
+internal fun Settings() {
     val viewModel = hiltViewModel<SettingsViewModel>()
-    val settings: Settings? = viewModel.settings.collectAsStateWithLifecycle().value
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
     
     SettingsScreen(
         modifier = Modifier.fillMaxSize(),
@@ -42,27 +42,25 @@ internal fun Settings(
 @Composable
 internal fun SettingsScreen(
     modifier: Modifier = Modifier,
-    settings: Settings?,
+    settings: Settings,
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
-    if (settings != null) {
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ChooseDate(
-                dateFormat = settings.dateFormat,
-                onSettingsEvent = onSettingsEvent
-            )
-            ChooseWeight(
-                weightFormat = settings.weightFormat,
-                onSettingsEvent = onSettingsEvent
-            )
-            ChooseTheme(
-                themeFormat = settings.themeFormat,
-                onSettingsEvent = onSettingsEvent
-            )
-        }
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ChooseDate(
+            dateFormat = settings.dateFormat,
+            onSettingsEvent = onSettingsEvent
+        )
+        ChooseWeight(
+            weightFormat = settings.weightFormat,
+            onSettingsEvent = onSettingsEvent
+        )
+        ChooseTheme(
+            themeFormat = settings.themeFormat,
+            onSettingsEvent = onSettingsEvent
+        )
     }
 }
 

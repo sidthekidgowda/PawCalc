@@ -35,6 +35,7 @@ class EditDogViewModel @Inject constructor(
 
     // this is the Dog we will be editing
     private val editableDog = MutableStateFlow<Dog?>(null)
+
     init {
         // Collect from settings and update date and weight any time settings is updated
         viewModelScope.launch(ioDispatcher) {

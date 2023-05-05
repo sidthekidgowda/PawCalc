@@ -19,23 +19,27 @@ class SettingsViewModel @Inject constructor(
     private val getSettingsUseCase: GetSettingsUseCase,
     private val updateSettingsUseCase: UpdateSettingsUseCase
 ) : ViewModel() {
+
     /**
      * Settings should be loaded along with onboarding when Splash Screen is shown.
      * All updates should be fast and synchronous.
      * Updated settings should be saved to disk.
+     *
+     * Default settings will be overridden in init block
      */
-    private val _settings = MutableStateFlow<Settings?>(null)
+    private val _settings = MutableStateFlow(
+        Settings(
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN,
+            themeFormat = ThemeFormat.SYSTEM
+        )
+    )
     val settings = _settings.asStateFlow()
 
     init {
         viewModelScope.launch {
-            try {
-                // we only need to use the first emitted settings.
-                val settings = getSettingsUseCase().first()
-                _settings.update { settings }
-            } catch (e: Exception) {
-                // could be exceptions from Room
-            }
+            // we only need to use the first emitted settings
+            _settings.update { getSettingsUseCase().first() }
         }
     }
 
@@ -49,23 +53,23 @@ class SettingsViewModel @Inject constructor(
 
     private fun updateWeightFormat(weightFormat: WeightFormat) {
        val updatedSettings = _settings.updateAndGet {
-            it?.copy(weightFormat = weightFormat)
+            it.copy(weightFormat = weightFormat)
         }
-        saveUpdatedSettings(updatedSettings!!)
+        saveUpdatedSettings(updatedSettings)
     }
 
     private fun updateDateFormat(dateFormat: DateFormat) {
         val updatedSettings = _settings.updateAndGet {
-            it?.copy(dateFormat = dateFormat)
+            it.copy(dateFormat = dateFormat)
         }
-        saveUpdatedSettings(updatedSettings!!)
+        saveUpdatedSettings(updatedSettings)
     }
 
     private fun updateTheme(theme: ThemeFormat) {
         val updatedSettings = _settings.updateAndGet {
-            it?.copy(themeFormat = theme)
+            it.copy(themeFormat = theme)
         }
-        saveUpdatedSettings(updatedSettings!!)
+        saveUpdatedSettings(updatedSettings)
     }
 
     private fun saveUpdatedSettings(updatedSettings: Settings) {
