@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
-import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
@@ -13,7 +12,6 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
-import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
@@ -391,19 +389,8 @@ class DogListViewModelTest {
     }
 
     @Test
-    fun `when dogs exist in repo then it loading state is emitted initially and dogs`() = scope.runTest {
-        dogsDataSource = FakeDogsDataSource(listOf(DOG_ONE, DOG_TWO, DOG_THREE))
-        dogsRepo = FakeDogsRepo(
-            dogsDataSource,
-            isLoading = false
-        )
-        viewModel = DogListViewModel(
-            getOnboardingState = getOnboardingState,
-            dogsRepo = dogsRepo,
-            savedStateHandle = SavedStateHandle(),
-            ioDispatcher = ioDispatcher,
-            computationDispatcher = computationDispatcher
-        )
+    fun `when dogs exist in repo then loading state is emitted initially and dogs`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
         val history = viewModel.createStateHistory()
         advanceUntilIdle()
 
@@ -419,23 +406,11 @@ class DogListViewModelTest {
                 navigateEvent = null
             )
         )
-
     }
 
     @Test
     fun `when dogs exist in repo and fetch dogs is called, state is not emitted after fetch dogs`() = scope.runTest {
-        dogsDataSource = FakeDogsDataSource(listOf(DOG_ONE, DOG_TWO, DOG_THREE))
-        dogsRepo = FakeDogsRepo(
-            dogsDataSource,
-            isLoading = false
-        )
-        viewModel = DogListViewModel(
-            getOnboardingState = getOnboardingState,
-            dogsRepo = dogsRepo,
-            savedStateHandle = SavedStateHandle(),
-            ioDispatcher = ioDispatcher,
-            computationDispatcher = computationDispatcher
-        )
+        addDogsBeforeViewModelIsCreated()
         val history = viewModel.createStateHistory()
         advanceUntilIdle()
         viewModel.handleEvent(DogListEvent.FetchDogs).also { advanceUntilIdle() }
@@ -454,10 +429,145 @@ class DogListViewModelTest {
         )
     }
 
+    @Test
+    fun `when delete dog 1 is called then dog one should not exist`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+
+        viewModel.handleEvent(DogListEvent.DeleteDog(DOG_ONE)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when delete dog 2 is called then dog two should not exist`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+
+        viewModel.handleEvent(DogListEvent.DeleteDog(DOG_TWO)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when delete dog 3 is called then dog three should not exist`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+
+        viewModel.handleEvent(DogListEvent.DeleteDog(DOG_THREE)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when all dogs are deleted then no dogs should exist`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+
+        viewModel.handleEvent(DogListEvent.DeleteDog(DOG_THREE)).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.DeleteDog(DOG_TWO)).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogListEvent.DeleteDog(DOG_ONE)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = emptyList(),
+                navigateEvent = null
+            )
+        )
+    }
+
+    private fun addDogsBeforeViewModelIsCreated() {
+        dogsDataSource = FakeDogsDataSource(listOf(DOG_ONE, DOG_TWO, DOG_THREE))
+        dogsRepo = FakeDogsRepo(
+            dogsDataSource,
+            isLoading = false
+        )
+        viewModel = DogListViewModel(
+            getOnboardingState = getOnboardingState,
+            dogsRepo = dogsRepo,
+            savedStateHandle = SavedStateHandle(),
+            ioDispatcher = ioDispatcher,
+            computationDispatcher = computationDispatcher
+        )
+    }
 
 
 
-    
+
+
     // test event delete dog and see if dog is deleted
     // test weight format and date format
 
@@ -504,11 +614,6 @@ class DogListViewModelTest {
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN
-        )
-        val DEFAULT_SETTINGS = Settings(
-            weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN,
-            themeFormat = ThemeFormat.SYSTEM
         )
     }
 }
