@@ -10,6 +10,8 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
@@ -549,8 +551,237 @@ class DogListViewModelTest {
         )
     }
 
-    private fun addDogsBeforeViewModelIsCreated() {
-        dogsDataSource = FakeDogsDataSource(listOf(DOG_ONE, DOG_TWO, DOG_THREE))
+    @Test
+    fun `when weight format is changed to kilograms, all dogs weight should be in kilograms`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+        dogsDataSource.updateDogs(
+            DOG_ONE.copy(
+                weight = DOG_ONE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                weightFormat = WeightFormat.KILOGRAMS
+            ),
+            DOG_TWO.copy(
+                weight = DOG_TWO.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                weightFormat = WeightFormat.KILOGRAMS
+            ),
+            DOG_THREE.copy(
+                weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                weightFormat = WeightFormat.KILOGRAMS
+            )
+        ).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE.copy(
+                        weight = DOG_ONE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_TWO.copy(
+                        weight = DOG_TWO.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_THREE.copy(
+                        weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    )
+                ),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when weight format is in kilograms and changed back to lbs, all dogs weight should be in lbs`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated(
+            listOf(
+                DOG_ONE.copy(
+                    weight = DOG_ONE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                    weightFormat = WeightFormat.KILOGRAMS
+                ),
+                DOG_TWO.copy(
+                    weight = DOG_TWO.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                    weightFormat = WeightFormat.KILOGRAMS
+                ),
+                DOG_THREE.copy(
+                    weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                    weightFormat = WeightFormat.KILOGRAMS
+                )
+            )
+        )
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+        dogsDataSource.updateDogs(
+            DOG_ONE.copy(
+                weight = DOG_ONE.weight,
+                weightFormat = WeightFormat.POUNDS
+            ),
+            DOG_TWO.copy(
+                weight = DOG_TWO.weight,
+                weightFormat = WeightFormat.POUNDS
+            ),
+            DOG_THREE.copy(
+                weight = DOG_THREE.weight,
+                weightFormat = WeightFormat.POUNDS
+            )
+        ).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE.copy(
+                        weight = DOG_ONE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_TWO.copy(
+                        weight = DOG_TWO.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    ),
+                    DOG_THREE.copy(
+                        weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+                        weightFormat = WeightFormat.KILOGRAMS
+                    )
+                ),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when date is changed to international, all dates should be in international format`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated()
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+        dogsDataSource.updateDogs(
+            DOG_ONE.copy(
+                birthDate = "22/12/2021",
+                dateFormat = DateFormat.INTERNATIONAL
+            ),
+            DOG_TWO.copy(
+                birthDate = "12/12/2021",
+                dateFormat = DateFormat.INTERNATIONAL
+            ),
+            DOG_THREE.copy(
+                birthDate = "12/12/2021",
+                dateFormat = DateFormat.INTERNATIONAL
+            )
+        ).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE.copy(
+                        birthDate = "22/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_TWO.copy(
+                        birthDate = "12/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_THREE.copy(
+                        birthDate = "12/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    )
+                ),
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when date format is international and changed to american, all birthdates should be in american`() = scope.runTest {
+        addDogsBeforeViewModelIsCreated(
+            listOf(
+                DOG_ONE.copy(
+                    birthDate = "22/12/2021",
+                    dateFormat = DateFormat.INTERNATIONAL
+                ),
+                DOG_TWO.copy(
+                    birthDate = "12/12/2021",
+                    dateFormat = DateFormat.INTERNATIONAL
+                ),
+                DOG_THREE.copy(
+                    birthDate = "12/12/2021",
+                    dateFormat = DateFormat.INTERNATIONAL
+                )
+            )
+        )
+        val history = viewModel.createStateHistory()
+        advanceUntilIdle()
+        dogsDataSource.updateDogs(
+            DOG_ONE,
+            DOG_TWO,
+            DOG_THREE
+        ).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            DogListState(
+                isLoading = true,
+                dogs = emptyList(),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(
+                    DOG_ONE.copy(
+                        birthDate = "22/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_TWO.copy(
+                        birthDate = "12/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    ),
+                    DOG_THREE.copy(
+                        birthDate = "12/12/2021",
+                        dateFormat = DateFormat.INTERNATIONAL
+                    )
+                ),
+                navigateEvent = null
+            ),
+            DogListState(
+                isLoading = false,
+                dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE),
+                navigateEvent = null
+            )
+        )
+    }
+
+    private fun addDogsBeforeViewModelIsCreated(dogs: List<Dog> = listOf(DOG_ONE, DOG_TWO, DOG_THREE)) {
+        dogsDataSource = FakeDogsDataSource(dogs)
         dogsRepo = FakeDogsRepo(
             dogsDataSource,
             isLoading = false
@@ -563,15 +794,6 @@ class DogListViewModelTest {
             computationDispatcher = computationDispatcher
         )
     }
-
-
-
-
-
-    // test event delete dog and see if dog is deleted
-    // test weight format and date format
-
-
 
     private fun DogListViewModel.createStateHistory(): List<DogListState> {
         val history = mutableListOf<DogListState>()
