@@ -51,9 +51,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
 
         dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
@@ -71,9 +71,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
@@ -99,9 +99,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.deleteDog(any()) } answers {
             val dog = firstArg<DogEntity>()
@@ -124,9 +124,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.updateDog(any()) } answers {
             val updatedDogs = firstArg<Array<DogEntity>>()
@@ -158,9 +158,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.updateDog(*anyVararg()) } answers {
             val updatedDogs = firstArg<Array<DogEntity>>()
@@ -195,9 +195,9 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.deleteAll() } answers {
             listOfDogs.clear()
