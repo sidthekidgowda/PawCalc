@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_date_header">Date Format</string>
+    <string name="settings_weight_header">Weight Format</string>
+    <string name="settings_theme_header">Theme</string>
+    <string-array name="settings_options_date">
+        <item>mm/dd/yyyy</item>
+        <item>dd/mm/yyyy</item>
+    </string-array>
+    <string-array name="settings_options_weight">
+        <item>lb</item>
+        <item>kg</item>
+    </string-array>
+    <string-array name="settings_options_theme">
+        <item>System</item>
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
+</resources>

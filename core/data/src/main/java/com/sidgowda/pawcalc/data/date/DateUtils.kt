@@ -1,11 +1,13 @@
 package com.sidgowda.pawcalc.date
 
 import android.util.Log
+import com.sidgowda.pawcalc.common.settings.DateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 internal const val DATE_FORMAT = "M/d/yyyy"
+internal const val DATE_FORMAT_INTERNATIONAL = "d/M/yyyy"
 internal const val TIME_ZONE = "UTC"
 
 fun calendar(date: Long? = null): Calendar {
@@ -22,27 +24,60 @@ internal fun localTimeNow() = LocalTime.now(ZoneOffset.UTC)
 internal fun localDateTimeInMilliseconds() =
     LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()
 
-fun dateFromLong(date: Long): String {
+fun dateFromLong(date: Long, isDateFormatInternational: Boolean = false): String {
     val localDate = try {
         Instant.ofEpochMilli(date).atZone(ZoneOffset.UTC).toLocalDate()
     } catch (e: Exception) {
         Log.e("DateUtils", "Failed to parse long: $date into a date", e)
         localDateNow()
     }
-    return localDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT))
+    return localDate.format(
+        if (isDateFormatInternational) {
+            DateTimeFormatter.ofPattern(DATE_FORMAT_INTERNATIONAL)
+        } else {
+            DateTimeFormatter.ofPattern(DATE_FORMAT)
+        }
+    )
 }
 
-fun dateToLong(date: String): Long {
+fun dateToLong(date: String, isDateFormatInternational: Boolean = false): Long {
     return try {
         LocalDateTime.of(
-            LocalDate.parse(date, DateTimeFormatter.ofPattern(DATE_FORMAT)),
+            LocalDate.parse(
+                date, if (isDateFormatInternational) {
+                    DateTimeFormatter.ofPattern(DATE_FORMAT_INTERNATIONAL)
+                } else {
+                    DateTimeFormatter.ofPattern(DATE_FORMAT)
+                }
+            ),
             localTimeNow()
         )
-        .atZone(ZoneOffset.UTC)
-        .toInstant()
-        .toEpochMilli()
+            .atZone(ZoneOffset.UTC)
+            .toInstant()
+            .toEpochMilli()
     } catch (e: Exception) {
         Log.e("DateUtils", "Failed to parse date: $date", e)
         LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()
     }
+}
+
+fun String.dateToNewFormat(newDateFormat: DateFormat): String {
+    val dateSplit = split("/")
+    val stringBuilder = StringBuilder()
+    val years = dateSplit.last()
+    when (newDateFormat) {
+        DateFormat.AMERICAN -> {
+            // current date is international. convert to American
+            val days = dateSplit.first()
+            val months = dateSplit[1]
+            stringBuilder.append(months).append("/").append(days).append("/")
+        }
+        DateFormat.INTERNATIONAL -> {
+            // current date is American. convert to International
+            val months = dateSplit.first()
+            val days = dateSplit[1]
+            stringBuilder.append(days).append("/").append(months).append("/")
+        }
+    }
+    return stringBuilder.append(years).toString()
 }

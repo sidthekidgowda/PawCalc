@@ -42,12 +42,15 @@ import coil.compose.AsyncImage
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.date.toText
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.doglist.R
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
@@ -360,7 +363,11 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = "${dog.weight} lbs"
+                        text = if (dog.weightFormat == WeightFormat.POUNDS) {
+                            stringResource(id = R.string.dog_list_lb, dog.weight)
+                        } else {
+                            stringResource(id = R.string.dog_list_kg, dog.weight)
+                        }
                     )
                 }
             )
@@ -514,7 +521,9 @@ fun PreviewDogListItemNotLoading() {
                 birthDate = "7/30/2019",
                 profilePic = Uri.EMPTY,
                 dogYears = "7/30/2019".toDogYears(),
-                humanYears = "7/30/2019".toHumanYears()
+                humanYears = "7/30/2019".toHumanYears(),
+                weightFormat = WeightFormat.POUNDS,
+                dateFormat = DateFormat.AMERICAN
             )
         )
     }

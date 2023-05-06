@@ -9,8 +9,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.Destination
+import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.onboarding.Onboarding
 import com.sidgowda.pawcalc.ui.component.PawCalcTopAppBar
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
@@ -32,13 +32,12 @@ fun PawCalc() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            // todo - fix top bar for onboarding
             HomeTopBar(
                 currentDestination = currentDestination,
                 onNavIconClick = {
-                    navController.popBackStack(route = DOG_LIST_SCREEN_ROUTE, inclusive = false)
+                    navController.popBackStack()
                 },
-                onActionClick = { navController.navigate(SETTINGS_ROUTE) }
+                onActionClick = { navController.navigate(SETTINGS_SCREEN_ROUTE) }
             )
         }
     ) { innerPadding ->

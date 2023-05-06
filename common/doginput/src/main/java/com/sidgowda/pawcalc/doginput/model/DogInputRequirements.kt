@@ -1,13 +1,14 @@
 package com.sidgowda.pawcalc.doginput.model
 
 import android.net.Uri
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 enum class DogInputRequirements {
     OnePicture,
     NameBetweenZeroAndFifty,
-    WeightMoreThanZeroAndValidNumberBelow500,
+    WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg,
     BirthDate
 }
 
@@ -30,9 +31,11 @@ fun MutableStateFlow<DogInputState>.updateName(name: String) {
 }
 
 fun MutableStateFlow<DogInputState>.updateWeight(weight: String) {
-    val inputRequirements = listOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500)
+    val inputRequirements = listOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
     val weightAsDouble: Double? = weight.toDoubleOrNull()
-    val isWeightValid = weight.isNotEmpty() && weightAsDouble != null && weightAsDouble > 0.0 && weightAsDouble < 500
+    val weightUnderLimit =
+        weightAsDouble != null && weightAsDouble > 0.0 && if (value.weightFormat == WeightFormat.POUNDS) weightAsDouble <= 500 else weightAsDouble <= 225
+    val isWeightValid = weight.isNotEmpty() && weightUnderLimit
     // we don't show error until we have one character
     val isWeightValidForTextInput = weight.isEmpty() || isWeightValid
     update {
@@ -74,7 +77,8 @@ fun MutableStateFlow<DogInputState>.updateBirthDate(birthDate: String) {
 fun MutableStateFlow<DogInputState>.updateBirthDateDialogShown() {
     update {
         it.copy(
-            birthDateDialogShown = true
+            birthDateDialogShown = true,
+            isBirthDateValid = it.birthDate.isNotEmpty()
         )
     }
 }

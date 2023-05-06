@@ -1,8 +1,9 @@
 package com.sidgowda.pawcalc.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 
 
@@ -31,36 +32,57 @@ interface PawCalcColorScheme {
 
     @Composable
     fun onPrimarySurface(): Color =
-        if (isSystemInDarkTheme()) onBackground else onPrimary
+        if (MaterialTheme.colors.isLight) {
+            onPrimary
+        } else {
+            onBackground
+        }
+
 
     @Composable
     fun contentColor(): Color =
-        if (isSystemInDarkTheme()) Grey200 else onBackground
+        if (MaterialTheme.colors.isLight) {
+            onBackground
+        } else {
+            Grey200
+        }
 
     @Composable
     fun iconTint(): Color =
-        if (isSystemInDarkTheme()) Color.White else Color.Black
+        if (MaterialTheme.colors.isLight) {
+            Black
+        } else {
+            White
+        }
 
     @Composable
     fun surface(): Color =
-        if (isSystemInDarkTheme()) Color.White else surface
+        if (MaterialTheme.colors.isLight) {
+            surface
+        } else {
+            White
+        }
 
     @Composable
     fun onSurface(): Color =
-        if (isSystemInDarkTheme()) Color.Black else onSurface
+        if (MaterialTheme.colors.isLight) {
+            onSurface
+        } else {
+            Black
+        }
 }
 
 object PawCalcColorLightScheme : PawCalcColorScheme {
     override val primary: Color
         get() = Green500
     override val onPrimary: Color
-        get() = Color.Black
+        get() = Black
     override val secondary: Color
         get() = Blue400
     override val onSecondary: Color
-        get() = Color.Black
+        get() = Black
     override val surface: Color
-        get() = Color.White
+        get() = White
     override val onSurface: Color
         get() = Grey700
     override val background: Color
@@ -73,15 +95,15 @@ object PawCalcColorDarkScheme : PawCalcColorScheme {
     override val primary: Color
         get() = Green200
     override val onPrimary: Color
-        get() = Color.Black
+        get() = Black
     override val secondary: Color
         get() = Blue200
     override val onSecondary: Color
-        get() = Color.Black
+        get() = Black
     override val surface: Color
         get() = Grey900
     override val onSurface: Color
-        get() = Color.White
+        get() = White
     override val background: Color
         get() = Grey900
     override val onBackground: Color

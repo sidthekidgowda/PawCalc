@@ -1,6 +1,6 @@
 package com.sidgowda.pawcalc
 
-import com.sidgowda.pawcalc.data.dispatchers.DispatchersModule
+import com.sidgowda.pawcalc.data.modules.DispatchersModule
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import dagger.Module
 import dagger.Provides

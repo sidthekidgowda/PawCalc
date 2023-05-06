@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation(projects.core.data)
+    implementation(projects.common.settings)
     implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

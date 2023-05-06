@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.sidgowda.pawcalc.R
-import com.sidgowda.pawcalc.SETTINGS_ROUTE
 
 sealed class Destination(
     @StringRes val title: Int,
@@ -20,7 +19,7 @@ sealed class Destination(
         fun fromString(route: String): Destination {
             return when(route) {
                 ONBOARDING_SCREEN_ROUTE -> Onboarding
-                SETTINGS_ROUTE -> Settings
+                SETTINGS_SCREEN_ROUTE -> Settings
                 NEW_DOG_SCREEN_ROUTE -> NewDog
                 DOG_LIST_SCREEN_ROUTE -> DogList
                 else -> {
@@ -28,6 +27,7 @@ sealed class Destination(
                     if (route.contains(EDIT_DOG_SCREEN_ROUTE)) {
                         return EditDog
                     }
+                    // dog details has arguments as well
                     throw IllegalStateException("route is invalid")
                 }
             }

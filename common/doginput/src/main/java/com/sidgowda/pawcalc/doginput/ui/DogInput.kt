@@ -38,13 +38,14 @@ import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.camera.CameraMediaActivity
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.date.DatePickerDialogFragment
 import com.sidgowda.pawcalc.date.DatePickerListener
 import com.sidgowda.pawcalc.date.dateToLong
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputState
-import com.sidgowda.pawcalc.doginput.model.DogInputUnit
 import com.sidgowda.pawcalc.doginput.ui.*
 import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
@@ -59,7 +60,6 @@ import kotlinx.coroutines.launch
 fun DogInput(
     modifier: Modifier = Modifier,
     dogInputState: DogInputState,
-    unit: DogInputUnit = DogInputUnit.IMPERIAL,
     handleEvent: (event: DogInputEvent) -> Unit,
     onSaveDog: () -> Unit
 ) {
@@ -122,7 +122,6 @@ fun DogInput(
             scrollState = scrollState,
             bottomSheetState = bottomSheetState,
             dogInputState = dogInputState,
-            dogInputUnit = unit,
             onNameChanged = { name ->
                 handleEvent(DogInputEvent.NameChanged(name))
             },
@@ -192,6 +191,7 @@ fun DogInput(
         if (isDatePickerRequested) {
             OpenDatePicker(
                 date = dogInputState.birthDate,
+                isDateFormatInternational = dogInputState.dateFormat == DateFormat.INTERNATIONAL,
                 coroutineScope = scope,
                 onDateSelected = { date ->
                     handleEvent(DogInputEvent.BirthDateChanged(date))
@@ -212,7 +212,6 @@ internal fun DogInputScreen(
     bottomSheetState: ModalBottomSheetState,
     scrollState: ScrollState,
     dogInputState: DogInputState,
-    dogInputUnit: DogInputUnit = DogInputUnit.IMPERIAL,
     showBottomSheet: () -> Unit,
     onNameChanged: (name: String) -> Unit,
     onWeightChanged: (weight: String) -> Unit,
@@ -245,6 +244,7 @@ internal fun DogInputScreen(
         WeightInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             weight = dogInputState.weight,
+            weightFormat = dogInputState.weightFormat,
             isWeightError = !dogInputState.isWeightValid,
             onWeightChanged = onWeightChanged,
             weightFocusRequester = weightFocusRequester,
@@ -253,10 +253,12 @@ internal fun DogInputScreen(
         BirthDateInput(
             modifier = Modifier.padding(horizontal = 48.dp),
             birthDate = dogInputState.birthDate,
+            dateFormat = dogInputState.dateFormat,
             isBirthDateError = !dogInputState.isBirthDateValid,
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
+        //todo verify double clicks to not add multiple dogs
         PawCalcButton(
             enabled = dogInputState.isInputValid(),
             text = stringResource(id = R.string.save_input),
@@ -370,6 +372,7 @@ internal fun NameInput(
 internal fun WeightInput(
     modifier: Modifier = Modifier,
     weight: String,
+    weightFormat: WeightFormat,
     isWeightError: Boolean,
     onWeightChanged: (weight: String) -> Unit,
     weightFocusRequester: FocusRequester,
@@ -434,7 +437,11 @@ internal fun WeightInput(
                         )
                         .wrapContentSize(),
                     textAlign = TextAlign.Center,
-                    text = "lb",
+                    text = stringResource(
+                        id = if (weightFormat == WeightFormat.POUNDS)
+                            R.string.weight_input_unit_lb
+                        else R.string.weight_input_unit_kg
+                    ),
                     style = PawCalcTheme.typography.h5,
                     color = Color.Black
                 )
@@ -454,6 +461,7 @@ internal fun WeightInput(
 internal fun BirthDateInput(
     modifier: Modifier = Modifier,
     birthDate: String,
+    dateFormat: DateFormat,
     isBirthDateError: Boolean,
     birthDateFocusRequester: FocusRequester,
     onDatePickerRequest: () -> Unit
@@ -471,7 +479,13 @@ internal fun BirthDateInput(
             onValueChange = {},
             placeholder = {
                 Text(
-                    text = stringResource(id = R.string.birth_date_american_placeholder),
+                    text = stringResource(
+                        id = if (dateFormat == DateFormat.AMERICAN){
+                            R.string.birth_date_american_placeholder
+                        } else {
+                            R.string.birth_date_international_placeholder
+                        }
+                    ),
                     textAlign = TextAlign.Start,
                     style = PawCalcTheme.typography.h7,
                 )
@@ -552,6 +566,7 @@ internal fun OpenDatePicker(
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope,
     date: String,
+    isDateFormatInternational: Boolean,
     onDateSelected: (String) -> Unit = {},
     onDatePickerDismissed: () -> Unit
 ) {
@@ -575,6 +590,9 @@ internal fun OpenDatePicker(
             val fragment = datePickerDialog.getFragment<DatePickerDialogFragment>()
             fragment.arguments = Bundle().apply {
                 putLong(DatePickerDialogFragment.BUNDLE_DATE_KEY, dateAsLong)
+                putBoolean(
+                    DatePickerDialogFragment.BUNDLE_IS_DATE_FORMAT_INTERNATIONAL, isDateFormatInternational
+                )
             }
             fragment.datePickerListener = object : DatePickerListener {
                 override fun dateSelected(date: String) {
@@ -660,7 +678,8 @@ fun PreviewWeightInput() {
                 onWeightChanged = {},
                 isWeightError = false,
                 weightFocusRequester = FocusRequester(),
-                birthDateFocusRequester = FocusRequester()
+                birthDateFocusRequester = FocusRequester(),
+                weightFormat = WeightFormat.POUNDS
             )
         }
     }
@@ -676,7 +695,8 @@ fun PreviewWeightInputError() {
                 onWeightChanged = {},
                 weightFocusRequester = FocusRequester(),
                 birthDateFocusRequester = FocusRequester(),
-                isWeightError = false
+                isWeightError = false,
+                weightFormat = WeightFormat.POUNDS
             )
         }
     }
@@ -689,6 +709,7 @@ fun PreviewBirthDateInput() {
         Column(modifier = Modifier.fillMaxWidth()) {
             BirthDateInput(
                 birthDate = "07/30/2019",
+                dateFormat = DateFormat.AMERICAN,
                 birthDateFocusRequester = FocusRequester(),
                 onDatePickerRequest = {},
                 isBirthDateError = false

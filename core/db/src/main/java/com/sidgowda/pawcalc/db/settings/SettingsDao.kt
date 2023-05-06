@@ -6,14 +6,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SettingsDao {
     @Query("SELECT * FROM settings")
-    fun settings(): Flow<List<Settings>>
+    fun settings(): Flow<List<SettingsEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(settings: Settings)
-
-    @Update
-    suspend fun update(settings: Settings)
-
-    @Delete
-    suspend fun delete(settings: Settings)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(settings: SettingsEntity)
 }

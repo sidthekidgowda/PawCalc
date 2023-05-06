@@ -3,6 +3,8 @@ package com.sidgowda.pawcalc.data.dogs
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDiskDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
@@ -49,13 +51,13 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
 
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
 
         dogsDataSource.dogs().test {
             assertEquals(listOf(DOG_ONE_ENTITY.toDog(), DOG_TWO_ENTITY.toDog()), awaitItem())
@@ -69,11 +71,11 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
-        dogsDataSource.addDog(
+        dogsDataSource.addDogs(
             DOG_ONE_ENTITY.toDog(),
             DOG_TWO_ENTITY.toDog(),
             DOG_THREE_ENTITY.toDog()
@@ -97,17 +99,17 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.deleteDog(any()) } answers {
             val dog = firstArg<DogEntity>()
             listOfDogs.remove(dog)
         }
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
         dogsDataSource.deleteDog(DOG_TWO_ENTITY.toDog())
 
         dogsDataSource.dogs().test {
@@ -122,21 +124,21 @@ class DogsDiskDataSourceTest {
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.updateDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            val indexToReplace = listOfDogs.indexOfFirst { oldDog -> dog.id == oldDog.id }
-            if (indexToReplace != -1) {
-                listOfDogs[indexToReplace] = dog
+            val updatedDogs = firstArg<Array<DogEntity>>()
+            val dogIdMap: Map<Int, DogEntity> = updatedDogs.associateBy { it.id }
+            listOfDogs.mapInPlace {
+                dogIdMap[it.id] ?: it
             }
         }
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
-        dogsDataSource.updateDog(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.updateDogs(DOG_TWO_ENTITY.copy(name = "Updated Name").toDog())
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -151,21 +153,58 @@ class DogsDiskDataSourceTest {
     }
 
     @Test
+    fun `when update is called for multiple dogs, then multiple dogs are updated`() = runTest {
+        val listOfDogs = mutableListOf<DogEntity>()
+        coEvery { dogsDao.dogs() } returns flow {
+            emit(listOfDogs)
+        }
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
+        }
+        coEvery { dogsDao.updateDog(*anyVararg()) } answers {
+            val updatedDogs = firstArg<Array<DogEntity>>()
+            val dogIdMap: Map<Int, DogEntity> = updatedDogs.associateBy { it.id }
+            listOfDogs.mapInPlace {
+                dogIdMap[it.id] ?: it
+            }
+        }
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.updateDogs(
+            DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
+            DOG_THREE_ENTITY.copy(name = "Updated Dog 3").toDog()
+        )
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE_ENTITY.toDog(),
+                    DOG_TWO_ENTITY.copy(name = "Updated Name").toDog(),
+                    DOG_THREE_ENTITY.copy(name = "Updated Dog 3").toDog()
+                ), awaitItem()
+            )
+            awaitComplete()
+        }
+    }
+
+    @Test
     fun `when clear is called, all dogs should be deleted`() = runTest {
         val listOfDogs = mutableListOf<DogEntity>()
         coEvery { dogsDao.dogs() } returns flow {
             emit(listOfDogs)
         }
-        coEvery { dogsDao.addDog(any()) } answers {
-            val dog = firstArg<DogEntity>()
-            listOfDogs.add(dog)
+        coEvery { dogsDao.addDog(*anyVararg()) } answers {
+            val dog = firstArg<Array<DogEntity>>()
+            listOfDogs.addAll(dog)
         }
         coEvery { dogsDao.deleteAll() } answers {
             listOfDogs.clear()
         }
-        dogsDataSource.addDog(DOG_ONE_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_TWO_ENTITY.toDog())
-        dogsDataSource.addDog(DOG_THREE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_ONE_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_TWO_ENTITY.toDog())
+        dogsDataSource.addDogs(DOG_THREE_ENTITY.toDog())
 
         dogsDataSource.clear()
 
@@ -181,21 +220,27 @@ class DogsDiskDataSourceTest {
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021"
+            birthDate = "12/22/2021",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_TWO_ENTITY = DogEntity(
             id = 2,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/12/2021"
+            birthDate = "12/12/2021",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
         val DOG_THREE_ENTITY = DogEntity(
             id = 3,
             name = "Dog",
             weight = 65.0,
             profilePic = Uri.EMPTY,
-            birthDate = "12/12/2021"
+            birthDate = "12/12/2021",
+            weightFormat = WeightFormat.POUNDS,
+            dateFormat = DateFormat.AMERICAN
         )
     }
 }

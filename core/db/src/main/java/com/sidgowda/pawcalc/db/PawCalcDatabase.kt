@@ -6,11 +6,11 @@ import androidx.room.TypeConverters
 import com.sidgowda.pawcalc.db.dog.DogEntity
 import com.sidgowda.pawcalc.db.dog.DogsDao
 import com.sidgowda.pawcalc.db.dog.DogTypeConverter
-import com.sidgowda.pawcalc.db.settings.Settings
+import com.sidgowda.pawcalc.db.settings.SettingsEntity
 import com.sidgowda.pawcalc.db.settings.SettingsDao
 
 @Database(
-    entities = [DogEntity::class, Settings::class],
+    entities = [DogEntity::class, SettingsEntity::class],
     version = 1
 )
 @TypeConverters(DogTypeConverter::class)

@@ -13,6 +13,7 @@ import com.sidgowda.pawcalc.newdog.navigation.navigateToNewDogScreen
 import com.sidgowda.pawcalc.newdog.navigation.newDogScreenDestination
 import com.sidgowda.pawcalc.onboarding.navigation.navigateToOnboarding
 import com.sidgowda.pawcalc.onboarding.navigation.onboardingDestination
+import com.sidgowda.pawcalc.settings.navigation.settingsScreenDestination
 
 @Composable
 fun PawCalcNavGraph(

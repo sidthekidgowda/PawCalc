@@ -16,7 +16,7 @@ class DogsDiskDataSource @Inject constructor(
     private val dogsDao: DogsDao
 ) : DogsDataSource {
 
-    override fun dogs(): Flow<List<Dog>?> {
+    override fun dogs(): Flow<List<Dog>> {
         return dogsDao.dogs()
             .catch { exception ->
                 if (exception is IOException) {
@@ -32,18 +32,17 @@ class DogsDiskDataSource @Inject constructor(
             }.flowOn(Dispatchers.Default)
     }
 
-    override suspend fun addDog(vararg dog: Dog) {
-        dog.forEach {
-            dogsDao.addDog(it.toDogEntity())
-        }
+    override suspend fun addDogs(vararg dog: Dog) {
+        dogsDao.addDog(*dog.map { it.toDogEntity() }.toTypedArray())
     }
 
     override suspend fun deleteDog(dog: Dog) {
         dogsDao.deleteDog(dog.toDogEntity())
     }
 
-    override suspend fun updateDog(dog: Dog) {
-        dogsDao.updateDog(dog.toDogEntity())
+    override suspend fun updateDogs(vararg dog: Dog) {
+        val dogEntities = dog.map { it.toDogEntity() }
+        dogsDao.updateDog(*dogEntities.toTypedArray())
     }
 
     override suspend fun clear() {

@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.data.date
 
+import com.sidgowda.pawcalc.common.settings.DateFormat
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 
@@ -27,6 +28,11 @@ class DogYearsCalculatorTest {
         val age = "4/18/2023".toDogYears(today = "3/20/2023")
     }
 
+    @Test(expected = IllegalStateException::class)
+    fun `when Date Format is International, should throw IllegalStateException if birth date is 18-4-2023 and today is 3-20-2023`() {
+        val age = "18/4/2023".toDogYears(today = "3/20/2023", DateFormat.INTERNATIONAL)
+    }
+
     @Test
     fun `age should be zero if birth date is same as today at 4-19-2023`() {
         val age = "4/19/2023".toDogYears(today = "4/19/2023")
@@ -50,6 +56,18 @@ class DogYearsCalculatorTest {
     }
 
     @Test
+    fun `when DateFormat is International age should be 1 day if birth date is one day less than today at 4-19-2023`() {
+        val age = "18/4/2023".toDogYears(today = "4/19/2023", DateFormat.INTERNATIONAL)
+
+        age shouldBe Age(
+            years = 0,
+            months = 0,
+            days = 1
+        )
+    }
+
+
+    @Test
     fun `age should be 20 days if born on 3-31-2023 and today is 4-20-23`() {
         val age = "3/31/2023".toDogYears(today = "4/20/2023")
 
@@ -63,6 +81,17 @@ class DogYearsCalculatorTest {
     @Test
     fun `age should be 1 month if birth date is 3-20-2023 and today is 4-20-2023`() {
         val age = "3/20/2023".toDogYears(today = "4/20/2023")
+
+        age shouldBe Age(
+            years = 0,
+            months = 1,
+            days = 0
+        )
+    }
+
+    @Test
+    fun `when DateFormat is International, age should be 1 month if birth date is 3-20-2023 and today is 4-20-2023`() {
+        val age = "20/3/2023".toDogYears(today = "4/20/2023", DateFormat.INTERNATIONAL)
 
         age shouldBe Age(
             years = 0,
@@ -96,6 +125,17 @@ class DogYearsCalculatorTest {
     @Test
     fun `age should be 30 days if born on 5-31-2023 and today is 6-30-2023`() {
         val age = "5/31/2023".toDogYears(today = "6/30/2023")
+
+        age shouldBe Age(
+            years = 0,
+            months = 0,
+            days = 30
+        )
+    }
+
+    @Test
+    fun `when DateFormat is International, age should be 30 days if born on 31-5-2023 and today is 6-30-2023`() {
+        val age = "31/5/2023".toDogYears(today = "6/30/2023", DateFormat.INTERNATIONAL)
 
         age shouldBe Age(
             years = 0,
@@ -160,7 +200,7 @@ class DogYearsCalculatorTest {
     }
 
     @Test
-    fun `age should be 19 years 2 months and 14 days if born on 2-6-2024 and today is 4-20-2004`() {
+    fun `age should be 19 years 2 months and 14 days if born on 2-6-2004 and today is 4-20-2023`() {
         val age = "2/6/2004".toDogYears(today = "4/20/2023")
 
         age shouldBe Age(
@@ -170,4 +210,25 @@ class DogYearsCalculatorTest {
         )
     }
 
+    @Test
+    fun `when DateFormat is in International while born on 6-2-2004 and today is 4-20-2023 then age should be 19 years 2 months and 14 days`() {
+        val age = "6/2/2004".toDogYears(today = "4/20/2023", DateFormat.INTERNATIONAL)
+
+        age shouldBe Age(
+            19,
+            2,
+            14
+        )
+    }
+
+    @Test
+    fun `given DateFormat is International and born on 30-2-1993, age should be 30 years 0 months and 21 days when today is 4-20-2023`() {
+        val age = "30/3/1993".toDogYears(today = "4/20/2023", DateFormat.INTERNATIONAL)
+
+        age shouldBe Age(
+            30,
+            0,
+            21
+        )
+    }
 }

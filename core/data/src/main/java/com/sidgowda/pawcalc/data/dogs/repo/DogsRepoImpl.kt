@@ -3,9 +3,7 @@ package com.sidgowda.pawcalc.data.dogs.repo
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.model.Dog
-import com.sidgowda.pawcalc.data.dogs.model.DogInput
-import com.sidgowda.pawcalc.data.dogs.model.DogState
+import com.sidgowda.pawcalc.data.dogs.model.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -23,36 +21,45 @@ class DogsRepoImpl @Inject constructor(
     }
 
     private val loadState = MutableStateFlow<LoadState>(LoadState.Loading)
+
     override fun dogState(): Flow<DogState> = combine(
         memory.dogs(),
         loadState
     ) { dogs, loadState ->
         when (loadState) {
             LoadState.Loading -> DogState(
-                isLoading = dogs?.isEmpty() ?: true,
-                dogs = dogs ?: emptyList()
+                isLoading = true,
+                dogs = dogs
             )
             LoadState.Idle -> DogState(
                 isLoading = false,
-                dogs = dogs ?: emptyList()
+                dogs = dogs
             )
         }
     }
+    .onEach { dogState ->
+        // update disk for next session to use updated weight and date format
+        if (dogState.dogs.isNotEmpty()) {
+            disk.updateDogs(*dogState.dogs.toTypedArray())
+        }
+    }
+    // buffer ensures onEach is emitted on a different coroutine as collect
+    .buffer()
     .flowOn(computationDispatcher)
     .distinctUntilChanged()
 
     override suspend fun fetchDogs() {
         // if dogs exists in memory, do nothing
         val inMemoryDogs = memory.dogs().first()
-        if (inMemoryDogs != null) {
+        if (inMemoryDogs.isNotEmpty()) {
             loadState.update { LoadState.Idle }
             // add log statement
         } else {
             loadState.update { LoadState.Loading }
             try {
                 val inDiskDogs = disk.dogs().first()
-                if (inDiskDogs != null) {
-                   memory.addDog(*inDiskDogs.toTypedArray())
+                if (inDiskDogs.isNotEmpty()) {
+                   memory.addDogs(*inDiskDogs.toTypedArray())
                 }
             } catch (e: Exception) {
                 // todo add log statement
@@ -63,18 +70,25 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun addDog(dogInput: DogInput) {
-        val id = memory.dogs().first()?.maxOf { it.id }?.plus(1) ?: 1
+        val dogs = memory.dogs().first()
+        val id = if (dogs.isNotEmpty()) {
+            dogs.maxOf { it.id }.plus(1)
+        } else {
+            1
+        }
         val dog = Dog(
             id = id,
             name = dogInput.name,
             birthDate = dogInput.birthDate,
-            weight = dogInput.weight.toDouble(),
-            dogYears = dogInput.birthDate.toDogYears(),
-            humanYears = dogInput.birthDate.toHumanYears(),
+            dateFormat = dogInput.dateFormat,
+            weight = dogInput.weight.toDouble().formattedToTwoDecimals(),
+            weightFormat = dogInput.weightFormat,
+            dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
+            humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),
             profilePic = dogInput.profilePic
         )
-        memory.addDog(dog)
-        disk.addDog(dog)
+        memory.addDogs(dog)
+        disk.addDogs(dog)
     }
 
     override suspend fun deleteDog(dog: Dog) {
@@ -83,8 +97,8 @@ class DogsRepoImpl @Inject constructor(
     }
 
     override suspend fun updateDog(dog: Dog) {
-        memory.updateDog(dog)
-        disk.updateDog(dog)
+        memory.updateDogs(dog)
+        disk.updateDogs(dog)
     }
 
     override suspend fun clear() {

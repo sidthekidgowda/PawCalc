@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -50,6 +51,7 @@ android {
 dependencies {
     implementation(projects.core.data)
     implementation(projects.core.domain)
+    implementation(projects.common.settings)
     implementation(projects.common.ui)
     implementation(projects.common.navigation)
     implementation(projects.common.doginput)
@@ -76,6 +78,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // test libraries
     testImplementation(projects.core.test)
+    testImplementation(libs.mockk.test)
+    testImplementation(libs.robolectric)
     androidTestImplementation(projects.core.test)
     kaptAndroidTest(libs.hilt.android.compiler)
 }
