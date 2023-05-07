@@ -14,15 +14,14 @@ fun NavController.navigateToDogListScreen(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.dogListScreenDestination(
     onNavigateToOnboarding: () -> Unit,
     onNewDog: () -> Unit,
-    onEditDog: (Int) -> Unit,
-    onDogDetails: () -> Unit
+    onDogDetails: (Int) -> Unit
 ) {
     composable(route = DOG_LIST_SCREEN_ROUTE) { backStackEntry ->
         DogList(
             savedStateHandle = backStackEntry.savedStateHandle,
             onNavigateToOnboarding = onNavigateToOnboarding,
             onNewDog = onNewDog,
-            onDogDetails = onEditDog
+            onDogDetails = onDogDetails
         )
     }
 }

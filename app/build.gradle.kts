@@ -66,6 +66,7 @@ dependencies {
     implementation(projects.feature.editdog)
     implementation(projects.feature.onboarding)
     implementation(projects.feature.doglist)
+    implementation(projects.feature.dogdetails)
     implementation(projects.feature.settings)
     implementation(projects.common.navigation)
     implementation(projects.common.settings)
