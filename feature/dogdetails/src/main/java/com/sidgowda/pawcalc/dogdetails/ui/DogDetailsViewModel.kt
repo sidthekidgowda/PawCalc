@@ -1,0 +1,113 @@
+package com.sidgowda.pawcalc.dogdetails.ui
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.dogs.model.throttleFirst
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
+import com.sidgowda.pawcalc.date.dateToNewFormat
+import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
+import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
+import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
+import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
+import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Named
+
+@HiltViewModel
+class DogDetailsViewModel @Inject constructor(
+    private val getDogForIdUseCase: GetDogForIdUseCase,
+    private val settingsUseCase: GetSettingsUseCase,
+    @Named("io") private val ioDispatcher: CoroutineDispatcher,
+    @Named("computation") private val computationDispatcher: CoroutineDispatcher
+) : ViewModel() {
+
+    companion object {
+        private const val THROTTLE_DURATION = 300L
+        private const val KEY_SAVED_LOCAL_STATE = "saved_dog_details_local_state"
+    }
+
+    private val navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
+
+    private val _dogDetailsState = MutableStateFlow(DogDetailsState())
+
+    val dogDetailsState: StateFlow<DogDetailsState> = _dogDetailsState.asStateFlow()
+
+    init {
+        // Collect from settings and update date and weight any time settings is updated
+        viewModelScope.launch(ioDispatcher) {
+            settingsUseCase().collect { settings ->
+                _dogDetailsState.update { details ->
+                    details.copy(
+                        dog = details.dog?.copy(
+                            birthDate = if (
+                                details.dog.dateFormat != settings.dateFormat &&
+                                details.dog.birthDate.isNotEmpty()
+                            ) {
+                                details.dog.birthDate.dateToNewFormat(settings.dateFormat)
+                            } else {
+                                details.dog.birthDate
+                            },
+                            weight = if (details.dog.weightFormat != settings.weightFormat) {
+                                details.dog.weight.toNewWeight(settings.weightFormat)
+                            } else {
+                                details.dog.weight
+                            },
+                            weightFormat = settings.weightFormat,
+                            dateFormat = settings.dateFormat
+                        )
+                    )
+                }
+            }
+        }
+        viewModelScope.launch {
+            // taking first click event and reducing to ui state
+            navigateEventFlow.throttleFirst(THROTTLE_DURATION).collect { navigateEvent ->
+                _dogDetailsState.update {
+                    it.copy(
+                        navigateEvent = when (navigateEvent) {
+                            is NavigateEvent.EditDog -> navigateEvent
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    fun handleEvent(dogDetailsEvent: DogDetailsEvent) {
+        when (dogDetailsEvent) {
+            is DogDetailsEvent.FetchDogForId -> fetchDogForId(dogDetailsEvent.id)
+            is DogDetailsEvent.EditDog -> navigate(NavigateEvent.EditDog(dogDetailsEvent.id))
+            is DogDetailsEvent.StartAnimation -> {
+
+            }
+            is DogDetailsEvent.EndAnimation -> {
+
+            }
+            is DogDetailsEvent.OnNavigated -> _dogDetailsState.update {
+                it.copy(navigateEvent = null)
+            }
+        }
+    }
+
+    private fun fetchDogForId(dogId: Int) {
+        viewModelScope.launch(computationDispatcher) {
+            val dog = getDogForIdUseCase(id = dogId).first()
+            _dogDetailsState.update {
+                it.copy(
+                    isLoading = false,
+                    dog = dog
+                )
+            }
+        }
+    }
+
+    private fun navigate(navigateEvent: NavigateEvent) {
+        viewModelScope.launch {
+            navigateEventFlow.emit(navigateEvent)
+        }
+    }
+}

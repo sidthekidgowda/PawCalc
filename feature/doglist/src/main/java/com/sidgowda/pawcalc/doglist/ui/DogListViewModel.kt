@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.throttleFirst
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
@@ -30,7 +31,7 @@ class DogListViewModel @Inject constructor(
 
     companion object {
         private const val THROTTLE_DURATION = 300L
-        private const val KEY_SAVED_LOCAL_STATE = "saved_local_state"
+        private const val KEY_SAVED_LOCAL_STATE = "saved_dog_list_local_state"
     }
 
     @Parcelize

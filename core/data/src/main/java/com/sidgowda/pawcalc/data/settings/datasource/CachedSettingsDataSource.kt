@@ -38,7 +38,6 @@ class CachedSettingsDataSource @Inject constructor(
                     settingsSharedFlow.emit(savedSettingsList.first().toSettings())
                 }
             } catch (e: Exception) {
-                //todo add log for error
                 updateSettings(INITIAL_SETTINGS)
             }
         }

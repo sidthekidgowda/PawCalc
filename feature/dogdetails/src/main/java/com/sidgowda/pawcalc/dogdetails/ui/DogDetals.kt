@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.dogdetails
+package com.sidgowda.pawcalc.dogdetails.ui
 
 import androidx.compose.runtime.Composable
 
