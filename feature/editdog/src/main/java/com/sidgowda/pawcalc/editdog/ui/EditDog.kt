@@ -8,16 +8,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sidgowda.pawcalc.doginput.DogInput
 import com.sidgowda.pawcalc.doginput.model.DogInputState
+import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
+import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @Composable
 internal fun EditDog(
-    dogId: Int,
     onSaveDog: () -> Unit
 ) {
     EditDogScreen(
         modifier = Modifier.fillMaxSize(),
         viewModel = hiltViewModel(),
-        dogId = dogId,
         onSaveDog = onSaveDog
     )
 }
@@ -26,7 +26,6 @@ internal fun EditDog(
 internal fun EditDogScreen(
     modifier: Modifier = Modifier,
     viewModel: EditDogViewModel,
-    dogId: Int,
     onSaveDog: () -> Unit
 ) {
     val dogInputState: DogInputState by viewModel.dogInputState.collectAsStateWithLifecycle()
@@ -39,4 +38,11 @@ internal fun EditDogScreen(
 }
 
 //---------Preview----------------------------------------------------------------------------------
-// todo add preview
+
+@LightDarkPreview
+@Composable
+fun PreviewEditDogScreen() {
+    PawCalcTheme {
+        EditDog({})
+    }
+}

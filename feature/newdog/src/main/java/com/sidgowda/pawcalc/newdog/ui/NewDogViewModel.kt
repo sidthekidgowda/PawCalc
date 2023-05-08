@@ -28,6 +28,10 @@ class NewDogViewModel @Inject constructor(
     val inputState = _inputState.asStateFlow()
 
     init {
+        syncInputWithSettings()
+    }
+
+    private fun syncInputWithSettings() {
         viewModelScope.launch(ioDispatcher) {
             settingsUseCase().collect { settings ->
                 _inputState.update {

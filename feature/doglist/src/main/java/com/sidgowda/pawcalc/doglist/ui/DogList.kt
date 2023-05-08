@@ -168,7 +168,6 @@ internal fun DogListScreen(
             when {
                 dogListState.isLoading -> {
                     Shimmer(contentPadding = contentPadding)
-                    handleEvent(DogListEvent.FetchDogs)
                 }
                 else -> {
                     if (dogListState.dogs.isEmpty()) {

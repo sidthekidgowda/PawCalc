@@ -47,7 +47,7 @@ internal fun DogDetails(
         LaunchedEffect(key1 = navigateEvent) {
             when (navigateEvent) {
                 is NavigateEvent.EditDog -> {
-                    onEditDog(navigateEvent.id)
+                    onEditDog(navigateEvent.dogId)
                 }
             }
             viewModel.handleEvent(DogDetailsEvent.OnNavigated)
@@ -201,7 +201,7 @@ fun PreviewDogDetailsLoading() {
     PawCalcTheme {
         DogDetailsScreen(
             modifier = Modifier.fillMaxSize(),
-            dogDetailsState = DogDetailsState(isLoading = true),
+            dogDetailsState = DogDetailsState(),
             handleEvent = {}
         )
     }
@@ -214,7 +214,6 @@ fun PreviewDogDetailsContent() {
         DogDetailsScreen(
             modifier = Modifier.fillMaxSize(),
             dogDetailsState = DogDetailsState(
-                isLoading = false,
                 dog = Dog(
                     id = 1,
                     profilePic = Uri.parse(""),

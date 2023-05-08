@@ -17,9 +17,6 @@ fun NavGraphBuilder.editDogScreenDestination(
         route = "$EDIT_DOG_SCREEN_ROUTE/{$DOG_ID_KEY}",
         arguments = listOf(navArgument(DOG_ID_KEY) { type = NavType.IntType})
     ) {
-        EditDog(
-            dogId = it.arguments?.getInt(DOG_ID_KEY) ?: 0,
-            onSaveDog = onSaveDog
-        )
+        EditDog(onSaveDog = onSaveDog)
     }
 }

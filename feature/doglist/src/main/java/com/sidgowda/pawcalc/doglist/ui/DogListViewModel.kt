@@ -82,6 +82,18 @@ class DogListViewModel @Inject constructor(
         )
 
     init {
+        fetchDogs()
+        handleNavigateEvents()
+        updateSavedStateHandle()
+    }
+
+    private fun fetchDogs() {
+        viewModelScope.launch(ioDispatcher) {
+            dogsRepo.fetchDogs()
+        }
+    }
+
+    private fun handleNavigateEvents() {
         viewModelScope.launch {
             // taking the first click event and ignoring the rest
             _navigateEventFlow.throttleFirst(THROTTLE_DURATION).collect { navigateEvent ->
@@ -90,15 +102,17 @@ class DogListViewModel @Inject constructor(
                     NavigateEvent.AddDog -> localDogListState.update {
                         it.copy(navigateEvent = NavigateEvent.AddDog)
                     }
-                    is NavigateEvent.DogDetails ->
-                        localDogListState.update {
-                            it.copy(
-                                navigateEvent = NavigateEvent.DogDetails(id = navigateEvent.id)
-                            )
-                        }
+                    is NavigateEvent.DogDetails -> localDogListState.update {
+                        it.copy(
+                            navigateEvent = NavigateEvent.DogDetails(id = navigateEvent.id)
+                        )
+                    }
                 }
             }
         }
+    }
+
+    private fun updateSavedStateHandle() {
         viewModelScope.launch {
             localDogListState.collect {
                 savedStateHandle[KEY_SAVED_LOCAL_STATE] = it
@@ -108,7 +122,6 @@ class DogListViewModel @Inject constructor(
 
     fun handleEvent(event: DogListEvent) {
         when (event) {
-            is DogListEvent.FetchDogs -> fetchDogs()
             is DogListEvent.AddDog -> onNavigate(NavigateEvent.AddDog)
             is DogListEvent.DogDetails -> onNavigate(NavigateEvent.DogDetails(event.id))
             is DogListEvent.DeleteDog -> deleteDog(event.dog)
@@ -119,12 +132,6 @@ class DogListViewModel @Inject constructor(
     private fun onNavigate(navigateEvent: NavigateEvent) {
         viewModelScope.launch {
             _navigateEventFlow.emit(navigateEvent)
-        }
-    }
-
-    private fun fetchDogs() {
-        viewModelScope.launch(ioDispatcher) {
-            dogsRepo.fetchDogs()
         }
     }
 
