@@ -2,9 +2,9 @@ package com.sidgowda.pawcalc.dogdetails.model
 
 sealed class DogDetailsEvent {
 
-    data class FetchDogForId(val id: Int) : DogDetailsEvent()
+    object FetchDogForId : DogDetailsEvent()
 
-    data class EditDog(val id: Int) : DogDetailsEvent()
+    object EditDog : DogDetailsEvent()
 
     object OnNavigated : DogDetailsEvent()
 

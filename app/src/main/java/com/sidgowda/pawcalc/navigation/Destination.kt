@@ -30,7 +30,6 @@ sealed class Destination(
                     if (route.contains(DOG_LIST_SCREEN_ROUTE)) {
                         return DogDetails
                     }
-                    // dog details has arguments as well
                     throw IllegalStateException("route is invalid")
                 }
             }

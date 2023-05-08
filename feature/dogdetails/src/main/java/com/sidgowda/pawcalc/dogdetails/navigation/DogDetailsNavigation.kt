@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.dogdetails.ui.DogDetails
 import com.sidgowda.pawcalc.navigation.DOG_DETAILS_SCREEN_ROUTE
 
-private const val DOG_ID_KEY = "dogId"
+internal const val DOG_ID_KEY = "dogId"
 
 fun NavController.navigateToDogDetails(dogId: Int, navOptions: NavOptions? = null) {
     this.navigate("$DOG_DETAILS_SCREEN_ROUTE/$dogId", navOptions)
@@ -19,7 +19,6 @@ fun NavGraphBuilder.dogDetailsScreenDestination(
         arguments = listOf(navArgument(DOG_ID_KEY) { type = NavType.IntType})
     ) {
         DogDetails(
-            dogId = it.arguments?.getInt(DOG_ID_KEY) ?: 0,
             onEditDog = onEditDog
         )
     }

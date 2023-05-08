@@ -1,10 +1,12 @@
 package com.sidgowda.pawcalc.dogdetails.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.throttleFirst
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.date.dateToNewFormat
+import com.sidgowda.pawcalc.dogdetails.DOG_ID_KEY
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
@@ -21,13 +23,13 @@ import javax.inject.Named
 class DogDetailsViewModel @Inject constructor(
     private val getDogForIdUseCase: GetDogForIdUseCase,
     private val settingsUseCase: GetSettingsUseCase,
+    savedStateHandle: SavedStateHandle,
     @Named("io") private val ioDispatcher: CoroutineDispatcher,
     @Named("computation") private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     companion object {
         private const val THROTTLE_DURATION = 300L
-        private const val KEY_SAVED_LOCAL_STATE = "saved_dog_details_local_state"
     }
 
     private val navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
@@ -35,6 +37,8 @@ class DogDetailsViewModel @Inject constructor(
     private val _dogDetailsState = MutableStateFlow(DogDetailsState())
 
     val dogDetailsState: StateFlow<DogDetailsState> = _dogDetailsState.asStateFlow()
+
+    private val dogId: Int = checkNotNull(savedStateHandle[DOG_ID_KEY])
 
     init {
         // Collect from settings and update date and weight any time settings is updated
@@ -79,8 +83,8 @@ class DogDetailsViewModel @Inject constructor(
 
     fun handleEvent(dogDetailsEvent: DogDetailsEvent) {
         when (dogDetailsEvent) {
-            is DogDetailsEvent.FetchDogForId -> fetchDogForId(dogDetailsEvent.id)
-            is DogDetailsEvent.EditDog -> navigate(NavigateEvent.EditDog(dogDetailsEvent.id))
+            is DogDetailsEvent.FetchDogForId -> fetchDogForId()
+            is DogDetailsEvent.EditDog -> navigate(NavigateEvent.EditDog(dogId))
             is DogDetailsEvent.StartAnimation -> {
 
             }
@@ -93,7 +97,7 @@ class DogDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun fetchDogForId(dogId: Int) {
+    private fun fetchDogForId() {
         viewModelScope.launch(computationDispatcher) {
             val dog = getDogForIdUseCase(id = dogId).first()
             _dogDetailsState.update {
