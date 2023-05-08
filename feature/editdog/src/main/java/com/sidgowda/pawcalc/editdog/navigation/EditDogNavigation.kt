@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import com.sidgowda.pawcalc.editdog.ui.EditDog
 import com.sidgowda.pawcalc.navigation.EDIT_DOG_SCREEN_ROUTE
 
-private const val DOG_ID_KEY = "dogId"
+internal const val DOG_ID_KEY = "dogId"
 fun NavController.navigateToEditDogScreen(dogId: Int, navOptions: NavOptions? = null) {
     this.navigate("$EDIT_DOG_SCREEN_ROUTE/$dogId", navOptions)
 }

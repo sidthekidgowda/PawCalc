@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -68,25 +67,12 @@ internal fun DogDetailsScreen(
     dogDetailsState: DogDetailsState,
     handleEvent: (event: DogDetailsEvent) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(PawCalcTheme.colors.surface),
-        contentAlignment = Alignment.Center
-    ) {
-        when {
-            dogDetailsState.isLoading -> {
-                CircularProgressIndicator()
-                handleEvent(DogDetailsEvent.FetchDogForId)
-            }
-            else -> {
-                DogDetailsContent(
-                    modifier = Modifier.fillMaxSize(),
-                    dog = dogDetailsState.dog!!,
-                    handleEvent = handleEvent
-                )
-            }
-        }
+    dogDetailsState.dog?.let { dog ->
+        DogDetailsContent(
+            modifier = modifier.fillMaxSize().background(PawCalcTheme.colors.surface),
+            dog = dog,
+            handleEvent = handleEvent
+        )
     }
 }
 

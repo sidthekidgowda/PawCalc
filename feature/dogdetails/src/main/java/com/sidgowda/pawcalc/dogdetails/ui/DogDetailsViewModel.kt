@@ -35,12 +35,28 @@ class DogDetailsViewModel @Inject constructor(
     private val navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
 
     private val _dogDetailsState = MutableStateFlow(DogDetailsState())
-
     val dogDetailsState: StateFlow<DogDetailsState> = _dogDetailsState.asStateFlow()
 
     private val dogId: Int = checkNotNull(savedStateHandle[DOG_ID_KEY])
 
     init {
+        fetchDogForId()
+        syncDetailsWithSettings()
+        handleNavigateEvents()
+    }
+
+    private fun fetchDogForId() {
+        viewModelScope.launch(computationDispatcher) {
+            // if user has edited dog, we need to collect to get most recent updates on the dog
+            getDogForIdUseCase(id = dogId).collect { dog ->
+                _dogDetailsState.update {
+                    it.copy(dog = dog)
+                }
+            }
+        }
+    }
+
+    private fun syncDetailsWithSettings() {
         // Collect from settings and update date and weight any time settings is updated
         viewModelScope.launch(ioDispatcher) {
             settingsUseCase().collect { settings ->
@@ -67,6 +83,9 @@ class DogDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun handleNavigateEvents() {
         viewModelScope.launch {
             // taking first click event and reducing to ui state
             navigateEventFlow.throttleFirst(THROTTLE_DURATION).collect { navigateEvent ->
@@ -79,14 +98,10 @@ class DogDetailsViewModel @Inject constructor(
                 }
             }
         }
-        viewModelScope.launch {
-
-        }
     }
 
     fun handleEvent(dogDetailsEvent: DogDetailsEvent) {
         when (dogDetailsEvent) {
-            is DogDetailsEvent.FetchDogForId -> fetchDogForId()
             is DogDetailsEvent.EditDog -> navigate(NavigateEvent.EditDog(dogId))
             is DogDetailsEvent.StartAnimation -> {
 
@@ -96,20 +111,6 @@ class DogDetailsViewModel @Inject constructor(
             }
             is DogDetailsEvent.OnNavigated -> _dogDetailsState.update {
                 it.copy(navigateEvent = null)
-            }
-        }
-    }
-
-    private fun fetchDogForId() {
-        viewModelScope.launch(computationDispatcher) {
-            // if user has edited dog, we need to collect to get most recent updates on the dog
-            getDogForIdUseCase(id = dogId).collect { dog ->
-                _dogDetailsState.update {
-                    it.copy(
-                        isLoading = false,
-                        dog = dog
-                    )
-                }
             }
         }
     }

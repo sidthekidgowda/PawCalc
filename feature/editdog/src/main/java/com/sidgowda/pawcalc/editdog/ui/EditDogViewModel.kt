@@ -1,5 +1,6 @@
 package com.sidgowda.pawcalc.editdog.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.date.toDogYears
@@ -14,6 +15,7 @@ import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
+import com.sidgowda.pawcalc.editdog.DOG_ID_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -26,17 +28,25 @@ class EditDogViewModel @Inject constructor(
     private val getDogForIdUseCase: GetDogForIdUseCase,
     private val updateDogUseCase: UpdateDogUseCase,
     private val settingsUseCase: GetSettingsUseCase,
+    savedStateHandle: SavedStateHandle,
     @Named("io") private val ioDispatcher: CoroutineDispatcher,
     @Named("computation") private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _inputState = MutableStateFlow(DogInputState(isLoading = true))
+    private val _inputState = MutableStateFlow(DogInputState())
     val dogInputState = _inputState.asStateFlow()
 
     // this is the Dog we will be editing
     private val editableDog = MutableStateFlow<Dog?>(null)
 
+    private val dogId: Int = checkNotNull(savedStateHandle[DOG_ID_KEY])
+
     init {
+        syncInputWithSettings()
+        fetchDogForId()
+    }
+
+    private fun syncInputWithSettings() {
         // Collect from settings and update date and weight any time settings is updated
         viewModelScope.launch(ioDispatcher) {
             settingsUseCase().collect { settings ->
@@ -69,34 +79,22 @@ class EditDogViewModel @Inject constructor(
         }
     }
 
-    fun fetchDogForId(id: Int) {
+    private fun fetchDogForId() {
         viewModelScope.launch(computationDispatcher) {
-            try {
-                // this will have dog with current settings format
-                val dog = getDogForIdUseCase(id).first()
-                _inputState.update {
-                    it.copy(
-                        isLoading = false,
-                        profilePic = dog.profilePic,
-                        name = dog.name,
-                        weight = dog.weight.toString(),
-                        weightFormat = dog.weightFormat,
-                        birthDate = dog.birthDate,
-                        dateFormat = dog.dateFormat,
-                        inputRequirements = DogInputRequirements.values().toSet()
-                    )
-                }.also {
-                    // cache the value of the dog
-                    editableDog.update { dog }
-                }
-            } catch (e: Exception) {
-                // add logs
-                _inputState.update {
-                    it.copy(
-                        isLoading = false,
-                        isError = true
-                    )
-                }
+            val dog = getDogForIdUseCase(dogId).first()
+            _inputState.update {
+                it.copy(
+                    profilePic = dog.profilePic,
+                    name = dog.name,
+                    weight = dog.weight.toString(),
+                    weightFormat = dog.weightFormat,
+                    birthDate = dog.birthDate,
+                    dateFormat = dog.dateFormat,
+                    inputRequirements = DogInputRequirements.values().toSet()
+                )
+            }.also {
+                // cache the value of the dog
+                editableDog.update { dog }
             }
         }
     }
