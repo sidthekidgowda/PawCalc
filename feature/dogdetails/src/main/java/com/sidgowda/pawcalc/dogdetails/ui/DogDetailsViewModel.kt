@@ -79,6 +79,9 @@ class DogDetailsViewModel @Inject constructor(
                 }
             }
         }
+        viewModelScope.launch {
+
+        }
     }
 
     fun handleEvent(dogDetailsEvent: DogDetailsEvent) {
@@ -99,12 +102,14 @@ class DogDetailsViewModel @Inject constructor(
 
     private fun fetchDogForId() {
         viewModelScope.launch(computationDispatcher) {
-            val dog = getDogForIdUseCase(id = dogId).first()
-            _dogDetailsState.update {
-                it.copy(
-                    isLoading = false,
-                    dog = dog
-                )
+            // if user has edited dog, we need to collect to get most recent updates on the dog
+            getDogForIdUseCase(id = dogId).collect { dog ->
+                _dogDetailsState.update {
+                    it.copy(
+                        isLoading = false,
+                        dog = dog
+                    )
+                }
             }
         }
     }

@@ -3,6 +3,7 @@
     <string name="title_settings">Settings</string>
     <string name="title_add_dog">Add</string>
     <string name="title_edit_dog">Edit</string>
+    <string name="title_dog_details">Details</string>
     <string name="cd_settings_action_icon">Navigate to settings</string>
     <string name="cd_close_nav_icon">Close current page</string>
     <string name="cd_press_back">Press back</string>

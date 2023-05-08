@@ -15,7 +15,7 @@ fun NavGraphBuilder.dogDetailsScreenDestination(
     onEditDog: (Int) -> Unit
 ) {
     composable(
-        route = "DOG_DETAILS_SCREEN_ROUTE/{$DOG_ID_KEY}",
+        route = "$DOG_DETAILS_SCREEN_ROUTE/{$DOG_ID_KEY}",
         arguments = listOf(navArgument(DOG_ID_KEY) { type = NavType.IntType})
     ) {
         DogDetails(

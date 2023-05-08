@@ -27,7 +27,7 @@ sealed class Destination(
                     if (route.contains(EDIT_DOG_SCREEN_ROUTE)) {
                         return EditDog
                     }
-                    if (route.contains(DOG_LIST_SCREEN_ROUTE)) {
+                    if (route.contains(DOG_DETAILS_SCREEN_ROUTE)) {
                         return DogDetails
                     }
                     throw IllegalStateException("route is invalid")
@@ -69,7 +69,7 @@ sealed class Destination(
     )
 
     object DogDetails : Destination(
-        title = R.string.title_edit_dog,
+        title = R.string.title_dog_details,
         navIcon = Icons.Default.ArrowBack,
         navIconContentDescription = R.string.cd_press_back,
         actionIcon = Icons.Default.Settings,
