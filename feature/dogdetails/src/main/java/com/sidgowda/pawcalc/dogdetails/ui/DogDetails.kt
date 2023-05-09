@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -76,12 +77,12 @@ internal fun DogDetailsScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        EditButton(
+        ProfilePicWithEditButton(
+            image = dog.profilePic,
             onEditDog = {
                 handleEvent(DogDetailsEvent.EditDog)
             }
         )
-        ProfilePic(image = dog.profilePic)
         Spacer(modifier = Modifier.height(10.dp))
         DogName(name = dog.name)
         Spacer(modifier = Modifier.height(20.dp))
@@ -112,17 +113,45 @@ internal fun DogDetailsScreen(
 }
 
 @Composable
-fun ColumnScope.EditButton(
+fun ProfilePicWithEditButton(
+    modifier: Modifier = Modifier,
+    image: Uri,
+    onEditDog: () -> Unit
+) {
+    ConstraintLayout(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        val (profilePic, editButton) = createRefs()
+        ProfilePic(
+            modifier = Modifier.constrainAs(profilePic) {
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+            }.padding(top = 26.dp),
+            image = image
+        )
+        EditButton(
+            modifier = Modifier.constrainAs(editButton) {
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+            },
+            onEditDog = onEditDog
+        )
+    }
+}
+
+
+@Composable
+fun EditButton(
     modifier: Modifier = Modifier,
     onEditDog: () -> Unit
 ) {
     TextButton(
-        modifier = modifier.align(Alignment.End),
+        modifier = modifier,
         onClick = onEditDog
     ) {
         Text(
             stringResource(id = R.string.edit_dog_details),
-
             style = PawCalcTheme.typography.h4.copy(fontSize = 14.sp)
         )
     }
