@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -18,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -30,8 +31,8 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.formattedToString
+import com.sidgowda.pawcalc.dogdetails.R
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
-import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -41,7 +42,6 @@ internal fun DogDetails(
     onEditDog: (Int) -> Unit
 ) {
     val viewModel = hiltViewModel<DogDetailsViewModel>()
-
     val dogDetailsState by viewModel.dogDetailsState.collectAsStateWithLifecycle()
     dogDetailsState.navigateEvent?.let { navigateEvent ->
         LaunchedEffect(key1 = navigateEvent) {
@@ -53,32 +53,19 @@ internal fun DogDetails(
             viewModel.handleEvent(DogDetailsEvent.OnNavigated)
         }
     }
-    DogDetailsScreen(
-        dogDetailsState = dogDetailsState,
-        handleEvent = viewModel::handleEvent
-    )
-}
-
-
-@Composable
-internal fun DogDetailsScreen(
-    modifier: Modifier = Modifier,
-    dogDetailsState: DogDetailsState,
-    handleEvent: (event: DogDetailsEvent) -> Unit
-) {
     dogDetailsState.dog?.let { dog ->
-        DogDetailsContent(
-            modifier = modifier
+        DogDetailsScreen(
+            modifier = Modifier
                 .fillMaxSize()
                 .background(PawCalcTheme.colors.background),
             dog = dog,
-            handleEvent = handleEvent
+            handleEvent = viewModel::handleEvent
         )
     }
 }
 
 @Composable
-internal fun DogDetailsContent(
+internal fun DogDetailsScreen(
     modifier: Modifier = Modifier,
     dog: Dog,
     handleEvent: (event: DogDetailsEvent) -> Unit
@@ -95,25 +82,31 @@ internal fun DogDetailsContent(
             }
         )
         ProfilePic(image = dog.profilePic)
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         DogName(name = dog.name)
         Spacer(modifier = Modifier.height(20.dp))
         DogWeight(
-            modifier = Modifier.fillMaxWidth().padding(start = 40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 40.dp),
             weight = dog.weight,
             weightFormat = dog.weightFormat
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         BirthDate(
-            modifier = Modifier.fillMaxWidth().padding(start = 40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 40.dp),
             birthDate = dog.birthDate
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         DogYears(
-            modifier = Modifier.fillMaxWidth().padding(start = 40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 40.dp),
             dogYears = dog.dogYears
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         HumanYears(humanYears = dog.humanYears)
     }
 }
@@ -127,7 +120,11 @@ fun ColumnScope.EditButton(
         modifier = modifier.align(Alignment.End),
         onClick = onEditDog
     ) {
-        Text("Edit")
+        Text(
+            stringResource(id = R.string.edit_dog_details),
+
+            style = PawCalcTheme.typography.h4.copy(fontSize = 14.sp)
+        )
     }
 }
 
@@ -148,21 +145,12 @@ internal fun ProfilePic(
 }
 
 @Composable
-internal fun TextContent(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Surface(modifier = modifier) {
-        content()
-    }
-}
-
-@Composable
 internal fun DogName(
     modifier: Modifier = Modifier,
     name: String
 ) {
     Text(
+        modifier = modifier,
         text = name,
         style = PawCalcTheme.typography.h4,
         color = PawCalcTheme.colors.contentColor()
@@ -175,9 +163,12 @@ internal fun DogWeight(
     weight: Double,
     weightFormat: WeightFormat
 ) {
+    val weightFormat = if (weightFormat == WeightFormat.POUNDS) "lb" else "kg"
+    val weightAsText =
+        stringResource(id = R.string.weight_dog_details, weight.formattedToString(), weightFormat)
     Text(
         modifier = modifier,
-        text = "Weight: ${weight.formattedToString()} ${if (weightFormat == WeightFormat.POUNDS) "lb" else "kg"}",
+        text = weightAsText,
         style = PawCalcTheme.typography.body1,
         color = PawCalcTheme.colors.contentColor()
     )
@@ -190,7 +181,7 @@ internal fun BirthDate(
 ) {
     Text(
         modifier = modifier,
-        text = "Birth Date: $birthDate",
+        text = stringResource(id = R.string.birth_date_dog_details, birthDate),
         style = PawCalcTheme.typography.body1,
         color = PawCalcTheme.colors.contentColor()
     )
@@ -203,7 +194,7 @@ fun DogYears(
 ) {
     Text(
         modifier =  modifier,
-        text = "Dog Years: ${dogYears.years} years ${dogYears.months} months ${dogYears.days} days",
+        text = stringResource(id = R.string.dog_years_dog_details, dogYears.years, dogYears.months, dogYears.days),
         style = PawCalcTheme.typography.body1,
         color = PawCalcTheme.colors.contentColor()
     )
@@ -220,35 +211,20 @@ fun HumanYears(
 
 @LightDarkPreview
 @Composable
-fun PreviewDogDetailsLoading() {
-    PawCalcTheme {
-        DogDetailsScreen(
-            modifier = Modifier.fillMaxSize(),
-            dogDetailsState = DogDetailsState(),
-            handleEvent = {}
-        )
-    }
-}
-
-@LightDarkPreview
-@Composable
 fun PreviewDogDetailsContent() {
     PawCalcTheme {
         DogDetailsScreen(
             modifier = Modifier.fillMaxSize(),
-            dogDetailsState = DogDetailsState(
-                dog = Dog(
-                    id = 1,
-                    profilePic = Uri.parse(""),
-                    name = "Mowgli",
-                    weight = 80.0,
-                    weightFormat = WeightFormat.POUNDS,
-                    birthDate = "7/30/2019",
-                    dogYears = "7/30/2019".toDogYears(),
-                    dateFormat = DateFormat.AMERICAN,
-                    humanYears = "7/30/2019".toHumanYears()
-                ),
-                navigateEvent = null
+            dog = Dog(
+                id = 1,
+                profilePic = Uri.parse(""),
+                name = "Mowgli",
+                weight = 80.0,
+                weightFormat = WeightFormat.POUNDS,
+                birthDate = "7/30/2019",
+                dogYears = "7/30/2019".toDogYears(),
+                dateFormat = DateFormat.AMERICAN,
+                humanYears = "7/30/2019".toHumanYears()
             ),
             handleEvent = {}
         )
