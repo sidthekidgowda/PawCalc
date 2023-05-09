@@ -54,7 +54,6 @@ internal fun DogDetails(
         }
     }
     DogDetailsScreen(
-        modifier = Modifier.fillMaxSize(),
         dogDetailsState = dogDetailsState,
         handleEvent = viewModel::handleEvent
     )
@@ -69,7 +68,9 @@ internal fun DogDetailsScreen(
 ) {
     dogDetailsState.dog?.let { dog ->
         DogDetailsContent(
-            modifier = modifier.fillMaxSize().background(PawCalcTheme.colors.surface),
+            modifier = modifier
+                .fillMaxSize()
+                .background(PawCalcTheme.colors.background),
             dog = dog,
             handleEvent = handleEvent
         )
@@ -97,11 +98,21 @@ internal fun DogDetailsContent(
         Spacer(modifier = Modifier.height(20.dp))
         DogName(name = dog.name)
         Spacer(modifier = Modifier.height(20.dp))
-        DogWeight(weight = dog.weight, weightFormat = dog.weightFormat)
+        DogWeight(
+            modifier = Modifier.fillMaxWidth().padding(start = 40.dp),
+            weight = dog.weight,
+            weightFormat = dog.weightFormat
+        )
         Spacer(modifier = Modifier.height(20.dp))
-        BirthDate(birthDate = dog.birthDate)
+        BirthDate(
+            modifier = Modifier.fillMaxWidth().padding(start = 40.dp),
+            birthDate = dog.birthDate
+        )
         Spacer(modifier = Modifier.height(20.dp))
-        DogYears(dogYears = dog.dogYears)
+        DogYears(
+            modifier = Modifier.fillMaxWidth().padding(start = 40.dp),
+            dogYears = dog.dogYears
+        )
         Spacer(modifier = Modifier.height(20.dp))
         HumanYears(humanYears = dog.humanYears)
     }
@@ -127,7 +138,8 @@ internal fun ProfilePic(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(image).build(),
-        modifier = modifier.size(200.dp)
+        modifier = modifier
+            .size(200.dp)
             .clip(CircleShape)
             .border(2.dp, PawCalcTheme.colors.onPrimarySurface(), CircleShape),
         contentScale = ContentScale.Crop,
@@ -150,9 +162,11 @@ internal fun DogName(
     modifier: Modifier = Modifier,
     name: String
 ) {
-    TextContent(modifier = modifier) {
-        Text(name)
-    }
+    Text(
+        text = name,
+        style = PawCalcTheme.typography.h4,
+        color = PawCalcTheme.colors.contentColor()
+    )
 }
 
 @Composable
@@ -161,9 +175,12 @@ internal fun DogWeight(
     weight: Double,
     weightFormat: WeightFormat
 ) {
-    TextContent(modifier = modifier) {
-        Text("Weight: ${weight.formattedToString()} ${if (weightFormat == WeightFormat.POUNDS) "lb" else "kg"}")
-    }
+    Text(
+        modifier = modifier,
+        text = "Weight: ${weight.formattedToString()} ${if (weightFormat == WeightFormat.POUNDS) "lb" else "kg"}",
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.contentColor()
+    )
 }
 
 @Composable
@@ -171,9 +188,12 @@ internal fun BirthDate(
     modifier: Modifier = Modifier,
     birthDate: String
 ) {
-    TextContent(modifier = modifier) {
-        Text("Birth Date: $birthDate")
-    }
+    Text(
+        modifier = modifier,
+        text = "Birth Date: $birthDate",
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.contentColor()
+    )
 }
 
 @Composable
@@ -181,9 +201,12 @@ fun DogYears(
     modifier: Modifier = Modifier,
     dogYears: Age
 ) {
-    TextContent(modifier = modifier) {
-        Text("Dog Years: ${dogYears.years} years ${dogYears.months} months ${dogYears.days} days")
-    }
+    Text(
+        modifier =  modifier,
+        text = "Dog Years: ${dogYears.years} years ${dogYears.months} months ${dogYears.days} days",
+        style = PawCalcTheme.typography.body1,
+        color = PawCalcTheme.colors.contentColor()
+    )
 }
 
 @Composable
