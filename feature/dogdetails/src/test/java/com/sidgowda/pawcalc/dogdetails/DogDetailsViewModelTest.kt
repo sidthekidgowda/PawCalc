@@ -12,7 +12,9 @@ import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
+import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
 import com.sidgowda.pawcalc.dogdetails.ui.DogDetailsViewModel
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
@@ -231,6 +233,141 @@ class DogDetailsViewModelTest {
         )
     }
 
+    @Test
+    fun `when event edit dog is called for dog 1, navigate event edit dog is emitted as state`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_ONE
+            ),
+            DogDetailsState(
+                dog = DOG_ONE,
+                navigateEvent = NavigateEvent.EditDog(1)
+            )
+        )
+    }
+
+    @Test
+    fun `when event edit dog is called for dog 2, navigate event edit dog is emitted as state`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_TWO
+            ),
+            DogDetailsState(
+                dog = DOG_TWO,
+                navigateEvent = NavigateEvent.EditDog(2)
+            )
+        )
+    }
+
+    @Test
+    fun `when event edit dog is called for dog 3, navigate event edit dog is emitted as state`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_THREE
+            ),
+            DogDetailsState(
+                dog = DOG_THREE,
+                navigateEvent = NavigateEvent.EditDog(3)
+            )
+        )
+    }
+
+    @Test
+    fun `when OnNavigated is called for dog 1, then navigate event is reset to null`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.OnNavigated).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_ONE
+            ),
+            DogDetailsState(
+                dog = DOG_ONE,
+                navigateEvent = NavigateEvent.EditDog(1)
+            ),
+            DogDetailsState(
+                dog = DOG_ONE,
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when OnNavigated is called for dog 2, then navigate event is reset to null`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.OnNavigated).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_TWO
+            ),
+            DogDetailsState(
+                dog = DOG_TWO,
+                navigateEvent = NavigateEvent.EditDog(2)
+            ),
+            DogDetailsState(
+                dog = DOG_TWO,
+                navigateEvent = null
+            )
+        )
+    }
+
+    @Test
+    fun `when OnNavigated is called for dog 3, then navigate event is reset to null`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.OnNavigated).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_THREE
+            ),
+            DogDetailsState(
+                dog = DOG_THREE,
+                navigateEvent = NavigateEvent.EditDog(3)
+            ),
+            DogDetailsState(
+                dog = DOG_THREE,
+                navigateEvent = null
+            )
+        )
+    }
+
     private fun initializeViewModel() {
         viewModel = DogDetailsViewModel(
             getDogForIdUseCase = getDogForIdUseCase,
@@ -289,6 +426,4 @@ class DogDetailsViewModelTest {
         )
         private val INITIAL_STATE = DogDetailsState()
     }
-
-
 }
