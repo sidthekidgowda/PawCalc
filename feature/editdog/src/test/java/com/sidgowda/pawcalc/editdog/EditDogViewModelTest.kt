@@ -2,6 +2,7 @@ package com.sidgowda.pawcalc.editdog
 
 import android.net.Uri
 import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
@@ -54,6 +55,7 @@ class EditDogViewModelTest {
     private lateinit var updateDogUseCase: UpdateDogUseCase
     private lateinit var capturedDog: CapturingSlot<Dog>
     private lateinit var settingsFlow: MutableStateFlow<Settings>
+    private lateinit var savedStateHandle: SavedStateHandle
     private val dogs = listOf(DOG_ONE, DOG_TWO, DOG_THREE)
 
     @Before
@@ -73,37 +75,21 @@ class EditDogViewModelTest {
                 flowOf(dogs[id-1])
             }
         }
+        savedStateHandle = mockk(relaxed = true)
         ioTestDispatcher = StandardTestDispatcher()
         computationTestDispatcher = StandardTestDispatcher()
-        viewModel = EditDogViewModel(
-            getDogForIdUseCase = getDogForIdUseCase,
-            settingsUseCase = getSettingsUseCase,
-            updateDogUseCase = updateDogUseCase,
-            ioDispatcher = ioTestDispatcher,
-            computationDispatcher = computationTestDispatcher,
-        )
         scope = TestScope()
     }
 
     @Test
-    fun `given viewModel is initialized, then it should have an initial state with loading`() {
-        val history = viewModel.createStateHistory()
-
-        history shouldContainExactly listOf(
-            INITIAL_STATE
-        )
-    }
-
-    @Test
     fun `given list of dogs, when getDogForId is called with id one, then viewModel should be initialized with Dog One`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(1)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -115,14 +101,13 @@ class EditDogViewModelTest {
 
     @Test
     fun `given list of dogs, when getDogForId is called with id two, then viewModel should be initialized with Dog Two`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -134,14 +119,13 @@ class EditDogViewModelTest {
 
     @Test
     fun `given list of dogs, when getDogForId is called with id three, then viewModel should be initialized with Dog Three`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -152,32 +136,15 @@ class EditDogViewModelTest {
     }
 
     @Test
-    fun `when getDogForId is called with an invalid id then viewModel should emit an error`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        // only ids 1,2,3 exist in list, id 4 does not exist
-        viewModel.fetchDogForId(4)
-        advanceUntilIdle()
-
-        history shouldContainExactly listOf(
-            INITIAL_STATE,
-            DogInputState(
-                isLoading = false,
-                isError = true
-            )
-        )
-    }
-
-    @Test
     fun `when name is updated then input state is updated as well`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.NameChanged("New name"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -185,7 +152,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = "New name",
                 weight = DOG_THREE.weight.toString(),
@@ -197,9 +163,9 @@ class EditDogViewModelTest {
 
     @Test
     fun `when name is updated and is more than 50characters then input state is invalid`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         var nameWith60 = ""
         val numToString = { (0..9).map { it.toString() }.joinToString(separator = "") }
         repeat(6) {
@@ -211,7 +177,6 @@ class EditDogViewModelTest {
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -219,7 +184,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = nameWith60,
                 isNameValid = false,
@@ -237,14 +201,14 @@ class EditDogViewModelTest {
 
     @Test
     fun `when birthdate is updated then input state is updated as well`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         updateDate("12/20/2021")
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -252,7 +216,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -261,7 +224,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -274,14 +236,14 @@ class EditDogViewModelTest {
 
     @Test
     fun `when birthdate is an empty string, then input state is invalid`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         updateDate("")
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -289,7 +251,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -302,7 +263,6 @@ class EditDogViewModelTest {
                 )
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -321,15 +281,14 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is changed, then input state is updated`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(1)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("80.0"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -337,7 +296,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = "80.0",
@@ -349,15 +307,14 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is updated to less than zero, then input state is invalid`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("-50.0"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -365,7 +322,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = "-50.0",
@@ -383,15 +339,14 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is not a number, then input state is invalid`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("1.23.0"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -399,7 +354,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = "1.23.0",
@@ -417,15 +371,14 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is more than 500, then input state is invalid`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("5000"))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -433,7 +386,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = "5000",
@@ -451,8 +403,8 @@ class EditDogViewModelTest {
 
     @Test
     fun `when all updates are valid, then isInputValid should be true`() = scope.runTest {
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel().also { advanceUntilIdle() }
 
         viewModel.handleEvent(DogInputEvent.WeightChanged("29"))
         updateDate("2/2/2021")
@@ -464,11 +416,10 @@ class EditDogViewModelTest {
 
     @Test
     fun `when save dog is called and nothing is updated, verify updateUseCase uses sameDog`() = scope.runTest {
-        viewModel.fetchDogForId(3)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel().also { advanceUntilIdle() }
 
-        viewModel.handleEvent(DogInputEvent.SavingInfo)
-        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
 
         coVerify { updateDogUseCase.invoke(DOG_THREE) }
         capturedDog.captured shouldBe DOG_THREE
@@ -476,8 +427,8 @@ class EditDogViewModelTest {
 
     @Test
     fun `when save dog is called, verify updateUseCase is invoked with updatedDog`() = scope.runTest {
-        viewModel.fetchDogForId(2)
-        advanceUntilIdle()
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel().also { advanceUntilIdle() }
         val updatedDog = updatedDog()
 
         viewModel.handleEvent(DogInputEvent.SavingInfo)
@@ -489,8 +440,8 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight input has 4 decimals and save dog is called, it is formatted to 2 decimals`() = scope.runTest {
-        viewModel.fetchDogForId(1).also { advanceUntilIdle() }
-
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("73.289222"))
 
         viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
@@ -504,8 +455,9 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is changed to kilograms, weight input should be changed to kilograms`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 3
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
         //change to kilograms
         settingsFlow.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }.also { advanceUntilIdle() }
@@ -513,7 +465,6 @@ class EditDogViewModelTest {
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toString(),
@@ -521,7 +472,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
                 weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToString(),
@@ -535,8 +485,9 @@ class EditDogViewModelTest {
     @Test
     fun `when weight is changed to kilograms and changed back to lbs, weight input should be in lbs`() =
         scope.runTest {
-            val history = viewModel.createStateHistory()
-            viewModel.fetchDogForId(3).also { advanceUntilIdle() }
+            every { savedStateHandle.get<Int>("dogId") } returns 3
+            initializeViewModel()
+            val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
             //change to kilograms
             settingsFlow.update { it.copy(weightFormat = WeightFormat.KILOGRAMS) }
@@ -547,7 +498,6 @@ class EditDogViewModelTest {
             history shouldContainExactly listOf(
                 INITIAL_STATE,
                 DogInputState(
-                    isLoading = false,
                     profilePic = DOG_THREE.profilePic,
                     name = DOG_THREE.name,
                     weight = DOG_THREE.weight.toString(),
@@ -555,7 +505,6 @@ class EditDogViewModelTest {
                     inputRequirements = DogInputRequirements.values().toSet()
                 ),
                 DogInputState(
-                    isLoading = false,
                     profilePic = DOG_THREE.profilePic,
                     name = DOG_THREE.name,
                     weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS)
@@ -565,7 +514,6 @@ class EditDogViewModelTest {
                     inputRequirements = DogInputRequirements.values().toSet()
                 ),
                 DogInputState(
-                    isLoading = false,
                     profilePic = DOG_THREE.profilePic,
                     name = DOG_THREE.name,
                     weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS)
@@ -579,8 +527,9 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is invalid in lbs and changed to kilograms, then it is invalid in kilograms`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("8500"))
 
         // change to kilograms
@@ -589,7 +538,6 @@ class EditDogViewModelTest {
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -597,7 +545,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = "8500",
@@ -607,7 +554,6 @@ class EditDogViewModelTest {
                     .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 isWeightValid = false,
@@ -622,8 +568,9 @@ class EditDogViewModelTest {
 
     @Test
     fun `when weight is not a number in lbs and changed to kilograms, then it is not converted in kilograms`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(2).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         viewModel.handleEvent(DogInputEvent.WeightChanged("5.5.5"))
 
         //change to kilograms
@@ -632,7 +579,6 @@ class EditDogViewModelTest {
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = DOG_TWO.weight.toString(),
@@ -640,7 +586,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 weight = "5.5.5",
@@ -650,7 +595,6 @@ class EditDogViewModelTest {
                     .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
                 isWeightValid = false,
@@ -665,8 +609,9 @@ class EditDogViewModelTest {
 
     @Test
     fun `when date format is changed to international, then date input is changed to days first`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(1).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
         // change date to international
         settingsFlow.update { it.copy(dateFormat = DateFormat.INTERNATIONAL) }.also { advanceUntilIdle() }
@@ -674,7 +619,6 @@ class EditDogViewModelTest {
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -682,7 +626,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -695,8 +638,9 @@ class EditDogViewModelTest {
 
     @Test
     fun `when date format is changed to international and back to american, then date input is in months first`() = scope.runTest {
-        val history = viewModel.createStateHistory()
-        viewModel.fetchDogForId(1).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
 
         // change date to international
         settingsFlow.update { it.copy(dateFormat = DateFormat.INTERNATIONAL) }.also { advanceUntilIdle() }
@@ -706,7 +650,6 @@ class EditDogViewModelTest {
         history shouldContainExactly listOf(
             INITIAL_STATE,
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -714,7 +657,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -723,7 +665,6 @@ class EditDogViewModelTest {
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
-                isLoading = false,
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = DOG_ONE.weight.toString(),
@@ -735,7 +676,8 @@ class EditDogViewModelTest {
 
     @Test
     fun `verify save dog is called with settings date format international and kilograms format`() = scope.runTest {
-        viewModel.fetchDogForId(2).also { advanceUntilIdle() }
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel().also { advanceUntilIdle() }
         settingsFlow.update {
             it.copy(
                 weightFormat = WeightFormat.KILOGRAMS,
@@ -777,6 +719,17 @@ class EditDogViewModelTest {
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN
+        )
+    }
+
+    private fun initializeViewModel() {
+        viewModel = EditDogViewModel(
+            getDogForIdUseCase = getDogForIdUseCase,
+            settingsUseCase = getSettingsUseCase,
+            savedStateHandle = savedStateHandle,
+            updateDogUseCase = updateDogUseCase,
+            ioDispatcher = ioTestDispatcher,
+            computationDispatcher = computationTestDispatcher,
         )
     }
 
@@ -822,9 +775,7 @@ class EditDogViewModelTest {
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN
         )
-        private val INITIAL_STATE = DogInputState(
-            isLoading = true
-        )
+        private val INITIAL_STATE = DogInputState()
         private val DEFAULT_SETTINGS = Settings(
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN,
