@@ -87,7 +87,7 @@ internal fun ChooseDate(
 @Composable
 internal fun ChooseWeight(
     modifier: Modifier = Modifier,
-    weightFormat: com.sidgowda.pawcalc.common.settings.WeightFormat,
+    weightFormat: WeightFormat,
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     val weightOptions = stringArrayResource(id = R.array.settings_options_weight)

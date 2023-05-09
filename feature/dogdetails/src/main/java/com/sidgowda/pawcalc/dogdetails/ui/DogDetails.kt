@@ -123,11 +123,13 @@ fun ProfilePicWithEditButton(
     ) {
         val (profilePic, editButton) = createRefs()
         ProfilePic(
-            modifier = Modifier.constrainAs(profilePic) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-            }.padding(top = 26.dp),
+            modifier = Modifier
+                .constrainAs(profilePic) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+                .padding(top = 26.dp),
             image = image
         )
         EditButton(
@@ -142,7 +144,7 @@ fun ProfilePicWithEditButton(
 
 
 @Composable
-fun EditButton(
+internal fun EditButton(
     modifier: Modifier = Modifier,
     onEditDog: () -> Unit
 ) {
@@ -217,20 +219,25 @@ internal fun BirthDate(
 }
 
 @Composable
-fun DogYears(
+internal fun DogYears(
     modifier: Modifier = Modifier,
     dogYears: Age
 ) {
     Text(
-        modifier =  modifier,
-        text = stringResource(id = R.string.dog_years_dog_details, dogYears.years, dogYears.months, dogYears.days),
+        modifier = modifier,
+        text = stringResource(
+            id = R.string.dog_years_dog_details,
+            dogYears.years,
+            dogYears.months,
+            dogYears.days
+        ),
         style = PawCalcTheme.typography.body1,
         color = PawCalcTheme.colors.contentColor()
     )
 }
 
 @Composable
-fun HumanYears(
+internal fun HumanYears(
     modifier: Modifier = Modifier,
     humanYears: Age
 ) {

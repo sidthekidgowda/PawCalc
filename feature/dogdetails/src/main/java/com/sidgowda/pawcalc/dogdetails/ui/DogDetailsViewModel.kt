@@ -24,7 +24,6 @@ class DogDetailsViewModel @Inject constructor(
     private val getDogForIdUseCase: GetDogForIdUseCase,
     private val settingsUseCase: GetSettingsUseCase,
     savedStateHandle: SavedStateHandle,
-    @Named("io") private val ioDispatcher: CoroutineDispatcher,
     @Named("computation") private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -33,7 +32,6 @@ class DogDetailsViewModel @Inject constructor(
     }
 
     private val navigateEventFlow = MutableSharedFlow<NavigateEvent>(replay = 0)
-
     private val _dogDetailsState = MutableStateFlow(DogDetailsState())
     val dogDetailsState: StateFlow<DogDetailsState> = _dogDetailsState.asStateFlow()
 
@@ -58,7 +56,7 @@ class DogDetailsViewModel @Inject constructor(
 
     private fun syncDetailsWithSettings() {
         // Collect from settings and update date and weight any time settings is updated
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch(computationDispatcher) {
             settingsUseCase().collect { settings ->
                 _dogDetailsState.update { details ->
                     details.copy(
