@@ -33,7 +33,7 @@ internal fun Settings() {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     
     SettingsScreen(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(PawCalcTheme.colors.surface),
         settings = settings,
         onSettingsEvent = viewModel::handleEvent
     )
