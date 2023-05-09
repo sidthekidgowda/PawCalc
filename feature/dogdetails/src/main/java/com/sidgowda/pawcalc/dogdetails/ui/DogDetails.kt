@@ -85,7 +85,7 @@ internal fun DogDetailsScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
         DogName(name = dog.name)
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         DogWeight(
             modifier = Modifier
                 .fillMaxWidth()
