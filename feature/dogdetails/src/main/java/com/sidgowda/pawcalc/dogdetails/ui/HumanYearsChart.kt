@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
@@ -46,7 +45,7 @@ internal fun HumanYearsChart(
         drawArc(
             color = arcColor,
             startAngle = 270f,
-            sweepAngle = 180f,
+            sweepAngle = 30f,
             topLeft = Offset(15.dp.toPx(), 15.dp.toPx()),
             useCenter = false,
             style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
@@ -54,16 +53,16 @@ internal fun HumanYearsChart(
         )
         // Paw icon
         translate(
-            left = 0.dp.toPx(),
-            top = 0.dp.toPx()
+            left = 120.dp.toPx(),
+            top = 5.dp.toPx()
         ) {
             with(pawIcon) {
                 draw(
-                    size = Size(20.dp.toPx(), 20.dp.toPx()),
-                    colorFilter = ColorFilter.tint(iconTint)
+                    size = Size(20.dp.toPx(), 20.dp.toPx())
                 )
             }
         }
+        // calculate how to animate paw icon on the circle
         // text
     }
 }
