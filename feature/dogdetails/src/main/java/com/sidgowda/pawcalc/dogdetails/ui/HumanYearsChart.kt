@@ -14,7 +14,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -38,26 +37,14 @@ internal fun HumanYearsChart(
     val start = 1f
     // calculate where end is
     val end = 360f
-    val pawIconStartX = 120.dp
-    val pawIconStartY = 5.dp.value
     val angle = remember {
        Animatable(initialValue = start)
-    }
-    val pawIconX = remember {
-        Animatable(initialValue = 120.dp.value)
-    }
-    val pawIconY = remember {
-        Animatable(initialValue = 5.dp.value)
     }
     LaunchedEffect(key1 = angle) {
         launch {
             angle.animateTo(end, animationSpec = tween(1_000))
         }
-        launch {
-            pawIconX.animateTo()
-        }
     }
-
     Canvas(
         modifier = modifier
             .background(PawCalcTheme.colors.background)
@@ -65,26 +52,37 @@ internal fun HumanYearsChart(
             .padding(20.dp)
     ) {
         // Background Arc
+        val radius = 115.dp.toPx()
         drawCircle(
             color = arcColor,
-            radius = 115.dp.toPx(),
+            radius = radius,
             alpha = .3f,
             style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
         )
         // Foreground Arc
+        val angle = 250.0f
         drawArc(
             color = arcColor,
             startAngle = 270f,
-            sweepAngle = angle.value,
+            sweepAngle = angle,
             topLeft = Offset(15.dp.toPx(), 15.dp.toPx()),
             useCenter = false,
             style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
             size = Size(230.dp.toPx(),230.dp.toPx())
         )
         // Paw icon
+        val startX = 120.dp.toPx()
+        val startY = 5.dp.toPx()
+        val endX = 120.dp.toPx()
+        val endY = 235.dp.toPx()
+
+        val convertSweepAngle = convertedSweepAngle(angle).toDouble()
+        var x = convertedRadiusX(radius, convertSweepAngle) + 5.dp.toPx()
+        var y = convertedRadiusY(radius, convertSweepAngle) + 5.dp.toPx()
+
         translate(
-            left = 120.dp.toPx(),
-            top = 5.dp.toPx()
+            left = x,
+            top = y
         ) {
             with(pawIcon) {
                 draw(
@@ -94,6 +92,44 @@ internal fun HumanYearsChart(
         }
         // calculate how to animate paw icon on the circle
         // text
+    }
+}
+
+fun convertedSweepAngle(sweepAngle: Float): Float {
+    return when {
+        sweepAngle >= 0f && sweepAngle <= 90f -> 90 - sweepAngle
+        sweepAngle >= 91f && sweepAngle <= 180f -> 360 - (sweepAngle - 90)
+        sweepAngle >= 181f && sweepAngle <= 270f -> 270 - (sweepAngle - 180)
+        sweepAngle >= 271f && sweepAngle <= 360f -> (180 - (sweepAngle - 270))
+        else -> 0f
+    }
+}
+fun convertedRadiusX(radius: Float, sweepAngle: Double): Float {
+   return if (sweepAngle >= 0f && sweepAngle <= 90f) {
+        radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
+    } else if (sweepAngle >= 91f && sweepAngle <= 180f) {
+       radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+    } else if (sweepAngle >= 181f && sweepAngle <= 270f) {
+      radius - radius * -kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+   } else if (sweepAngle >= 271f && sweepAngle <= 360f) {
+       radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
+   }
+   else {
+        0f
+   }
+}
+
+fun convertedRadiusY(radius: Float, sweepAngle: Double): Float {
+    return if (sweepAngle >= 0f && sweepAngle <= 90f) {
+        radius - radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
+    } else if (sweepAngle >= 91f && sweepAngle <= 180f) {
+        radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
+    } else if (sweepAngle >= 181f && sweepAngle <= 270f) {
+        radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
+    } else if (sweepAngle >= 271f && sweepAngle <= 360f) {
+        radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
+    } else {
+        0f
     }
 }
 
