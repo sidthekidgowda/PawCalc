@@ -60,7 +60,7 @@ internal fun HumanYearsChart(
             style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
         )
         // Foreground Arc
-        val angle = 250.0f
+        val angle = 360.0f
         drawArc(
             color = arcColor,
             startAngle = 270f,
@@ -100,7 +100,7 @@ fun convertedSweepAngle(sweepAngle: Float): Float {
         sweepAngle >= 0f && sweepAngle <= 90f -> 90 - sweepAngle
         sweepAngle >= 91f && sweepAngle <= 180f -> 360 - (sweepAngle - 90)
         sweepAngle >= 181f && sweepAngle <= 270f -> 270 - (sweepAngle - 180)
-        sweepAngle >= 271f && sweepAngle <= 360f -> (180 - (sweepAngle - 270))
+        sweepAngle >= 271f && sweepAngle <= 360f -> 180 - (sweepAngle - 270)
         else -> 0f
     }
 }
@@ -108,7 +108,7 @@ fun convertedRadiusX(radius: Float, sweepAngle: Double): Float {
    return if (sweepAngle >= 0f && sweepAngle <= 90f) {
         radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
     } else if (sweepAngle >= 91f && sweepAngle <= 180f) {
-       radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+       radius + radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle >= 181f && sweepAngle <= 270f) {
       radius - radius * -kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
    } else if (sweepAngle >= 271f && sweepAngle <= 360f) {
@@ -123,7 +123,7 @@ fun convertedRadiusY(radius: Float, sweepAngle: Double): Float {
     return if (sweepAngle >= 0f && sweepAngle <= 90f) {
         radius - radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle >= 91f && sweepAngle <= 180f) {
-        radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
+        radius + radius * - kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle >= 181f && sweepAngle <= 270f) {
         radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle >= 271f && sweepAngle <= 360f) {
