@@ -36,7 +36,7 @@ internal fun HumanYearsChart(
     // start at 1 to wrap paw icon
     val start = 1f
     // calculate where end is
-    val end = 180f
+    val end = 270f
     val angle = remember {
        Animatable(initialValue = start)
     }
@@ -99,11 +99,11 @@ fun convertedSweepAngle(sweepAngle: Float): Float {
 fun convertedRadiusX(radius: Float, sweepAngle: Double): Float {
    return if (sweepAngle >= 0f && sweepAngle <= 90f) {
         radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
-    } else if (sweepAngle >= 91f && sweepAngle <= 180f) {
+    } else if (sweepAngle > 90f && sweepAngle <= 180f) {
        radius + radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle >= 181f && sweepAngle <= 270f) {
+    } else if (sweepAngle > 180f && sweepAngle <= 270f) {
       radius - radius * -kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
-   } else if (sweepAngle >= 271f && sweepAngle <= 360f) {
+   } else if (sweepAngle > 270f && sweepAngle <= 360f) {
        radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
    }
    else {
@@ -114,11 +114,11 @@ fun convertedRadiusX(radius: Float, sweepAngle: Double): Float {
 fun convertedRadiusY(radius: Float, sweepAngle: Double): Float {
     return if (sweepAngle >= 0f && sweepAngle <= 90f) {
         radius - radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle >= 91f && sweepAngle <= 180f) {
+    } else if (sweepAngle > 90f && sweepAngle <= 180f) {
         radius + radius * - kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle >= 181f && sweepAngle <= 270f) {
+    } else if (sweepAngle > 180f && sweepAngle <= 270f) {
         radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle >= 271f && sweepAngle <= 360f) {
+    } else if (sweepAngle > 270f && sweepAngle <= 360f) {
         radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else {
         0f
