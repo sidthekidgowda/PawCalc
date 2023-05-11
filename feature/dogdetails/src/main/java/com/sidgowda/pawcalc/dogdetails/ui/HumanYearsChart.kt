@@ -36,7 +36,7 @@ internal fun HumanYearsChart(
     // start at 1 to wrap paw icon
     val start = 1f
     // calculate where end is
-    val end = 360f
+    val end = 180f
     val angle = remember {
        Animatable(initialValue = start)
     }
@@ -60,25 +60,19 @@ internal fun HumanYearsChart(
             style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
         )
         // Foreground Arc
-        val angle = 360.0f
         drawArc(
             color = arcColor,
             startAngle = 270f,
-            sweepAngle = angle,
+            sweepAngle = angle.value,
             topLeft = Offset(15.dp.toPx(), 15.dp.toPx()),
             useCenter = false,
             style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
             size = Size(230.dp.toPx(),230.dp.toPx())
         )
         // Paw icon
-        val startX = 120.dp.toPx()
-        val startY = 5.dp.toPx()
-        val endX = 120.dp.toPx()
-        val endY = 235.dp.toPx()
-
-        val convertSweepAngle = convertedSweepAngle(angle).toDouble()
-        var x = convertedRadiusX(radius, convertSweepAngle) + 5.dp.toPx()
-        var y = convertedRadiusY(radius, convertSweepAngle) + 5.dp.toPx()
+        val convertSweepAngle = convertedSweepAngle(angle.value).toDouble()
+        val x = convertedRadiusX(radius, convertSweepAngle) + 5.dp.toPx()
+        val y = convertedRadiusY(radius, convertSweepAngle) + 5.dp.toPx()
 
         translate(
             left = x,
@@ -90,8 +84,6 @@ internal fun HumanYearsChart(
                 )
             }
         }
-        // calculate how to animate paw icon on the circle
-        // text
     }
 }
 
