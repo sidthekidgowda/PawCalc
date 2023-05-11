@@ -108,7 +108,9 @@ internal fun DogDetailsScreen(
             dogYears = dog.dogYears
         )
         Spacer(modifier = Modifier.height(10.dp))
-        HumanYears(humanYears = dog.humanYears)
+        HumanYears(
+            humanYears = dog.humanYears
+        )
     }
 }
 
@@ -241,7 +243,20 @@ internal fun HumanYears(
     modifier: Modifier = Modifier,
     humanYears: Age
 ) {
-
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 40.dp),
+            text = "Human Years:",
+            style = PawCalcTheme.typography.body1,
+            color = PawCalcTheme.colors.contentColor()
+        )
+        HumanYearsChart()
+    }
 }
 //--------Preview-----------------------------------------------------------------------------------
 
