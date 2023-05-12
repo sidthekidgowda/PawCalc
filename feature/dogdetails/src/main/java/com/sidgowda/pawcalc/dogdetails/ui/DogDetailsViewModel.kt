@@ -107,14 +107,6 @@ class DogDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun startAnimation() {
-
-    }
-    private fun endAnimation() {
-
-    }
-
-
     private fun navigate(navigateEvent: NavigateEvent) {
         viewModelScope.launch {
             navigateEventFlow.emit(navigateEvent)
