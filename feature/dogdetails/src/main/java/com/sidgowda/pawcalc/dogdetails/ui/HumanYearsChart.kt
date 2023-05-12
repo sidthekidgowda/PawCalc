@@ -1,7 +1,5 @@
 package com.sidgowda.pawcalc.dogdetails.ui
 
-import android.graphics.Paint
-import android.graphics.Typeface
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -18,16 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.VectorPainter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.data.date.Age
-import com.sidgowda.pawcalc.dogdetails.R
+import com.sidgowda.pawcalc.data.date.daysInMonthToday
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.Orange500
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -45,48 +37,20 @@ internal fun HumanYearsChart(
         days = 25
     )
 ) {
-    val pawCalcImageVector = ImageVector.vectorResource(id = com.sidgowda.pawcalc.ui.R.drawable.ic_paw)
-    val pawIcon = rememberVectorPainter(
-        image = pawCalcImageVector
-    )
     val textMeasurer = rememberTextMeasurer()
     val daysColor = PawCalcTheme.colors.secondary
     val monthsColor = PawCalcTheme.colors.primary
     val yearsColor = Orange500
-    val labelTextSize = LocalContext.current.resources.getDimensionPixelSize(R.dimen.label_size)
-    val labelTextPaint = remember {
-        Paint().apply {
-            textSize = labelTextSize.toFloat()
-            textAlign = Paint.Align.CENTER
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-    }
     val textStyle = PawCalcTheme.typography.error
-    // diff = 2
-    // diff = 10
-    // diff = 8
-
-
-    // only animate for first session
-    // start at last seen position
-
-
-    // calculate where end is
+    val yearsRange = age.getRangeForYears()
+    val monthsRange = IntRange(0, 11)
+    val daysRange = IntRange(0, daysInMonthToday(days = age.days))
     val startYears = 1f
-    val startMonths = 1f
-    val startDays = 1f
-//
-//    val yearsStart = if (age.years > 7) {
-//        val remainder = age.years % 7
-//        IntRange()
-//    } else {
-//        IntRange(1, 7)
-//    }
-
-
-    val yearsEnd = 270f
-    val monthsEnd = 180f
-    val daysEnd = 90f
+    val startMonths = startYears
+    val startDays = startMonths
+    val animateToYearsEnd = (age.years - yearsRange.first)/ 7.toFloat() * 360
+    val animateToMonthsEnd = (age.months / 12.toFloat()) * 360
+    val animateToDaysEnd = (age.days / daysRange.endInclusive.toFloat()) * 360
     val daysAngle = remember {
        Animatable(initialValue = startYears)
     }
@@ -101,17 +65,17 @@ internal fun HumanYearsChart(
         delay(300)
         val animateJobs = listOf(
             launch {
-                daysAngle.animateTo(yearsEnd, animationSpec = tween(1_000))
+                daysAngle.animateTo(animateToDaysEnd, animationSpec = tween(1_000))
             },
             launch {
-                monthsAngle.animateTo(monthsEnd, animationSpec = tween(1_000))
+                monthsAngle.animateTo(animateToMonthsEnd, animationSpec = tween(1_000))
             },
             launch {
-                yearsAngle.animateTo(daysEnd, animationSpec = tween(1_000))
+                yearsAngle.animateTo(animateToYearsEnd, animationSpec = tween(1_000))
             }
         )
         animateJobs.joinAll()
-        // todod handle animation ended
+        // todo handle animation ended
     }
     Canvas(
         modifier = modifier
@@ -148,22 +112,14 @@ internal fun HumanYearsChart(
             sweepAngle = daysAngle.value,
             arcOffset = daysStartOffset.dp.toPx()
         )
-        // Paw icon
-//        drawPawIcon(
-//            pawIcon = pawIcon,
-//            sweepAngle = yearsAngle.value,
-//            radius = yearsRadius,
-//            offset = startPawIconOffset.dp.toPx()
-//        )
         drawTextOnCircle(
-            range = IntRange(1,31),
+            range = daysRange,
             textMeasurer = textMeasurer,
             radius = daysRadius,
             offsetX = digitOffsetX.dp.toPx(),
             offsetY = digitOffsetY.dp.toPx(),
             textStyle = textStyle
         )
-
         // Months Background Arc
         createProgressCircle(
             arcColor = monthsColor,
@@ -176,27 +132,13 @@ internal fun HumanYearsChart(
             arcOffset = monthsStartOffset.dp.toPx()
         )
         drawTextOnCircle(
-            range = IntRange(1,12),
+            range = monthsRange,
             textMeasurer = textMeasurer,
             radius = monthsRadius,
             offsetX = (digitOffsetX + strokeWidth).dp.toPx(),
             offsetY = (digitOffsetY + strokeWidth).dp.toPx(),
             textStyle = textStyle
         )
-//        drawPawIcon(
-//            pawIcon = pawIcon,
-//            sweepAngle = monthsAngle.value,
-//            radius = monthsRadius,
-//            offset = (startPawIconOffset+strokeWidth).dp.toPx()
-//        )
-//        drawTextOnCircle(
-//            range = IntRange(1,12),
-//            textMeasurer = textMeasurer,
-//            radius = monthsRadius,
-//            offset = (startPawIconOffset+strokeWidth).dp.toPx(),
-//            textStyle = textStyle
-//        )
-
         // Years Background Arc
         createProgressCircle(
             arcColor = yearsColor,
@@ -209,19 +151,13 @@ internal fun HumanYearsChart(
             arcOffset = yearsStartOffset.dp.toPx()
         )
         drawTextOnCircle(
-            range = IntRange(1,7),
+            range = yearsRange,
             textMeasurer = textMeasurer,
             radius = yearsRadius,
             offsetX = (digitOffsetX + strokeWidth*2).dp.toPx(),
             offsetY = (digitOffsetY + strokeWidth*2).dp.toPx(),
             textStyle = textStyle
         )
-//        drawPawIcon(
-//            pawIcon = pawIcon,
-//            sweepAngle = daysAngle.value,
-//            radius = daysRadius,
-//            offset = (startPawIconOffset+strokeWidth*2).dp.toPx()
-//        )
     }
 }
 internal fun DrawScope.createProgressCircle(
@@ -252,22 +188,6 @@ internal fun DrawScope.createProgressCircle(
     )
 }
 
-internal fun DrawScope.drawPawIcon(pawIcon: VectorPainter, sweepAngle: Float, radius: Float, offset: Float) {
-    val convertSweepAngle = convertedSweepAngle(sweepAngle).toDouble()
-    val x = convertedRadiusX(radius, convertSweepAngle) + offset
-    val y = convertedRadiusY(radius, convertSweepAngle) + offset
-    translate(
-        left = x,
-        top = y
-    ) {
-        with(pawIcon) {
-            draw(
-                size = Size(20.dp.toPx(), 20.dp.toPx())
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalTextApi::class)
 internal fun DrawScope.drawTextOnCircle(
     range: IntRange,
@@ -277,10 +197,10 @@ internal fun DrawScope.drawTextOnCircle(
     offsetY: Float,
     textStyle: TextStyle
 ) {
-    val max = range.endInclusive
+    val max = range.endInclusive - range.first + 1
     range.forEach {
-        val angle = (it/max.toFloat()) * 360
-        val digit = "${if (it == max) 0 else it}"
+        val angle = if (it == 0) 360.toFloat() else (it/max.toFloat()) * 360
+        val digit = "$it"
         val convertSweepAngle = convertedSweepAngle(angle).toDouble()
         val x = convertedRadiusX(radius, convertSweepAngle) + offsetX
         val y = convertedRadiusY(radius, convertSweepAngle) + offsetY
@@ -292,7 +212,6 @@ internal fun DrawScope.drawTextOnCircle(
         )
     }
 }
-
 
 @LightDarkPreview
 @Composable

@@ -24,6 +24,20 @@ internal enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, 
     }
 }
 
+fun daysInMonthToday(
+    today: String = dateFromLong(localDateTimeInMilliseconds()),
+    days: Int
+): Int {
+    val todaySplit = today.split("/")
+    val monthsToday = todaySplit.first().toInt()
+    val month = Month from monthsToday
+    return if (month.days < days) {
+        days + 1
+    } else {
+        month.days - 1
+    }
+}
+
 fun Age.toText(): String {
     val stringBuilder = StringBuilder()
     if (years > 0) {
@@ -42,16 +56,6 @@ fun Age.toText(): String {
         stringBuilder.append("${days}d")
     }
    return stringBuilder.toString()
-}
-
-fun daysInMonth(monthId: Int, yearsToday: Int): Int {
-    val month = Month from monthId
-    return if (month.hasLeapYear && yearsToday / 4 == 0 ) {
-        // edge case for feb having 29 days
-        month.days + 1
-    } else {
-        month.days
-    }
 }
 
 /**
@@ -110,7 +114,6 @@ fun String.toDogYears(
         totalDaysCount = 0
         val nextMonth = Month from startMonth.nextMonthId
         val daysBetweenBirthDates = if (nextMonth != endMonth) {
-            daysInMonth(startMonth.id, yearsToday)
             if (startMonth.hasLeapYear && yearsToday / 4 == 0 ) {
                 // edge case for feb having 29 days
                 startMonth.days + 1
