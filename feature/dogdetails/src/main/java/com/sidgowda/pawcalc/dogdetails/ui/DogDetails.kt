@@ -73,7 +73,9 @@ internal fun DogDetailsScreen(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = modifier.verticalScroll(scrollState),
+        modifier = modifier
+            .background(PawCalcTheme.colors.background)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -251,7 +253,12 @@ internal fun HumanYears(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 40.dp),
-            text = "Human Years:",
+            text = stringResource(
+                id = R.string.human_years_dog_details,
+                humanYears.years,
+                humanYears.months,
+                humanYears.days
+            ),
             style = PawCalcTheme.typography.body1,
             color = PawCalcTheme.colors.contentColor()
         )

@@ -104,14 +104,20 @@ class DogDetailsViewModel @Inject constructor(
             is DogDetailsEvent.StartAnimation -> {
 
             }
-            is DogDetailsEvent.EndAnimation -> {
-
-            }
+            is DogDetailsEvent.EndAnimation -> endAnimation()
             is DogDetailsEvent.OnNavigated -> _dogDetailsState.update {
                 it.copy(navigateEvent = null)
             }
         }
     }
+
+    private fun startAnimation() {
+
+    }
+    private fun endAnimation() {
+
+    }
+
 
     private fun navigate(navigateEvent: NavigateEvent) {
         viewModelScope.launch {
