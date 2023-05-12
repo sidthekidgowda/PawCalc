@@ -32,9 +32,9 @@ import kotlinx.coroutines.launch
 internal fun HumanYearsChart(
     modifier: Modifier = Modifier,
     age: Age = Age(
-        years = 10,
-        months = 6,
-        days = 25
+        years = 14,
+        months = 5,
+        days = 28
     )
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -48,9 +48,9 @@ internal fun HumanYearsChart(
     val startYears = 1f
     val startMonths = startYears
     val startDays = startMonths
-    val animateToYearsEnd = (age.years - yearsRange.first)/ 7.toFloat() * 360
-    val animateToMonthsEnd = (age.months / 12.toFloat()) * 360
-    val animateToDaysEnd = (age.days / daysRange.endInclusive.toFloat()) * 360
+    val animateToYearsEnd =  if (age.years == yearsRange.first) 1f else (age.years - yearsRange.first)/ 7.toFloat() * 360
+    val animateToMonthsEnd = if (age.months == monthsRange.first) 1f else (age.months / 12.toFloat()) * 360
+    val animateToDaysEnd = if (age.days == daysRange.first) 1f else (age.days / (daysRange.endInclusive + 1).toFloat()) * 360
     val daysAngle = remember {
        Animatable(initialValue = startYears)
     }
@@ -75,7 +75,6 @@ internal fun HumanYearsChart(
             }
         )
         animateJobs.joinAll()
-        // todo handle animation ended
     }
     Canvas(
         modifier = modifier
@@ -200,13 +199,12 @@ internal fun DrawScope.drawTextOnCircle(
     val max = range.endInclusive - range.first + 1
     range.forEach {
         val angle = if (it == range.first) 360.toFloat() else ((it-range.first)/max.toFloat()) * 360
-        val digit = "$it"
         val convertSweepAngle = convertedSweepAngle(angle).toDouble()
         val x = convertedRadiusX(radius, convertSweepAngle) + offsetX
         val y = convertedRadiusY(radius, convertSweepAngle) + offsetY
         drawText(
             textMeasurer = textMeasurer,
-            text = digit,
+            text = it.toString(),
             topLeft = Offset(x, y),
             style = textStyle
         )
