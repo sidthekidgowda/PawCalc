@@ -31,11 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun HumanYearsChart(
     modifier: Modifier = Modifier,
-    age: Age = Age(
-        years = 14,
-        months = 5,
-        days = 28
-    )
+    age: Age
 ) {
     val textMeasurer = rememberTextMeasurer()
     val daysColor = PawCalcTheme.colors.secondary
@@ -215,6 +211,12 @@ internal fun DrawScope.drawTextOnCircle(
 @Composable
 internal fun PreviewHumanYearsChart() {
     PawCalcTheme {
-        HumanYearsChart()
+        HumanYearsChart(
+            age = Age(
+                years = 18,
+                months = 5,
+                days = 28
+            )
+        )
     }
 }

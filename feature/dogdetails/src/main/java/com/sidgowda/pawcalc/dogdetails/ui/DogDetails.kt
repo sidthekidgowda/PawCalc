@@ -262,7 +262,9 @@ internal fun HumanYears(
             style = PawCalcTheme.typography.body1,
             color = PawCalcTheme.colors.contentColor()
         )
-        HumanYearsChart()
+        HumanYearsChart(
+            age = humanYears
+        )
     }
 }
 //--------Preview-----------------------------------------------------------------------------------

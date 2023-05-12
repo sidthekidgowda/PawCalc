@@ -101,10 +101,6 @@ class DogDetailsViewModel @Inject constructor(
     fun handleEvent(dogDetailsEvent: DogDetailsEvent) {
         when (dogDetailsEvent) {
             is DogDetailsEvent.EditDog -> navigate(NavigateEvent.EditDog(dogId))
-            is DogDetailsEvent.StartAnimation -> {
-
-            }
-            is DogDetailsEvent.EndAnimation -> endAnimation()
             is DogDetailsEvent.OnNavigated -> _dogDetailsState.update {
                 it.copy(navigateEvent = null)
             }

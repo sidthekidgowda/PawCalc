@@ -4,6 +4,5 @@ import com.sidgowda.pawcalc.data.dogs.model.Dog
 
 data class DogDetailsState(
     val dog: Dog? = null,
-    val navigateEvent: NavigateEvent? = null,
-    val shouldAnimate: Boolean? = false
+    val navigateEvent: NavigateEvent? = null
 )
