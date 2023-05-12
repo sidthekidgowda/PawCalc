@@ -44,6 +44,16 @@ fun Age.toText(): String {
    return stringBuilder.toString()
 }
 
+fun daysInMonth(monthId: Int, yearsToday: Int): Int {
+    val month = Month from monthId
+    return if (month.hasLeapYear && yearsToday / 4 == 0 ) {
+        // edge case for feb having 29 days
+        month.days + 1
+    } else {
+        month.days
+    }
+}
+
 /**
  * Algorithm to calculate number of years, months, and days from a birth date till today:
  * years = Today(years) - BirthDate(years), subtract 1 if birth month is past today's month
@@ -100,6 +110,7 @@ fun String.toDogYears(
         totalDaysCount = 0
         val nextMonth = Month from startMonth.nextMonthId
         val daysBetweenBirthDates = if (nextMonth != endMonth) {
+            daysInMonth(startMonth.id, yearsToday)
             if (startMonth.hasLeapYear && yearsToday / 4 == 0 ) {
                 // edge case for feb having 29 days
                 startMonth.days + 1

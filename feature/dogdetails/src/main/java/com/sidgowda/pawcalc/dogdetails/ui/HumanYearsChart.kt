@@ -12,37 +12,50 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun HumanYearsChart(
     modifier: Modifier = Modifier
 ) {
-    val arcColor = PawCalcTheme.colors.secondary
+    val yearsColor = PawCalcTheme.colors.secondary
+    val monthsColor = PawCalcTheme.colors.primary
     val pawCalcImageVector = ImageVector.vectorResource(id = com.sidgowda.pawcalc.ui.R.drawable.ic_paw)
     val pawIcon = rememberVectorPainter(
         image = pawCalcImageVector
     )
     // only animate for first session
-    // start at 1 to wrap paw icon
+    // start at last seen position
     val start = 1f
     // calculate where end is
-    val end = 270f
-    val angle = remember {
+    val yearsEnd = 270f
+    val yearsAngle = remember {
        Animatable(initialValue = start)
     }
-    LaunchedEffect(key1 = angle) {
+    val monthsAngle = remember {
+        Animatable(initialValue = start)
+    }
+    val daysAngle = remember {
+        Animatable(initialValue = start)
+    }
+    LaunchedEffect(key1 = yearsAngle) {
         launch {
-            angle.animateTo(end, animationSpec = tween(1_000))
+            // add delay to allow compose to load ui
+            delay(300)
+            yearsAngle.animateTo(yearsEnd, animationSpec = tween(1_000))
         }
     }
     Canvas(
@@ -51,44 +64,105 @@ internal fun HumanYearsChart(
             .size(300.dp)
             .padding(20.dp)
     ) {
-        // Background Arc
-        val radius = 115.dp.toPx()
-        drawCircle(
-            color = arcColor,
-            radius = radius,
-            alpha = .3f,
-            style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
-        )
-        // Foreground Arc
-        drawArc(
-            color = arcColor,
-            startAngle = 270f,
-            sweepAngle = angle.value,
-            topLeft = Offset(15.dp.toPx(), 15.dp.toPx()),
-            useCenter = false,
-            style = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
-            size = Size(230.dp.toPx(),230.dp.toPx())
+        // define variables
+        val arcStroke = Stroke(30.dp.toPx(), cap = StrokeCap.Round)
+        val startAngle = 270f
+        val radius = 115
+        val alpha = .3f
+        val yearsRadius = radius.dp.toPx()
+        val monthsRadius = (radius - 30).dp.toPx()
+        val daysRadius = (radius - 60).dp.toPx()
+        val yearsArcSize = Size(yearsRadius*2,yearsRadius*2)
+        val monthsArcSize = Size(monthsRadius*2, monthsRadius*2)
+        val daysArcSize = Size(daysRadius*2, daysRadius*2)
+        val yearsStartOffset = 15
+        val monthsStartOffset = yearsStartOffset + 30
+        val daysStartOffset = monthsStartOffset + 30
+
+        // Years Progress Circle
+        createProgressCircle(
+            arcColor = yearsColor,
+            radius = yearsRadius,
+            stroke = Stroke(30.dp.toPx(), cap = StrokeCap.Round),
+            alpha = alpha,
+            startAngle = startAngle,
+            arcSize = yearsArcSize,
+            sweepAngle = yearsAngle.value,
+            arcOffset = yearsStartOffset.dp.toPx()
         )
         // Paw icon
-        val convertSweepAngle = convertedSweepAngle(angle.value).toDouble()
-        val x = convertedRadiusX(radius, convertSweepAngle) + 5.dp.toPx()
-        val y = convertedRadiusY(radius, convertSweepAngle) + 5.dp.toPx()
-        translate(
-            left = x,
-            top = y
-        ) {
-            with(pawIcon) {
-                draw(
-                    size = Size(20.dp.toPx(), 20.dp.toPx())
-                )
-            }
+        drawPawIcon(
+            pawIcon = pawIcon,
+            sweepAngle = yearsAngle.value,
+            radius = yearsRadius
+        )
+
+        // Months Background Arc
+        createProgressCircle(
+            arcColor = monthsColor,
+            radius = monthsRadius,
+            stroke = arcStroke,
+            alpha = alpha,
+            startAngle = startAngle,
+            arcSize = monthsArcSize,
+            sweepAngle = 270f,
+            arcOffset = monthsStartOffset.dp.toPx()
+        )
+        drawPawIcon(
+            pawIcon = pawIcon,
+            sweepAngle = monthsAngle.value,
+            radius = monthsRadius
+        )
+    }
+}
+
+internal fun DrawScope.createProgressCircle(
+    arcColor: Color,
+    radius: Float,
+    alpha: Float,
+    stroke: Stroke,
+    startAngle: Float,
+    sweepAngle: Float,
+    arcSize: Size,
+    arcOffset: Float
+) {
+    drawCircle(
+        color = arcColor,
+        radius = radius,
+        alpha = alpha,
+        style = stroke,
+    )
+    // Foreground Arc
+    drawArc(
+        color = arcColor,
+        startAngle = startAngle,
+        sweepAngle = sweepAngle,
+        topLeft = Offset(arcOffset, arcOffset),
+        useCenter = false,
+        style = stroke,
+        size = arcSize
+    )
+}
+
+internal fun DrawScope.drawPawIcon(pawIcon: VectorPainter, sweepAngle: Float, radius: Float) {
+    val convertSweepAngle = convertedSweepAngle(sweepAngle).toDouble()
+    val x = convertedRadiusX(radius, convertSweepAngle) + 5.dp.toPx()
+    val y = convertedRadiusY(radius, convertSweepAngle) + 5.dp.toPx()
+    translate(
+        left = x,
+        top = y
+    ) {
+        with(pawIcon) {
+            draw(
+                size = Size(20.dp.toPx(), 20.dp.toPx())
+            )
         }
     }
 }
 
 @LightDarkPreview
 @Composable
-fun PreviewHumanYearsChart() {
+internal fun PreviewHumanYearsChart() {
     PawCalcTheme {
         HumanYearsChart()
     }
