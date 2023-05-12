@@ -20,6 +20,8 @@ val Grey600 = Color(0xFF646868)
 val Grey500 = Color(0xFF8C9090)
 val Grey900 = Color(0xFF121212) // dark background and surface
 
+val Orange500 = Color(0xFFEA8426)
+
 interface PawCalcColorScheme {
     val primary: Color
     val onPrimary: Color
