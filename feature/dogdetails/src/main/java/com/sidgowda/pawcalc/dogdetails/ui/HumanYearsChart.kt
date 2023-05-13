@@ -80,9 +80,9 @@ internal fun HumanYearsChart(
     val startYears = 1f
     val startMonths = startYears
     val startDays = startMonths
-    val animateToYearsEnd =  if (age.years == yearsRange.first) 1f else (age.years - yearsRange.first)/ 7.toFloat() * 360
-    val animateToMonthsEnd = if (age.months == monthsRange.first) 1f else (age.months / 12.toFloat()) * 360
-    val animateToDaysEnd = if (age.days == daysRange.first) 1f else (age.days / (daysRange.endInclusive + 1).toFloat()) * 360
+    val animateToYearsEnd =  if (age.years == yearsRange.first) startYears else (age.years - yearsRange.first)/ 7.toFloat() * 360
+    val animateToMonthsEnd = if (age.months == monthsRange.first) startMonths else (age.months / 12.toFloat()) * 360
+    val animateToDaysEnd = if (age.days == daysRange.first) startDays else (age.days / (daysRange.endInclusive + 1).toFloat()) * 360
     val daysAngle = remember {
        Animatable(initialValue = startYears)
     }
