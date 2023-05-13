@@ -4,11 +4,13 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -16,16 +18,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.sidgowda.pawcalc.data.date.Age
 import com.sidgowda.pawcalc.data.date.daysInMonthToday
+import com.sidgowda.pawcalc.dogdetails.model.LegendType
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.Orange500
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+
+@Composable
+internal fun HumanYearsChartWithLegend(
+    modifier: Modifier = Modifier,
+    age: Age
+) {
+    ConstraintLayout(
+        modifier = modifier
+            .background(PawCalcTheme.colors.background)
+            .fillMaxWidth()
+    ) {
+        val (legend, chart)=  createRefs()
+        Legend(
+            modifier = Modifier
+                .constrainAs(legend) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                }
+                .padding(top = 20.dp, start = 10.dp)
+        )
+        HumanYearsChart(
+            modifier = Modifier.constrainAs(chart) {
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+            },
+            age = age
+        )
+    }
+}
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -207,11 +244,114 @@ internal fun DrawScope.drawTextOnCircle(
     }
 }
 
+@Composable
+internal fun Legend(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        LegendType.values().forEach { legend ->
+            LegendItem(legendType = legend)
+        }
+    }
+}
+
+@Composable
+internal fun LegendItem(
+    modifier: Modifier = Modifier,
+    legendType: LegendType
+) {
+    Row(
+        modifier = modifier
+            .padding(6.dp)
+            .semantics(mergeDescendants = true) { },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(12.dp)
+                .background(
+                    if (MaterialTheme.colors.isLight)
+                        legendType.lightThemeColor else legendType.darkThemeColor
+                )
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(id = legendType.stringId),
+            color = PawCalcTheme.colors.iconTint(),
+            style = PawCalcTheme.typography.error.copy(fontWeight = FontWeight.Normal)
+        )
+    }
+}
+
+
+//-------Preview------------------------------------------------------------------------------------
+
 @LightDarkPreview
 @Composable
 internal fun PreviewHumanYearsChart() {
     PawCalcTheme {
         HumanYearsChart(
+            age = Age(
+                years = 18,
+                months = 5,
+                days = 28
+            )
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+internal fun PreviewLegendItemYears() {
+    PawCalcTheme {
+        LegendItem(
+            modifier = Modifier.background(PawCalcTheme.colors.surface),
+            legendType = LegendType.YEARS
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+internal fun PreviewLegendItemDays() {
+    PawCalcTheme {
+        LegendItem(
+            modifier = Modifier.background(PawCalcTheme.colors.surface),
+            legendType = LegendType.DAYS
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+internal fun PreviewLegendItemMonths() {
+    PawCalcTheme {
+        LegendItem(
+            modifier = Modifier.background(PawCalcTheme.colors.surface),
+            legendType = LegendType.MONTHS
+        )
+    }
+}
+
+@LightDarkPreview
+@Composable
+internal fun PreviewLegend() {
+    PawCalcTheme {
+        Legend(
+            modifier = Modifier.background(PawCalcTheme.colors.surface)
+        )
+    }
+}
+
+
+@LightDarkPreview
+@Composable
+internal fun PreviewHumanChartWithLegend() {
+    PawCalcTheme {
+        HumanYearsChartWithLegend(
+            modifier = Modifier.fillMaxWidth(),
             age = Age(
                 years = 18,
                 months = 5,

@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
+import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.onboarding.TestTags.TAG_ADD_DOG_BUTTON
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import dagger.hilt.android.testing.BindValue
@@ -112,7 +113,7 @@ class NavigationTest {
                 R.string.cd_settings_action_icon
             )
         ).performClick()
-        composeTestRule.onNodeWithTag(SETTINGS_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
