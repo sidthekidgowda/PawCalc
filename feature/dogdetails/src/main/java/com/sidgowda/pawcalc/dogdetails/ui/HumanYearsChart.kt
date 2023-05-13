@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.sidgowda.pawcalc.data.date.Age
@@ -45,14 +44,6 @@ internal fun HumanYearsChartWithLegend(
             .fillMaxWidth()
     ) {
         val (legend, chart)=  createRefs()
-        Legend(
-            modifier = Modifier
-                .constrainAs(legend) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                }
-                .padding(top = 20.dp, start = 10.dp)
-        )
         HumanYearsChart(
             modifier = Modifier.constrainAs(chart) {
                 start.linkTo(parent.start)
@@ -60,6 +51,14 @@ internal fun HumanYearsChartWithLegend(
                 end.linkTo(parent.end)
             },
             age = age
+        )
+        Legend(
+            modifier = Modifier
+                .constrainAs(legend) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                }
+                .padding(top = 20.dp, start = 20.dp)
         )
     }
 }
@@ -280,7 +279,7 @@ internal fun LegendItem(
         Text(
             text = stringResource(id = legendType.stringId),
             color = PawCalcTheme.colors.iconTint(),
-            style = PawCalcTheme.typography.error.copy(fontWeight = FontWeight.Normal)
+            style = PawCalcTheme.typography.error
         )
     }
 }
