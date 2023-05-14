@@ -17,11 +17,11 @@ import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
 import com.sidgowda.pawcalc.dogdetails.ui.DogDetailsViewModel
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
+import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.collections.shouldContainExactly
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -46,6 +46,7 @@ class DogDetailsViewModelTest {
     private lateinit var computationDispatcher: CoroutineDispatcher
     private lateinit var ioDispatcher: CoroutineDispatcher
     private lateinit var getDogForIdUseCase: GetDogForIdUseCase
+    private lateinit var updateDogUseCase: UpdateDogUseCase
     private lateinit var settingsUseCase: GetSettingsUseCase
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var viewModel: DogDetailsViewModel
@@ -57,6 +58,7 @@ class DogDetailsViewModelTest {
         ioDispatcher = StandardTestDispatcher()
         computationDispatcher = StandardTestDispatcher()
         getDogForIdUseCase = mockk()
+        updateDogUseCase = mockk()
         settingsUseCase = mockk()
         savedStateHandle = mockk(relaxed = true)
         scope = TestScope(computationDispatcher)
@@ -64,6 +66,8 @@ class DogDetailsViewModelTest {
         dogFlow = MutableSharedFlow()
         every { settingsUseCase.invoke() } returns settingsFlow
         every { getDogForIdUseCase.invoke(any()) } returns dogFlow
+        coEvery { updateDogUseCase.invoke(any()) } just runs
+
     }
 
     @Test
@@ -368,10 +372,55 @@ class DogDetailsViewModelTest {
         )
     }
 
+    @Test
+    fun `when event OnAnimationFinished is called for Dog2, then Dog2 shouldAnimate will be updated to false`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.OnAnimationFinished).also { advanceUntilIdle() }
+        dogFlow.emit(DOG_TWO.copy(shouldAnimate = false)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_TWO
+            ),
+            DogDetailsState(
+                dog = DOG_TWO.copy(shouldAnimate = false),
+            )
+        )
+    }
+
+    @Test
+    fun `when Dog 1 birthdate is changed after animation has finished, then shouldAnimate will be updated to true`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 1
+        initializeViewModel()
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
+        viewModel.handleEvent(DogDetailsEvent.OnAnimationFinished).also { advanceUntilIdle() }
+        dogFlow.emit(DOG_ONE.copy(shouldAnimate = false)).also { advanceUntilIdle() }
+        dogFlow.emit(DOG_ONE.copy(birthDate = "7/28/2022", shouldAnimate = true)).also { advanceUntilIdle() }
+
+        history shouldContainExactly listOf(
+            INITIAL_STATE,
+            DogDetailsState(
+                dog = DOG_ONE
+            ),
+            DogDetailsState(
+                dog = DOG_ONE.copy(shouldAnimate = false),
+            ),
+            DogDetailsState(
+                dog = DOG_ONE.copy(shouldAnimate = true, birthDate = "7/28/2022")
+            )
+        )
+    }
+
     private fun initializeViewModel() {
         viewModel = DogDetailsViewModel(
             getDogForIdUseCase = getDogForIdUseCase,
             settingsUseCase = settingsUseCase,
+            updateDogUseCase = updateDogUseCase,
             savedStateHandle = savedStateHandle,
             computationDispatcher = computationDispatcher
         )
@@ -395,7 +444,8 @@ class DogDetailsViewModelTest {
             dogYears = "7/30/2019".toDogYears(),
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         private val DOG_TWO = Dog(
             id = 2,
@@ -406,7 +456,8 @@ class DogDetailsViewModelTest {
             dogYears = "4/15/2019".toDogYears(),
             humanYears = "4/15/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         private val DOG_THREE = Dog(
             id = 3,
@@ -417,7 +468,8 @@ class DogDetailsViewModelTest {
             dogYears = "12/1/2022".toDogYears(),
             humanYears = "12/1/2022".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         private val DEFAULT_SETTINGS = Settings(
             weightFormat = WeightFormat.POUNDS,
