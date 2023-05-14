@@ -11,6 +11,7 @@ import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
+import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,6 +24,7 @@ import javax.inject.Named
 class DogDetailsViewModel @Inject constructor(
     private val getDogForIdUseCase: GetDogForIdUseCase,
     private val settingsUseCase: GetSettingsUseCase,
+    private val updateDogUseCase: UpdateDogUseCase,
     savedStateHandle: SavedStateHandle,
     @Named("computation") private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -46,6 +48,7 @@ class DogDetailsViewModel @Inject constructor(
     private fun fetchDogForId() {
         viewModelScope.launch(computationDispatcher) {
             // if user has edited dog, we need to collect to get most recent updates on the dog
+            // as well as handling when animation has finished.
             getDogForIdUseCase(id = dogId).collect { dog ->
                 _dogDetailsState.update {
                     it.copy(dog = dog)
@@ -101,11 +104,23 @@ class DogDetailsViewModel @Inject constructor(
     fun handleEvent(dogDetailsEvent: DogDetailsEvent) {
         when (dogDetailsEvent) {
             is DogDetailsEvent.EditDog -> navigate(NavigateEvent.EditDog(dogId))
+            is DogDetailsEvent.OnAnimationFinished -> onAnimationFinished()
             is DogDetailsEvent.OnNavigated -> _dogDetailsState.update {
                 it.copy(navigateEvent = null)
             }
         }
     }
+
+    private fun onAnimationFinished() {
+        viewModelScope.launch(computationDispatcher) {
+            dogDetailsState.value.dog?.let {
+                updateDogUseCase(
+                    it.copy(shouldAnimate = false)
+                )
+            }
+        }
+    }
+
 
     private fun navigate(navigateEvent: NavigateEvent) {
         viewModelScope.launch {

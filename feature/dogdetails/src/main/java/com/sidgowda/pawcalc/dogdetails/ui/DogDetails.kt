@@ -111,7 +111,11 @@ internal fun DogDetailsScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
         HumanYears(
-            humanYears = dog.humanYears
+            humanYears = dog.humanYears,
+            shouldAnimate = dog.shouldAnimate,
+            onAnimationFinished = {
+                handleEvent(DogDetailsEvent.OnAnimationFinished)
+            }
         )
     }
 }
@@ -243,27 +247,25 @@ internal fun DogYears(
 @Composable
 internal fun HumanYears(
     modifier: Modifier = Modifier,
-    humanYears: Age
+    humanYears: Age,
+    shouldAnimate: Boolean,
+    onAnimationFinished: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 40.dp),
             text = stringResource(
-                id = R.string.human_years_dog_details,
-                humanYears.years,
-                humanYears.months,
-                humanYears.days
+                id = R.string.human_years_dog_details
             ),
-            style = PawCalcTheme.typography.body1,
+            style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
         HumanYearsChartWithLegend(
-            age = humanYears
+            age = humanYears,
+            shouldAnimate = shouldAnimate,
+            onAnimationFinished = onAnimationFinished
         )
     }
 }
@@ -284,7 +286,8 @@ fun PreviewDogDetailsContent() {
                 birthDate = "7/30/2019",
                 dogYears = "7/30/2019".toDogYears(),
                 dateFormat = DateFormat.AMERICAN,
-                humanYears = "7/30/2019".toHumanYears()
+                humanYears = "7/30/2019".toHumanYears(),
+                shouldAnimate = false
             ),
             handleEvent = {}
         )

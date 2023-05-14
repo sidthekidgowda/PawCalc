@@ -4,7 +4,7 @@
     <string name="weight_dog_details">Weight: %1$s %2$s</string>
     <string name="birth_date_dog_details">Birth Date: %s</string>
     <string name="dog_years_dog_details">Dog Years: %1$d years %2$d months %3$d days</string>
-    <string name="human_years_dog_details">Human Years: %1$d years %2$d months %3$d days</string>
+    <string name="human_years_dog_details">Human Years</string>
     <string name="legend_years">Years</string>
     <string name="legend_months">Months</string>
     <string name="legend_days">Days</string>

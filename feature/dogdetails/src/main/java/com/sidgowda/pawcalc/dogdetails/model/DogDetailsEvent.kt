@@ -5,4 +5,6 @@ sealed class DogDetailsEvent {
     object EditDog : DogDetailsEvent()
 
     object OnNavigated : DogDetailsEvent()
+
+    object OnAnimationFinished : DogDetailsEvent()
 }

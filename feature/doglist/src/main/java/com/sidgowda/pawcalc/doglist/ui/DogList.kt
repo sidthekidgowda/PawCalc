@@ -522,7 +522,8 @@ fun PreviewDogListItemNotLoading() {
                 dogYears = "7/30/2019".toDogYears(),
                 humanYears = "7/30/2019".toHumanYears(),
                 weightFormat = WeightFormat.POUNDS,
-                dateFormat = DateFormat.AMERICAN
+                dateFormat = DateFormat.AMERICAN,
+                shouldAnimate = true
             )
         )
     }

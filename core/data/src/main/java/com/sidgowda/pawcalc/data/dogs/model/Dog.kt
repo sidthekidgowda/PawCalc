@@ -17,6 +17,7 @@ data class Dog(
     val birthDate: String,
     val dateFormat: DateFormat,
     val dogYears: Age,
-    val humanYears: Age
+    val humanYears: Age,
+    val shouldAnimate: Boolean
 ) : Parcelable
 

@@ -15,7 +15,8 @@ fun DogEntity.toDog(): Dog {
         birthDate = birthDate,
         dateFormat = dateFormat,
         dogYears = birthDate.toDogYears(dateFormat = dateFormat),
-        humanYears = birthDate.toHumanYears(dateFormat = dateFormat)
+        humanYears = birthDate.toHumanYears(dateFormat = dateFormat),
+        shouldAnimate = true
     )
 }
 

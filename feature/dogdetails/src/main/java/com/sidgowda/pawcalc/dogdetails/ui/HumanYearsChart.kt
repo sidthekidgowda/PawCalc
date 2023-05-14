@@ -36,13 +36,10 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun HumanYearsChartWithLegend(
     modifier: Modifier = Modifier,
-    age: Age
+    age: Age,
+    shouldAnimate: Boolean,
+    onAnimationFinished: () -> Unit
 ) {
-    val newAge = Age(
-        years = 17,
-        months = 2,
-        days = 20
-    )
     ConstraintLayout(
         modifier = modifier
             .background(PawCalcTheme.colors.background)
@@ -55,7 +52,9 @@ internal fun HumanYearsChartWithLegend(
                 top.linkTo(parent.top)
                 end.linkTo(parent.end)
             },
-            age = newAge
+            age = age,
+            shouldAnimate = shouldAnimate,
+            onAnimationFinished = onAnimationFinished
         )
         Legend(
             modifier = Modifier
@@ -73,7 +72,8 @@ internal fun HumanYearsChartWithLegend(
 internal fun HumanYearsChart(
     modifier: Modifier = Modifier,
     age: Age,
-    shouldAnimate: Boolean = false
+    shouldAnimate: Boolean,
+    onAnimationFinished: () -> Unit
 ) {
     val textMeasurer = rememberTextMeasurer()
     val daysColor = PawCalcTheme.colors.secondary
@@ -126,6 +126,8 @@ internal fun HumanYearsChart(
                 }
             )
             animateJobs.joinAll()
+            // notify animation has finished
+            onAnimationFinished()
         }
     }
     Canvas(
@@ -316,7 +318,9 @@ internal fun PreviewHumanYearsChart() {
                 years = 18,
                 months = 5,
                 days = 28
-            )
+            ),
+            shouldAnimate = false,
+            onAnimationFinished = {}
         )
     }
 }
@@ -375,7 +379,9 @@ internal fun PreviewHumanChartWithLegend() {
                 years = 18,
                 months = 5,
                 days = 28
-            )
+            ),
+            shouldAnimate = false,
+            onAnimationFinished = {}
         )
     }
 }
