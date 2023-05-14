@@ -122,7 +122,9 @@ class EditDogViewModel @Inject constructor(
                     dateFormat = input.dateFormat,
                     profilePic = input.profilePic!!,
                     dogYears = input.birthDate.toDogYears(dateFormat = input.dateFormat),
-                    humanYears = input.birthDate.toHumanYears(dateFormat = input.dateFormat)
+                    humanYears = input.birthDate.toHumanYears(dateFormat = input.dateFormat),
+                    // if age changed, we should animate
+                    shouldAnimate = oldDog.dogYears != input.birthDate.toDogYears(dateFormat = input.dateFormat)
                 )
             }?.let { updatedDog ->
                 updateDogUseCase(updatedDog)
