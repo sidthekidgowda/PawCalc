@@ -431,8 +431,7 @@ class EditDogViewModelTest {
         initializeViewModel().also { advanceUntilIdle() }
         val updatedDog = updatedDog()
 
-        viewModel.handleEvent(DogInputEvent.SavingInfo)
-        advanceUntilIdle()
+        viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
 
         coVerify { updateDogUseCase.invoke(updatedDog) }
         capturedDog.captured shouldBe updatedDog
@@ -697,6 +696,26 @@ class EditDogViewModelTest {
         capturedDog.captured shouldBe expectedDog
     }
 
+    @Test
+    fun `when birthdate is changed and dog 2 is saved then shouldAnimate should be set to true`() = scope.runTest {
+        every { savedStateHandle.get<Int>("dogId") } returns 2
+        initializeViewModel().also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        updateDate("7/15/2019").also { advanceUntilIdle() }
+        viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
+
+        val expectedDog = DOG_TWO.copy(
+            birthDate = "7/15/2019",
+            shouldAnimate = true,
+            dogYears = "7/15/2019".toDogYears(dateFormat = DateFormat.AMERICAN),
+            humanYears = "7/15/2019".toHumanYears(dateFormat = DateFormat.AMERICAN)
+        )
+        
+        coVerify { updateDogUseCase.invoke(expectedDog) }
+        capturedDog.captured shouldBe expectedDog
+
+    }
+
     private fun updateDate(date: String) {
         viewModel.handleEvent(DogInputEvent.BirthDateChanged(date))
         viewModel.handleEvent(DogInputEvent.BirthDateDialogShown)
@@ -718,7 +737,8 @@ class EditDogViewModelTest {
             dogYears = "7/30/2019".toDogYears(),
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
     }
 
@@ -751,7 +771,8 @@ class EditDogViewModelTest {
             dogYears = "7/30/2019".toDogYears(),
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = false
         )
         private val DOG_TWO = Dog(
             id = 2,
@@ -762,7 +783,8 @@ class EditDogViewModelTest {
             dogYears = "4/15/2019".toDogYears(),
             humanYears = "4/15/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = false
         )
         private val DOG_THREE = Dog(
             id = 3,
@@ -773,7 +795,8 @@ class EditDogViewModelTest {
             dogYears = "12/1/2022".toDogYears(),
             humanYears = "12/1/2022".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = false
         )
         private val INITIAL_STATE = DogInputState()
         private val DEFAULT_SETTINGS = Settings(
