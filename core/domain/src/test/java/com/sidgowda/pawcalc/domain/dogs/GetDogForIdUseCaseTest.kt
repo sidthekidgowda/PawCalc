@@ -189,7 +189,8 @@ class GetDogForIdUseCaseTest {
             dogYears =  "12/20/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
 
         val DOG_TWO = Dog(
@@ -201,7 +202,8 @@ class GetDogForIdUseCaseTest {
             dogYears =  "12/2/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
 
         val DOG_THREE = Dog(
@@ -213,7 +215,8 @@ class GetDogForIdUseCaseTest {
             dogYears =  "12/20/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
     }
 

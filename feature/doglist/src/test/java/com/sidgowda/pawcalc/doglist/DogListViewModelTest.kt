@@ -764,7 +764,8 @@ class DogListViewModelTest {
             dogYears = "12/22/2021".toDogYears(),
             humanYears = "12/22/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DOG_TWO = Dog(
             id = 2,
@@ -775,7 +776,8 @@ class DogListViewModelTest {
             dogYears = "12/12/2021".toDogYears(),
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DOG_THREE = Dog(
             id = 3,
@@ -786,7 +788,8 @@ class DogListViewModelTest {
             dogYears = "12/12/2021".toDogYears(),
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
     }
 }

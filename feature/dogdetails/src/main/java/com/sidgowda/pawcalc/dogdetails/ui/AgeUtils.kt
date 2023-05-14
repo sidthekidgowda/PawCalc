@@ -2,7 +2,6 @@ package com.sidgowda.pawcalc.dogdetails.ui
 
 import com.sidgowda.pawcalc.data.date.Age
 
-
 fun Age.getRangeForYears(): IntRange {
     return if (years < 7) {
          IntRange(0, 6)

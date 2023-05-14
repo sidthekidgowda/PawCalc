@@ -202,9 +202,9 @@ internal fun DogWeight(
     weight: Double,
     weightFormat: WeightFormat
 ) {
-    val weightFormat = if (weightFormat == WeightFormat.POUNDS) "lb" else "kg"
+    val weightUnit = if (weightFormat == WeightFormat.POUNDS) "lb" else "kg"
     val weightAsText =
-        stringResource(id = R.string.weight_dog_details, weight.formattedToString(), weightFormat)
+        stringResource(id = R.string.weight_dog_details, weight.formattedToString(), weightUnit)
     Text(
         modifier = modifier,
         text = weightAsText,
