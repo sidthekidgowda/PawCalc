@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.test.fakes
 
 import android.net.Uri
 import com.sidgowda.pawcalc.common.settings.DateFormat

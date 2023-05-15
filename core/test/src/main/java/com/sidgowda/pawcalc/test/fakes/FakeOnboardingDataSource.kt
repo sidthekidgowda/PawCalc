@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.test.fakes
 
 import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataSource
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState

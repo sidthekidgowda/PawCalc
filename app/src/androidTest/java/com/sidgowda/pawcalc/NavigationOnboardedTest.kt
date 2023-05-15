@@ -15,6 +15,7 @@ import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import com.sidgowda.pawcalc.test.TestTags
+import com.sidgowda.pawcalc.test.fakes.FakeOnboardingDataSource
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

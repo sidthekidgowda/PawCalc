@@ -21,6 +21,7 @@ import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import com.sidgowda.pawcalc.test.TestTags.Onboarding.TAG_ADD_DOG_BUTTON
+import com.sidgowda.pawcalc.test.fakes.FakeOnboardingDataSource
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
