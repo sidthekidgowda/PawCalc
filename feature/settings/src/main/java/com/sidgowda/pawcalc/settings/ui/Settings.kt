@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -21,6 +22,7 @@ import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.settings.R
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
 import com.sidgowda.pawcalc.ui.theme.Grey200
@@ -46,7 +48,7 @@ internal fun SettingsScreen(
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.testTag(SETTINGS_SCREEN_ROUTE),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ChooseDate(

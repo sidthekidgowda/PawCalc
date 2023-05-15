@@ -71,6 +71,7 @@ dependencies {
     implementation(projects.common.navigation)
     implementation(projects.common.settings)
     implementation(projects.common.ui)
+    implementation(projects.common.test)
     implementation(projects.core.data)
     implementation(projects.core.db)
     implementation(projects.core.domain)

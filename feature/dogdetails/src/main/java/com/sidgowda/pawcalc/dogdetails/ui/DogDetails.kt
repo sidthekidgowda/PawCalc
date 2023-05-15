@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +36,7 @@ import com.sidgowda.pawcalc.data.dogs.model.formattedToString
 import com.sidgowda.pawcalc.dogdetails.R
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
+import com.sidgowda.pawcalc.navigation.DOG_DETAILS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
@@ -58,7 +60,8 @@ internal fun DogDetails(
         DogDetailsScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PawCalcTheme.colors.background),
+                .background(PawCalcTheme.colors.background)
+                .testTag(DOG_DETAILS_SCREEN_ROUTE),
             dog = dog,
             handleEvent = viewModel::handleEvent
         )

@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -54,6 +55,7 @@ import com.sidgowda.pawcalc.doglist.R
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
+import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
@@ -127,7 +129,7 @@ internal fun OnboardedDogList(
         }
     }
     DogListScreen(
-        modifier = modifier,
+        modifier = modifier.testTag(DOG_LIST_SCREEN_ROUTE),
         dogListState = dogListState,
         handleEvent = viewModel::handleEvent
     )

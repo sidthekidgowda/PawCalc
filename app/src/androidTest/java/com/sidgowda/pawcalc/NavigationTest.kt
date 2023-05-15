@@ -10,36 +10,33 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.sidgowda.pawcalc.db.di.DbModule
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
-import com.sidgowda.pawcalc.onboarding.TestTags.TAG_ADD_DOG_BUTTON
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
-import dagger.hilt.android.testing.BindValue
+import com.sidgowda.pawcalc.test.TestTags.Onboarding.TAG_ADD_DOG_BUTTON
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import javax.inject.Inject
 import javax.inject.Named
 
 @RunWith(AndroidJUnit4::class)
+@UninstallModules(DbModule::class)
 @HiltAndroidTest
 class NavigationTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
     @get:Rule(order = 1)
-    val tmpFolder: TemporaryFolder = TemporaryFolder.builder().assureDeletion().build()
-
-    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<PawCalcActivity>()
 
     @Inject
@@ -61,6 +58,7 @@ class NavigationTest {
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(ioIdlingDispatcher)
         IdlingRegistry.getInstance().unregister(computationIdlingDispatcher)
+        FakeOnboardingDataSource.reset()
     }
 
     @Test
@@ -92,6 +90,7 @@ class NavigationTest {
                 )
             ).performClick()
 
+            // todo fix onboarding data
             onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
         }
     }
@@ -100,6 +99,7 @@ class NavigationTest {
     fun Clicking_Back_Button_On_New_Dog_Navigates_To_Dog_List() {
         composeTestRule.onNodeWithTag(TAG_ADD_DOG_BUTTON).performClick()
         pressBack()
+        // todo fix onboarding data
         composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
     }
 
