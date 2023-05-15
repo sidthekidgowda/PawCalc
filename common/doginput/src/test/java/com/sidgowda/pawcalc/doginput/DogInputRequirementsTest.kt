@@ -26,7 +26,7 @@ class DogInputRequirementsTest {
 
     @Before
     fun setup() {
-        dogInputState = MutableStateFlow(DogInputState(isLoading = false))
+        dogInputState = MutableStateFlow(DogInputState())
         testDispatcher = UnconfinedTestDispatcher()
         scope = TestScope(testDispatcher)
     }
@@ -36,7 +36,6 @@ class DogInputRequirementsTest {
         dogInputState.updateName("Hello")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             name = "Hello",
             inputRequirements = setOf(DogInputRequirements.NameBetweenZeroAndFifty)
         )
@@ -47,7 +46,6 @@ class DogInputRequirementsTest {
         dogInputState.updateName("")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             name = "",
             inputRequirements = emptySet()
         )
@@ -63,7 +61,6 @@ class DogInputRequirementsTest {
         dogInputState.updateName(nameWith60)
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             name = nameWith60,
             isNameValid = false
         )
@@ -81,14 +78,12 @@ class DogInputRequirementsTest {
         dogInputState.updateName(nameWith60)
 
         history shouldContainExactly listOf(
-            DogInputState(isLoading = false),
+            DogInputState(),
             DogInputState(
-                isLoading = false,
                 name = "Hello",
                 inputRequirements = setOf(DogInputRequirements.NameBetweenZeroAndFifty)
             ),
             DogInputState(
-                isLoading = false,
                 name = nameWith60,
                 isNameValid = false,
                 inputRequirements = emptySet()
@@ -108,15 +103,13 @@ class DogInputRequirementsTest {
         dogInputState.updateName("Hello")
 
         history shouldContainExactly listOf(
-            DogInputState(isLoading = false),
+            DogInputState(),
             DogInputState(
-                isLoading = false,
                 name = nameWith60,
                 isNameValid = false,
                 inputRequirements = emptySet()
             ),
             DogInputState(
-                isLoading = false,
                 name = "Hello",
                 inputRequirements = setOf(DogInputRequirements.NameBetweenZeroAndFifty)
             )
@@ -128,7 +121,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("50")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "50",
             inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
         )
@@ -139,7 +131,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("5000")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "5000",
             isWeightValid = false,
             inputRequirements = emptySet()
@@ -151,7 +142,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("500.0")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "500.0",
             isWeightValid = true,
             inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
@@ -163,7 +153,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("-5")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "-5",
             isWeightValid = false,
             inputRequirements = emptySet()
@@ -175,7 +164,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("55.55.5")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "55.55.5",
             isWeightValid = false,
             inputRequirements = emptySet()
@@ -189,15 +177,13 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("-500")
 
         history shouldContainExactly listOf(
-            DogInputState(isLoading = false),
+            DogInputState(),
             DogInputState(
-                isLoading = false,
                 weight = "50",
                 isWeightValid = true,
                 inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
             DogInputState(
-                isLoading = false,
                 weight = "-500",
                 isWeightValid = false,
                 inputRequirements = emptySet()
@@ -212,15 +198,13 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("50")
 
         history shouldContainExactly listOf(
-            DogInputState(isLoading = false),
+            DogInputState(),
             DogInputState(
-                isLoading = false,
                 weight = "-500",
                 isWeightValid = false,
                 inputRequirements = emptySet()
             ),
             DogInputState(
-                isLoading = false,
                 weight = "50",
                 isWeightValid = true,
                 inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
@@ -234,7 +218,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("100.0")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "100.0",
             weightFormat = WeightFormat.KILOGRAMS,
             isWeightValid = true,
@@ -248,7 +231,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("225.0")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "225.0",
             weightFormat = WeightFormat.KILOGRAMS,
             isWeightValid = true,
@@ -262,7 +244,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("500")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "500",
             weightFormat = WeightFormat.KILOGRAMS,
             isWeightValid = false,
@@ -276,7 +257,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("-100")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "-100",
             weightFormat = WeightFormat.KILOGRAMS,
             isWeightValid = false,
@@ -290,7 +270,6 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("100.2.22")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             weight = "100.2.22",
             weightFormat = WeightFormat.KILOGRAMS,
             isWeightValid = false,
@@ -306,20 +285,17 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("10000")
 
         history shouldContainExactly listOf(
-            DogInputState(isLoading = false),
+            DogInputState(),
             DogInputState(
-                isLoading = false,
                 weightFormat = WeightFormat.KILOGRAMS
             ),
             DogInputState(
-                isLoading = false,
                 weight = "100",
                 weightFormat = WeightFormat.KILOGRAMS,
                 isWeightValid = true,
                 inputRequirements = setOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
             DogInputState(
-                isLoading = false,
                 weight = "10000",
                 weightFormat = WeightFormat.KILOGRAMS,
                 isWeightValid = false,
@@ -336,20 +312,17 @@ class DogInputRequirementsTest {
         dogInputState.updateWeight("100")
 
         history shouldContainExactly listOf(
-            DogInputState(isLoading = false),
+            DogInputState(),
             DogInputState(
-                isLoading = false,
                 weightFormat = WeightFormat.KILOGRAMS
             ),
             DogInputState(
-                isLoading = false,
                 weight = "10000",
                 weightFormat = WeightFormat.KILOGRAMS,
                 isWeightValid = false,
                 inputRequirements = emptySet()
             ),
             DogInputState(
-                isLoading = false,
                 weight = "100",
                 weightFormat = WeightFormat.KILOGRAMS,
                 isWeightValid = true,
@@ -363,7 +336,6 @@ class DogInputRequirementsTest {
         dogInputState.updateProfilePic(Uri.parse("pic"))
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             profilePic = Uri.parse("pic"),
             inputRequirements = setOf(DogInputRequirements.OnePicture)
         )
@@ -372,7 +344,6 @@ class DogInputRequirementsTest {
     @Test
     fun `when birth date dialog is not shown and birth date is empty, then birth date is valid`() {
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             birthDateDialogShown = false,
             birthDate = "",
             isBirthDateValid = true
@@ -384,7 +355,6 @@ class DogInputRequirementsTest {
         dogInputState.updateBirthDateDialogShown()
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             birthDateDialogShown = true,
             birthDate = "",
             isBirthDateValid = false
@@ -397,7 +367,6 @@ class DogInputRequirementsTest {
         dogInputState.updateBirthDateDialogShown()
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             birthDateDialogShown = true,
             birthDate = "12/20/2021",
             inputRequirements = setOf(DogInputRequirements.BirthDate)
@@ -409,7 +378,6 @@ class DogInputRequirementsTest {
         dogInputState.updateBirthDate("5/20/2021")
 
         dogInputState.value shouldBe DogInputState(
-            isLoading = false,
             birthDateDialogShown = false,
             birthDate = "5/20/2021",
             inputRequirements = setOf(DogInputRequirements.BirthDate)
