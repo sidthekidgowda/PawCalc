@@ -66,7 +66,6 @@ class DogDetailsViewModelTest {
         every { settingsUseCase.invoke() } returns settingsFlow
         every { getDogForIdUseCase.invoke(any()) } returns dogFlow
         coEvery { updateDogUseCase.invoke(any()) } just runs
-
     }
 
     @Test
