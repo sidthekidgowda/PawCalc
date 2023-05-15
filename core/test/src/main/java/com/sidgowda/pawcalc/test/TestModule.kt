@@ -15,7 +15,7 @@ import com.sidgowda.pawcalc.data.modules.DogsDataModule
 import com.sidgowda.pawcalc.data.modules.SettingsModule
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.repo.SettingsRepo
-import com.sidgowda.pawcalc.test.fakes.FakeDogsDiskDataSource
+import com.sidgowda.pawcalc.test.fakes.FakeDogsDataSource
 import com.sidgowda.pawcalc.test.fakes.FakeSettingsDataSource
 import com.sidgowda.pawcalc.test.fakes.FakeSettingsRepo
 import dagger.Module
@@ -50,7 +50,7 @@ object TestModule {
         @Singleton
         @Provides
         fun providesDiskDogsDataSource(): DogsDataSource {
-            return FakeDogsDiskDataSource(
+            return FakeDogsDataSource(
                 listOf(
                     Dog(
                         id = 1,

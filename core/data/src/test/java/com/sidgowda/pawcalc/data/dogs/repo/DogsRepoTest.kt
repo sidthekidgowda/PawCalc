@@ -15,7 +15,7 @@ import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import com.sidgowda.pawcalc.test.fakes.FakeDogsDiskDataSource
+import com.sidgowda.pawcalc.test.fakes.FakeDogsDataSource
 import com.sidgowda.pawcalc.test.fakes.FakeSettingsDataSource
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -48,7 +48,7 @@ class DogsRepoTest {
         testCoroutineDispatcher = UnconfinedTestDispatcher()
         settingsDataSource = FakeSettingsDataSource()
         testScope = TestScope(testCoroutineDispatcher)
-        dogsDiskDataSource = FakeDogsDiskDataSource()
+        dogsDiskDataSource = FakeDogsDataSource()
         dogsMemoryDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
         dogsRepo = DogsRepoImpl(
             memory = dogsMemoryDataSource,

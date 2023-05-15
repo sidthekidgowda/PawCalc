@@ -14,13 +14,13 @@ import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
-import com.sidgowda.pawcalc.doglist.FakeDogsDataSource
 import com.sidgowda.pawcalc.doglist.FakeDogsRepo
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
 import com.sidgowda.pawcalc.domain.onboarding.GetOnboardingStateUseCase
 import com.sidgowda.pawcalc.test.MainDispatcherRule
+import com.sidgowda.pawcalc.test.fakes.FakeDogsDataSource
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.*
 import junit.framework.TestCase.assertEquals

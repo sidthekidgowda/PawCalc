@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.doglist
+package com.sidgowda.pawcalc.test.fakes
 
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.mapInPlace
@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class FakeDogsDataSource(dogList: List<Dog> = emptyList()) : DogsDataSource {
+class FakeDogsDataSource(dogs: List<Dog> = emptyList()) : DogsDataSource {
 
-    private val dogs = MutableStateFlow(dogList)
+    private val dogs = MutableStateFlow(dogs)
 
     override fun dogs(): Flow<List<Dog>> {
         // transform current list of dogs any time settings is updated
@@ -49,3 +49,4 @@ class FakeDogsDataSource(dogList: List<Dog> = emptyList()) : DogsDataSource {
         }
     }
 }
+
