@@ -11,23 +11,28 @@ fun convertedSweepAngle(sweepAngle: Float): Float {
     }
 }
 
-fun convertedRadiusXY(radius: Float, sweepAngle: Double): Pair<Float, Float> {
+fun radiusXY(radius: Float, sweepAngle: Float): Pair<Float, Float> {
     val x: Float
     val y: Float
-    if (sweepAngle >= 0f && sweepAngle <= 90f) {
-        x = radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
-        y = radius - radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle > 90f && sweepAngle <= 180f) {
-        x = radius + radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
-        y = radius + radius * - kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle > 180f && sweepAngle <= 270f) {
-        x = radius - radius * -kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
-        y = radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle > 270f && sweepAngle <= 360f) {
-        x = radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
-        y = radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
+    // cos and sin treats 0 as 3pm and goes counterclockwise
+    // Our progress arc starts at top which is 12pm and goes clockwise so we will need to convert
+    // our current angle to the counterclockwise angle cos and sin use.
+    val convertedSweepAngle = convertedSweepAngle(sweepAngle).toDouble()
+    if (convertedSweepAngle >= 0f && convertedSweepAngle <= 90f) {
+        x = radius * kotlin.math.cos(Math.toRadians(convertedSweepAngle)).toFloat() + radius
+        y = radius - radius * kotlin.math.sin(Math.toRadians(convertedSweepAngle)).toFloat()
+    } else if (convertedSweepAngle > 90f && convertedSweepAngle <= 180f) {
+        x = radius + radius * kotlin.math.cos(Math.toRadians(convertedSweepAngle)).toFloat()
+        y = radius + radius * - kotlin.math.sin(Math.toRadians(convertedSweepAngle)).toFloat()
+    } else if (convertedSweepAngle > 180f && convertedSweepAngle <= 270f) {
+        x = radius - radius * -kotlin.math.cos(Math.toRadians(convertedSweepAngle)).toFloat()
+        y = radius + -radius * kotlin.math.sin(Math.toRadians(convertedSweepAngle)).toFloat()
+    } else if (convertedSweepAngle > 270f && convertedSweepAngle <= 360f) {
+        x = radius * kotlin.math.cos(Math.toRadians(convertedSweepAngle)).toFloat() + radius
+        y = radius + -radius * kotlin.math.sin(Math.toRadians(convertedSweepAngle)).toFloat()
     }
     else {
+        // edge case which should never be hit
         x = 0f
         y = 0f
     }

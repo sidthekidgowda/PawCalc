@@ -253,12 +253,9 @@ internal fun DrawScope.drawTextOnCircle(
     val max = range.endInclusive - range.first + 1
     range.forEach {
         val angle = if (it == range.first) 360.toFloat() else ((it-range.first)/max.toFloat()) * 360
-        val convertSweepAngle = convertedSweepAngle(angle).toDouble()
-        val convertedRadius = convertedRadiusXY(radius, convertSweepAngle)
+        val convertedRadius = radiusXY(radius = radius, sweepAngle = angle)
         val x = convertedRadius.first + offsetX
         val y = convertedRadius.second + offsetY
-//        val x = convertedRadiusX(radius, convertSweepAngle) + offsetX
-//        val y = convertedRadiusY(radius, convertSweepAngle) + offsetY
         drawText(
             textMeasurer = textMeasurer,
             text = it.toString(),
