@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.data.fakes.FakeSettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.test.fakes.FakeSettingsDataSource
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

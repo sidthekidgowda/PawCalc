@@ -1,54 +1,14 @@
 package com.sidgowda.pawcalc.test.fakes
 
-import android.net.Uri
-import com.sidgowda.pawcalc.common.settings.DateFormat
-import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.data.date.toDogYears
-import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.mapInPlace
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakeDogsDiskDataSource : DogsDataSource {
+class FakeDogsDiskDataSource(dogs: List<Dog> = emptyList()) : DogsDataSource {
 
-    val listOfDogs = mutableListOf<Dog>(
-        Dog(
-            id = 1,
-            name = "Dog_1",
-            weight = 68.0,
-            profilePic = Uri.EMPTY,
-            birthDate = "12/1/2021",
-            dogYears = "12/1/2021".toDogYears(),
-            humanYears = "12/1/2021".toHumanYears(),
-            weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN,
-            shouldAnimate = true
-        ), Dog(
-            id = 2,
-            name = "Dog_2",
-            weight = 68.0,
-            profilePic = Uri.EMPTY,
-            birthDate = "12/2/2021",
-            dogYears = "12/2/2021".toDogYears(),
-            humanYears = "12/2/2021".toHumanYears(),
-            weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN,
-            shouldAnimate = true
-        ), Dog(
-            id = 3,
-            name = "Dog_3",
-            weight = 68.0,
-            profilePic = Uri.EMPTY,
-            birthDate = "12/3/2021",
-            dogYears = "12/3/2021".toDogYears(),
-            humanYears = "12/3/2021".toHumanYears(),
-            weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN,
-            shouldAnimate = true
-        )
-    )
+    val listOfDogs = dogs.toMutableList()
 
     override fun dogs(): Flow<List<Dog>> {
         return flow {

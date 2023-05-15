@@ -1,7 +1,13 @@
 package com.sidgowda.pawcalc.test
 
+import android.net.Uri
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
+import com.sidgowda.pawcalc.data.date.toDogYears
+import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
+import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
 import com.sidgowda.pawcalc.data.modules.DispatchersModule
@@ -44,7 +50,44 @@ object TestModule {
         @Singleton
         @Provides
         fun providesDiskDogsDataSource(): DogsDataSource {
-            return FakeDogsDiskDataSource()
+            return FakeDogsDiskDataSource(
+                listOf(
+                    Dog(
+                        id = 1,
+                        name = "Dog_1",
+                        weight = 68.0,
+                        profilePic = Uri.EMPTY,
+                        birthDate = "12/1/2021",
+                        dogYears = "12/1/2021".toDogYears(),
+                        humanYears = "12/1/2021".toHumanYears(),
+                        weightFormat = WeightFormat.POUNDS,
+                        dateFormat = DateFormat.AMERICAN,
+                        shouldAnimate = true
+                    ), Dog(
+                        id = 2,
+                        name = "Dog_2",
+                        weight = 68.0,
+                        profilePic = Uri.EMPTY,
+                        birthDate = "12/2/2021",
+                        dogYears = "12/2/2021".toDogYears(),
+                        humanYears = "12/2/2021".toHumanYears(),
+                        weightFormat = WeightFormat.POUNDS,
+                        dateFormat = DateFormat.AMERICAN,
+                        shouldAnimate = true
+                    ), Dog(
+                        id = 3,
+                        name = "Dog_3",
+                        weight = 68.0,
+                        profilePic = Uri.EMPTY,
+                        birthDate = "12/3/2021",
+                        dogYears = "12/3/2021".toDogYears(),
+                        humanYears = "12/3/2021".toHumanYears(),
+                        weightFormat = WeightFormat.POUNDS,
+                        dateFormat = DateFormat.AMERICAN,
+                        shouldAnimate = true
+                    )
+                )
+            )
         }
 
         @Singleton
