@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.onboarding
+package com.sidgowda.pawcalc.data.onboarding.datasource
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -10,7 +10,6 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
-import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataStore
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.mockk.every

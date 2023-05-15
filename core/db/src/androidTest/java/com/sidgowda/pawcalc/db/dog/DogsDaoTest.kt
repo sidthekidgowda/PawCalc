@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.db
+package com.sidgowda.pawcalc.db.dog
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -8,8 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.db.dog.DogEntity
-import com.sidgowda.pawcalc.db.dog.DogsDao
+import com.sidgowda.pawcalc.db.PawCalcDatabase
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

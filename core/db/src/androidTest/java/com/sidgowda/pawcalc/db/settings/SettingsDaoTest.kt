@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.db
+package com.sidgowda.pawcalc.db.settings
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
@@ -8,8 +8,7 @@ import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.db.settings.SettingsDao
-import com.sidgowda.pawcalc.db.settings.SettingsEntity
+import com.sidgowda.pawcalc.db.PawCalcDatabase
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

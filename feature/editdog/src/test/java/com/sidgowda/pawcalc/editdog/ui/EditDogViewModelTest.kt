@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.editdog
+package com.sidgowda.pawcalc.editdog.ui
 
 import android.net.Uri
 import androidx.core.net.toUri
@@ -20,7 +20,6 @@ import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
-import com.sidgowda.pawcalc.editdog.ui.EditDogViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue

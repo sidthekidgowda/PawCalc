@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.dogs
+package com.sidgowda.pawcalc.data.dogs.model
 
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight

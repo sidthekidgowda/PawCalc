@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.doginput
+package com.sidgowda.pawcalc.doginput.model
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4

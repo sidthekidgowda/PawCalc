@@ -1,6 +1,5 @@
-package com.sidgowda.pawcalc.data.dogs
+package com.sidgowda.pawcalc.data.dogs.model
 
-import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 

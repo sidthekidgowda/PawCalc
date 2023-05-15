@@ -1,12 +1,11 @@
-package com.sidgowda.pawcalc.data.dogs
+package com.sidgowda.pawcalc.data.dogs.datasource
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
-import com.sidgowda.pawcalc.data.dogs.datasource.DogsDiskDataSource
+import com.sidgowda.pawcalc.data.dogs.mapInPlace
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.toDog
 import com.sidgowda.pawcalc.db.dog.DogEntity

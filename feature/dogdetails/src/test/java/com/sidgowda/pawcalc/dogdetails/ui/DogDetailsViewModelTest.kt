@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.dogdetails
+package com.sidgowda.pawcalc.dogdetails.ui
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
@@ -15,7 +15,6 @@ import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
-import com.sidgowda.pawcalc.dogdetails.ui.DogDetailsViewModel
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase
 import com.sidgowda.pawcalc.domain.dogs.UpdateDogUseCase
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
@@ -220,7 +219,8 @@ class DogDetailsViewModelTest {
         initializeViewModel()
         val history = viewModel.createStateHistory().also { advanceUntilIdle() }
         dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
-        dogFlow.emit(DOG_THREE.copy(
+        dogFlow.emit(
+            DOG_THREE.copy(
             birthDate = "7/30/2019"
         )).also { advanceUntilIdle() }
 

@@ -1,10 +1,8 @@
-package com.sidgowda.pawcalc.data.onboarding
+package com.sidgowda.pawcalc.data.onboarding.repo
 
 import app.cash.turbine.test
 import com.sidgowda.pawcalc.data.onboarding.datasource.OnboardingDataSource
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
-import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
-import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepoImpl
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

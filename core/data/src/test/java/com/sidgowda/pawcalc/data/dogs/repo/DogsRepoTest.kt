@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.data.dogs
+package com.sidgowda.pawcalc.data.dogs.repo
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -13,8 +13,6 @@ import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
-import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
-import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
 import com.sidgowda.pawcalc.data.fakes.DogsFakeDataSource
 import com.sidgowda.pawcalc.data.fakes.FakeSettingsDataSource
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource

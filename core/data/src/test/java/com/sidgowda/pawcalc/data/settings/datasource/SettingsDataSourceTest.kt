@@ -1,11 +1,9 @@
-package com.sidgowda.pawcalc.data.settings
+package com.sidgowda.pawcalc.data.settings.datasource
 
 import app.cash.turbine.test
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.data.settings.datasource.CachedSettingsDataSource
-import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.data.settings.model.toSettings
 import com.sidgowda.pawcalc.db.settings.SettingsDao

@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.settings
+package com.sidgowda.pawcalc.settings.ui
 
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
@@ -6,8 +6,8 @@ import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.domain.settings.UpdateSettingsUseCase
+import com.sidgowda.pawcalc.settings.FakeSettingsRepo
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
-import com.sidgowda.pawcalc.settings.ui.SettingsViewModel
 import com.sidgowda.pawcalc.test.MainDispatcherRule
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.coVerify
