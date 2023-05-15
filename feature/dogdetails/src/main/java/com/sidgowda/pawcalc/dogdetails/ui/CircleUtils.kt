@@ -10,31 +10,26 @@ fun convertedSweepAngle(sweepAngle: Float): Float {
         else -> 0f
     }
 }
-fun convertedRadiusX(radius: Float, sweepAngle: Double): Float {
-    return if (sweepAngle >= 0f && sweepAngle <= 90f) {
-        radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
+
+fun convertedRadiusXY(radius: Float, sweepAngle: Double): Pair<Float, Float> {
+    val x: Float
+    val y: Float
+    if (sweepAngle >= 0f && sweepAngle <= 90f) {
+        x = radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
+        y = radius - radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle > 90f && sweepAngle <= 180f) {
-        radius + radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+        x = radius + radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+        y = radius + radius * - kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle > 180f && sweepAngle <= 270f) {
-        radius - radius * -kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+        x = radius - radius * -kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat()
+        y = radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     } else if (sweepAngle > 270f && sweepAngle <= 360f) {
-        radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
+        x = radius * kotlin.math.cos(Math.toRadians(sweepAngle)).toFloat() + radius
+        y = radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
     }
     else {
-        0f
+        x = 0f
+        y = 0f
     }
-}
-
-fun convertedRadiusY(radius: Float, sweepAngle: Double): Float {
-    return if (sweepAngle >= 0f && sweepAngle <= 90f) {
-        radius - radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle > 90f && sweepAngle <= 180f) {
-        radius + radius * - kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle > 180f && sweepAngle <= 270f) {
-        radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else if (sweepAngle > 270f && sweepAngle <= 360f) {
-        radius + -radius * kotlin.math.sin(Math.toRadians(sweepAngle)).toFloat()
-    } else {
-        0f
-    }
+    return x to y
 }

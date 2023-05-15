@@ -25,7 +25,6 @@ class ConvertedSweepAngleTest {
         convertedSweepAngle(120f) shouldBe 330f
     }
 
-
     @Test
     fun `when start angle is 180, then converted sweep angle is 270`() {
         convertedSweepAngle(180f) shouldBe 270f
