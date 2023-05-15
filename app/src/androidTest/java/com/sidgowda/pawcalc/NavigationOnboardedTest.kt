@@ -95,7 +95,4 @@ class NavigationOnboardedTest {
 
     }
 
-    @Test
-    fun
-
 }
