@@ -3,7 +3,7 @@ package com.sidgowda.pawcalc.dogdetails.ui
 
 fun convertedSweepAngle(sweepAngle: Float): Float {
     return when {
-        sweepAngle >= 0f && sweepAngle <= 90f -> 90 - sweepAngle
+        sweepAngle in 0f..90f -> 90 - sweepAngle
         sweepAngle > 90f && sweepAngle <= 180f -> 360 - (sweepAngle - 90)
         sweepAngle > 180f && sweepAngle <= 270f -> 270 - (sweepAngle - 180)
         sweepAngle > 270f && sweepAngle <= 360f -> 180 - (sweepAngle - 270)
@@ -18,7 +18,7 @@ fun radiusXY(radius: Float, sweepAngle: Float): Pair<Float, Float> {
     // Our progress arc starts at top which is 12pm and goes clockwise so we will need to convert
     // our current angle to the counterclockwise angle cos and sin use.
     val convertedSweepAngle = convertedSweepAngle(sweepAngle).toDouble()
-    if (convertedSweepAngle >= 0f && convertedSweepAngle <= 90f) {
+    if (convertedSweepAngle in 0f..90f) {
         x = radius * kotlin.math.cos(Math.toRadians(convertedSweepAngle)).toFloat() + radius
         y = radius - radius * kotlin.math.sin(Math.toRadians(convertedSweepAngle)).toFloat()
     } else if (convertedSweepAngle > 90f && convertedSweepAngle <= 180f) {

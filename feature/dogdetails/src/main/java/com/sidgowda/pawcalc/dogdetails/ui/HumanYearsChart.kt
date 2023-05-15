@@ -306,7 +306,6 @@ internal fun LegendItem(
     }
 }
 
-
 //-------Preview------------------------------------------------------------------------------------
 
 @LightDarkPreview
@@ -367,7 +366,6 @@ internal fun PreviewLegend() {
         )
     }
 }
-
 
 @LightDarkPreview
 @Composable
