@@ -121,6 +121,22 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
+    fun `when update shouldAnimate to false is called for dog two, then dog two shouldAnimate is updated to false`() = testScope.runTest {
+        dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
+        dogsDataSource.updateDogs(DOG_TWO.copy(shouldAnimate = false))
+
+        dogsDataSource.dogs().test {
+            assertEquals(
+                listOf(
+                    DOG_ONE,
+                    DOG_TWO.copy(shouldAnimate = false),
+                    DOG_THREE
+                ), awaitItem()
+            )
+        }
+    }
+
+    @Test
     fun `when update is called with multiple dogs, then multiple dogs should be updated`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE)
         dogsDataSource.addDogs(DOG_TWO)
@@ -314,7 +330,8 @@ class DogsMemoryDataSourceTest {
             dogYears = "12/22/2021".toDogYears(),
             humanYears = "12/22/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DOG_TWO = Dog(
             id = 2,
@@ -325,7 +342,8 @@ class DogsMemoryDataSourceTest {
             dogYears = "12/12/2021".toDogYears(),
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DOG_THREE = Dog(
             id = 3,
@@ -336,7 +354,8 @@ class DogsMemoryDataSourceTest {
             dogYears = "12/12/2021".toDogYears(),
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DEFAULT_SETTINGS = Settings(
             weightFormat = WeightFormat.POUNDS,

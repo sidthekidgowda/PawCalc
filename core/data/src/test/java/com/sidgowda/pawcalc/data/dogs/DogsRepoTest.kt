@@ -266,7 +266,8 @@ class DogsRepoTest {
             dogYears = "12/7/2021".toDogYears(),
             humanYears = "12/7/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
     }
 
@@ -620,7 +621,8 @@ class DogsRepoTest {
              dogYears = "12/1/2021".toDogYears(),
              humanYears = "12/1/2021".toHumanYears(),
              weightFormat = WeightFormat.POUNDS,
-             dateFormat = DateFormat.AMERICAN
+             dateFormat = DateFormat.AMERICAN,
+             shouldAnimate = true
          )
         val DOG_TWO = Dog(
             id = 2,
@@ -631,7 +633,8 @@ class DogsRepoTest {
             dogYears = "12/2/2021".toDogYears(),
             humanYears = "12/2/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DOG_THREE = Dog(
             id = 3,
@@ -642,7 +645,8 @@ class DogsRepoTest {
             dogYears = "12/3/2021".toDogYears(),
             humanYears = "12/3/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
         val DEFAULT_SETTINGS = Settings(
             weightFormat = WeightFormat.POUNDS,
