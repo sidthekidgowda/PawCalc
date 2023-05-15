@@ -57,6 +57,7 @@ import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
+import com.sidgowda.pawcalc.test.TestTags
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import com.sidgowda.pawcalc.ui.R as UiR
@@ -147,6 +148,7 @@ internal fun DogListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier
+                    .testTag(TestTags.DogList.TAG_ADD_DOG_BUTTON)
                     .padding(end = 8.dp, bottom = 8.dp)
                     .size(64.dp),
                 onClick = {

@@ -10,6 +10,10 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.sidgowda.pawcalc.data.modules.OnboardingDataModule
+import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
+import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
+import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepoImpl
 import com.sidgowda.pawcalc.db.di.DbModule
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.NEW_DOG_SCREEN_ROUTE
@@ -17,6 +21,7 @@ import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import com.sidgowda.pawcalc.test.TestTags.Onboarding.TAG_ADD_DOG_BUTTON
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -29,9 +34,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @RunWith(AndroidJUnit4::class)
-@UninstallModules(DbModule::class)
+@UninstallModules(DbModule::class, OnboardingDataModule::class)
 @HiltAndroidTest
-class NavigationTest {
+class NavigationNotOnboardedTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -47,6 +52,14 @@ class NavigationTest {
     @Named("computation")
     lateinit var computationIdlingDispatcher: IdlingResourceCoroutineDispatcher
 
+    @BindValue
+    @JvmField
+    val onboardingDataSource = FakeOnboardingDataSource(OnboardingState.NotOnboarded)
+
+    @BindValue
+    @JvmField
+    val onboardingRepo: OnboardingRepo = OnboardingRepoImpl(onboardingDataSource)
+
     @Before
     fun setup() {
         hiltRule.inject()
@@ -58,7 +71,6 @@ class NavigationTest {
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(ioIdlingDispatcher)
         IdlingRegistry.getInstance().unregister(computationIdlingDispatcher)
-        FakeOnboardingDataSource.reset()
     }
 
     @Test
@@ -90,7 +102,6 @@ class NavigationTest {
                 )
             ).performClick()
 
-            // todo fix onboarding data
             onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
         }
     }
@@ -99,7 +110,6 @@ class NavigationTest {
     fun Clicking_Back_Button_On_New_Dog_Navigates_To_Dog_List() {
         composeTestRule.onNodeWithTag(TAG_ADD_DOG_BUTTON).performClick()
         pressBack()
-        // todo fix onboarding data
         composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
     }
 

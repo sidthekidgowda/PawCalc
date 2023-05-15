@@ -9,4 +9,8 @@ object TestTags {
     object Settings {
 
     }
+
+    object DogList {
+        const val TAG_ADD_DOG_BUTTON = "add_dog_button"
+    }
 }
