@@ -11,12 +11,14 @@ fun convertedSweepAngle(sweepAngle: Float): Float {
     }
 }
 
-fun radiusXY(radius: Float, sweepAngle: Float): Pair<Float, Float> {
+fun convertedRadiusXY(radius: Float, sweepAngle: Float): Pair<Float, Float> {
     val x: Float
     val y: Float
     // cos and sin treats 0 as 3pm and goes counterclockwise
     // Our progress arc starts at top which is 12pm and goes clockwise so we will need to convert
     // our current angle to the counterclockwise angle cos and sin use.
+    // Additionally, android coordinate system starts from (0,0) to (xMax, yMax)
+    // so all negative coordinates will need to be converted to positive numbers.
     val convertedSweepAngle = convertedSweepAngle(sweepAngle).toDouble()
     if (convertedSweepAngle in 0f..90f) {
         x = radius * kotlin.math.cos(Math.toRadians(convertedSweepAngle)).toFloat() + radius
