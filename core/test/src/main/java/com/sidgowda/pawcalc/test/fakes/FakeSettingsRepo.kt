@@ -1,22 +1,22 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.test.fakes
 
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.data.settings.repo.SettingsRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class FakeSettingsDataSource : SettingsDataSource {
+class FakeSettingsRepo : SettingsRepo {
 
     private val settings = MutableStateFlow(
         Settings(
-            weightFormat = WeightFormat.POUNDS,
+            themeFormat = ThemeFormat.SYSTEM,
             dateFormat = DateFormat.AMERICAN,
-            themeFormat = ThemeFormat.SYSTEM
+            weightFormat = WeightFormat.POUNDS
         )
     )
 

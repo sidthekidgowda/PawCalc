@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(projects.core.data)
+    implementation(projects.common.settings)
     implementation(libs.androidx.datastore.preferences)
     api(libs.junit)
     api(libs.kotlinx.coroutines.test)
