@@ -39,9 +39,10 @@ turbine = "0.12.3"
 androidxTestRules = "1.5.0"
 androidxTestRunner = "1.5.1"
 archTestingVersion = "2.2.0"
+barista = "4.3.0"
 
 [libraries]
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore"}
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity"}
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycle"}
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidxComposeUi" }
@@ -53,15 +54,15 @@ androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime
 androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "androidxComposeUi" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewModelCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewModelCompose" }
-androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleViewModelCompose"}
-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navVersion"}
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleViewModelCompose" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navVersion" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-placeholder-material = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist"}
+accompanist-placeholder-material = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraXVersion" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraXVersion" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraXVersion" }
@@ -79,29 +80,30 @@ androidx-room-coroutines = { module = "androidx.room:room-ktx", version.ref = "r
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintLayout" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 junit = { module = "junit:junit", version.ref = "junit" }
-androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit"}
-androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxJunit"}
-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin"}
-mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid"}
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
+androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxJunit" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 androidx-test-espresso-idlingResource = { module = "androidx.test.espresso:espresso-idling-resource", version.ref = "espresso" }
-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt"}
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navVersion"}
 androidx-compose-ui-test-junit = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidxComposeUi" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidxComposeUi" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotestVersion" }
 mockk-test = { module = "io.mockk:mockk", version.ref = "mockk" }
-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric"}
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomVersion" }
-app-cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
-androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "archTestingVersion"}
+app-cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "archTestingVersion" }
+adevinto-android-barista = { module = "com.adevinta.android:barista-compose", version.ref = "barista" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin"}
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin"}
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

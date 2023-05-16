@@ -27,7 +27,9 @@ sealed class Destination(
                     if (route.contains(EDIT_DOG_SCREEN_ROUTE)) {
                         return EditDog
                     }
-                    // dog details has arguments as well
+                    if (route.contains(DOG_DETAILS_SCREEN_ROUTE)) {
+                        return DogDetails
+                    }
                     throw IllegalStateException("route is invalid")
                 }
             }
@@ -62,6 +64,14 @@ sealed class Destination(
         title = R.string.title_edit_dog,
         navIcon = Icons.Default.Close,
         navIconContentDescription = R.string.cd_close_nav_icon,
+        actionIcon = Icons.Default.Settings,
+        actionIconContentDescription = R.string.cd_settings_action_icon
+    )
+
+    object DogDetails : Destination(
+        title = R.string.title_dog_details,
+        navIcon = Icons.Default.ArrowBack,
+        navIconContentDescription = R.string.cd_press_back,
         actionIcon = Icons.Default.Settings,
         actionIconContentDescription = R.string.cd_settings_action_icon
     )

@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -21,6 +22,7 @@ import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.ThemeFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.settings.model.Settings
+import com.sidgowda.pawcalc.navigation.SETTINGS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.settings.R
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
 import com.sidgowda.pawcalc.ui.theme.Grey200
@@ -33,7 +35,7 @@ internal fun Settings() {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     
     SettingsScreen(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(PawCalcTheme.colors.surface),
         settings = settings,
         onSettingsEvent = viewModel::handleEvent
     )
@@ -46,7 +48,7 @@ internal fun SettingsScreen(
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.testTag(SETTINGS_SCREEN_ROUTE),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ChooseDate(
@@ -87,7 +89,7 @@ internal fun ChooseDate(
 @Composable
 internal fun ChooseWeight(
     modifier: Modifier = Modifier,
-    weightFormat: com.sidgowda.pawcalc.common.settings.WeightFormat,
+    weightFormat: WeightFormat,
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     val weightOptions = stringArrayResource(id = R.array.settings_options_weight)

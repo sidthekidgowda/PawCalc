@@ -53,6 +53,13 @@ class UpdateDogUseCaseTest {
         capturedDog.captured shouldBe DOG.copy(birthDate = "20/5/2000", dateFormat = DateFormat.INTERNATIONAL)
     }
 
+    @Test
+    fun `verify updateDog updated shouldAnimate to false`() = runTest {
+        updateDogUseCase.invoke(DOG.copy(shouldAnimate = false))
+        coVerify(exactly = 1) { dogsRepo.updateDog(DOG.copy(shouldAnimate = false)) }
+        capturedDog.captured shouldBe DOG.copy(shouldAnimate = false)
+    }
+
     private companion object {
         val DOG = Dog(
             id = 1,
@@ -63,7 +70,8 @@ class UpdateDogUseCaseTest {
             dogYears =  "12/20/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
-            dateFormat = DateFormat.AMERICAN
+            dateFormat = DateFormat.AMERICAN,
+            shouldAnimate = true
         )
     }
 }

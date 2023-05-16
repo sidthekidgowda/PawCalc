@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.throttleFirst
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
@@ -30,7 +31,7 @@ class DogListViewModel @Inject constructor(
 
     companion object {
         private const val THROTTLE_DURATION = 300L
-        private const val KEY_SAVED_LOCAL_STATE = "saved_local_state"
+        private const val KEY_SAVED_LOCAL_STATE = "saved_dog_list_local_state"
     }
 
     @Parcelize
@@ -81,6 +82,18 @@ class DogListViewModel @Inject constructor(
         )
 
     init {
+        fetchDogs()
+        handleNavigateEvents()
+        updateSavedStateHandle()
+    }
+
+    private fun fetchDogs() {
+        viewModelScope.launch(ioDispatcher) {
+            dogsRepo.fetchDogs()
+        }
+    }
+
+    private fun handleNavigateEvents() {
         viewModelScope.launch {
             // taking the first click event and ignoring the rest
             _navigateEventFlow.throttleFirst(THROTTLE_DURATION).collect { navigateEvent ->
@@ -89,15 +102,17 @@ class DogListViewModel @Inject constructor(
                     NavigateEvent.AddDog -> localDogListState.update {
                         it.copy(navigateEvent = NavigateEvent.AddDog)
                     }
-                    is NavigateEvent.DogDetails ->
-                        localDogListState.update {
-                            it.copy(
-                                navigateEvent = NavigateEvent.DogDetails(id = navigateEvent.id)
-                            )
-                        }
+                    is NavigateEvent.DogDetails -> localDogListState.update {
+                        it.copy(
+                            navigateEvent = NavigateEvent.DogDetails(id = navigateEvent.id)
+                        )
+                    }
                 }
             }
         }
+    }
+
+    private fun updateSavedStateHandle() {
         viewModelScope.launch {
             localDogListState.collect {
                 savedStateHandle[KEY_SAVED_LOCAL_STATE] = it
@@ -107,7 +122,6 @@ class DogListViewModel @Inject constructor(
 
     fun handleEvent(event: DogListEvent) {
         when (event) {
-            is DogListEvent.FetchDogs -> fetchDogs()
             is DogListEvent.AddDog -> onNavigate(NavigateEvent.AddDog)
             is DogListEvent.DogDetails -> onNavigate(NavigateEvent.DogDetails(event.id))
             is DogListEvent.DeleteDog -> deleteDog(event.dog)
@@ -118,12 +132,6 @@ class DogListViewModel @Inject constructor(
     private fun onNavigate(navigateEvent: NavigateEvent) {
         viewModelScope.launch {
             _navigateEventFlow.emit(navigateEvent)
-        }
-    }
-
-    private fun fetchDogs() {
-        viewModelScope.launch(ioDispatcher) {
-            dogsRepo.fetchDogs()
         }
     }
 

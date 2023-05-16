@@ -24,6 +24,20 @@ internal enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, 
     }
 }
 
+fun daysInMonthToday(
+    today: String = dateFromLong(localDateTimeInMilliseconds()),
+    days: Int
+): Int {
+    val todaySplit = today.split("/")
+    val monthsToday = todaySplit.first().toInt()
+    val month = Month from monthsToday
+    return if (month.days < days) {
+        days + 1
+    } else {
+        month.days - 1
+    }
+}
+
 fun Age.toText(): String {
     val stringBuilder = StringBuilder()
     if (years > 0) {

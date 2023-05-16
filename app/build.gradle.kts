@@ -32,6 +32,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     testOptions {
         unitTests.apply {
@@ -66,12 +67,15 @@ dependencies {
     implementation(projects.feature.editdog)
     implementation(projects.feature.onboarding)
     implementation(projects.feature.doglist)
+    implementation(projects.feature.dogdetails)
     implementation(projects.feature.settings)
     implementation(projects.common.navigation)
     implementation(projects.common.settings)
     implementation(projects.common.ui)
+    implementation(projects.common.test)
     implementation(projects.core.data)
     implementation(projects.core.db)
+    coreLibraryDesugaring(libs.android.tools.desugarJdk)
     implementation(projects.core.domain)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.accompanist.systemuicontroller)
@@ -98,5 +102,8 @@ dependencies {
     testImplementation(libs.mockk.test)
     testImplementation(libs.robolectric)
     androidTestImplementation(projects.core.test)
+    androidTestImplementation(libs.adevinto.android.barista) {
+        exclude(group = "org.jetbrains.kotlin")
+    }
     kaptAndroidTest(libs.hilt.android.compiler)
 }

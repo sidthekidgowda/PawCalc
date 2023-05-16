@@ -54,7 +54,8 @@ class FakeDogsRepo(
             weightFormat = dogInput.weightFormat,
             dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
             humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),
-            profilePic = dogInput.profilePic
+            profilePic = dogInput.profilePic,
+            shouldAnimate = true
         )
         dogsDataSource.addDogs(dog)
     }

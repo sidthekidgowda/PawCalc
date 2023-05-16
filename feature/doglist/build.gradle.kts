@@ -53,6 +53,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.common.settings)
     implementation(projects.common.ui)
+    implementation(projects.common.test)
     implementation(projects.common.navigation)
     implementation(projects.common.doginput)
     implementation(libs.androidx.constraintlayout.compose)

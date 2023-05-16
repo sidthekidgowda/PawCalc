@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -54,7 +55,10 @@ import com.sidgowda.pawcalc.doglist.R
 import com.sidgowda.pawcalc.doglist.model.DogListEvent
 import com.sidgowda.pawcalc.doglist.model.DogListState
 import com.sidgowda.pawcalc.doglist.model.NavigateEvent
+import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
+import com.sidgowda.pawcalc.test.TestTags
+import com.sidgowda.pawcalc.test.TestTags.DogList.TAG_DOG_LIST_CONTENT
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import com.sidgowda.pawcalc.ui.R as UiR
@@ -127,7 +131,7 @@ internal fun OnboardedDogList(
         }
     }
     DogListScreen(
-        modifier = modifier,
+        modifier = modifier.testTag(DOG_LIST_SCREEN_ROUTE),
         dogListState = dogListState,
         handleEvent = viewModel::handleEvent
     )
@@ -145,6 +149,7 @@ internal fun DogListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier
+                    .testTag(TestTags.DogList.TAG_ADD_DOG_BUTTON)
                     .padding(end = 8.dp, bottom = 8.dp)
                     .size(64.dp),
                 onClick = {
@@ -168,7 +173,6 @@ internal fun DogListScreen(
             when {
                 dogListState.isLoading -> {
                     Shimmer(contentPadding = contentPadding)
-                    handleEvent(DogListEvent.FetchDogs)
                 }
                 else -> {
                     if (dogListState.dogs.isEmpty()) {
@@ -184,7 +188,7 @@ internal fun DogListScreen(
                     } else {
                         val lazyColumnState = rememberLazyListState()
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().testTag(TAG_DOG_LIST_CONTENT),
                             contentPadding = contentPadding,
                             state = lazyColumnState
                         ) {
@@ -523,7 +527,8 @@ fun PreviewDogListItemNotLoading() {
                 dogYears = "7/30/2019".toDogYears(),
                 humanYears = "7/30/2019".toHumanYears(),
                 weightFormat = WeightFormat.POUNDS,
-                dateFormat = DateFormat.AMERICAN
+                dateFormat = DateFormat.AMERICAN,
+                shouldAnimate = true
             )
         )
     }

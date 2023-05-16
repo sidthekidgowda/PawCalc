@@ -13,7 +13,7 @@
         android:name=".PawCalcApplication"
         tools:targetApi="33">
         <activity
-            android:name=".PawCalcActivity"
+            android:name=".ui.PawCalcActivity"
             android:exported="true"
             android:label="@string/title_home"
             android:windowSoftInputMode="adjustResize"
