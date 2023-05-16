@@ -2,6 +2,11 @@ package com.sidgowda.pawcalc.test
 
 object TestTags {
 
+    object App {
+        const val TAG_NAV_ICON_BUTTON = "nav_icon_button"
+        const val TAG_ACTION_ICON_BUTTON = "action_icon_button"
+    }
+
     object Onboarding {
         const val TAG_ADD_DOG_BUTTON = "add_dog_button"
     }
