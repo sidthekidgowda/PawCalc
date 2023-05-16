@@ -2,6 +2,8 @@ package com.sidgowda.pawcalc.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,6 +44,7 @@ internal fun OnboardingScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(PawCalcTheme.colors.background)
             .testTag(ONBOARDING_SCREEN_ROUTE),
         verticalArrangement = Arrangement.Top,
@@ -66,6 +69,7 @@ internal fun OnboardingScreen(
             text = stringResource(id = R.string.add_dog),
             onClick = onBoarded
         )
+        Spacer(modifier = Modifier.height(30.dp))
     }
 }
 

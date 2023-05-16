@@ -177,10 +177,10 @@ internal fun DogListScreen(
                 else -> {
                     if (dogListState.dogs.isEmpty()) {
                         Text(
-                            text = stringResource(id = com.sidgowda.pawcalc.doglist.R.string.dog_list_empty),
+                            text = stringResource(id = R.string.dog_list_empty),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 40.dp),
+                                .padding(horizontal = 20.dp, vertical = 20.dp),
                             style = PawCalcTheme.typography.h5.copy(fontSize = 30.sp),
                             color = PawCalcTheme.colors.onSurface,
                             textAlign = TextAlign.Center

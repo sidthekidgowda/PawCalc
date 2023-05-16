@@ -2,7 +2,9 @@ package com.sidgowda.pawcalc.settings.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -35,7 +37,6 @@ internal fun Settings() {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     
     SettingsScreen(
-        modifier = Modifier.fillMaxSize().background(PawCalcTheme.colors.surface),
         settings = settings,
         onSettingsEvent = viewModel::handleEvent
     )
@@ -48,7 +49,11 @@ internal fun SettingsScreen(
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     Column(
-        modifier = modifier.testTag(SETTINGS_SCREEN_ROUTE),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(PawCalcTheme.colors.surface)
+            .testTag(SETTINGS_SCREEN_ROUTE),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ChooseDate(
