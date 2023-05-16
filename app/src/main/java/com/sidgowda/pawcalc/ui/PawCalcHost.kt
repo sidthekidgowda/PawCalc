@@ -19,7 +19,6 @@ import com.sidgowda.pawcalc.ui.component.PawCalcTopAppBar
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
-
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun PawCalcHost() {
