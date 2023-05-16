@@ -102,5 +102,8 @@ dependencies {
     testImplementation(libs.mockk.test)
     testImplementation(libs.robolectric)
     androidTestImplementation(projects.core.test)
+    androidTestImplementation(libs.adevinto.android.barista) {
+        exclude(group = "org.jetbrains.kotlin")
+    }
     kaptAndroidTest(libs.hilt.android.compiler)
 }

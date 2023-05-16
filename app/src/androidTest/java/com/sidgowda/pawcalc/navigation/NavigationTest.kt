@@ -3,7 +3,6 @@ package com.sidgowda.pawcalc.navigation
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -14,7 +13,6 @@ import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepoImpl
 import com.sidgowda.pawcalc.db.di.DbModule
 import com.sidgowda.pawcalc.navigation.*
-import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import com.sidgowda.pawcalc.test.TestTags
 import com.sidgowda.pawcalc.test.fakes.FakeOnboardingDataSourceSingleton
 import com.sidgowda.pawcalc.ui.PawCalcActivity
@@ -28,8 +26,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
-import javax.inject.Named
 
 @OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -43,14 +39,6 @@ class NavigationTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<PawCalcActivity>()
 
-    @Inject
-    @Named("io")
-    lateinit var ioIdlingDispatcher: IdlingResourceCoroutineDispatcher
-
-    @Inject
-    @Named("computation")
-    lateinit var computationIdlingDispatcher: IdlingResourceCoroutineDispatcher
-
     @BindValue
     @JvmField
     val onboardingDataSource = FakeOnboardingDataSourceSingleton
@@ -62,15 +50,11 @@ class NavigationTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        IdlingRegistry.getInstance().register(ioIdlingDispatcher)
-        IdlingRegistry.getInstance().register(computationIdlingDispatcher)
     }
 
     @After
     fun cleanup() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.NotOnboarded)
-        IdlingRegistry.getInstance().unregister(ioIdlingDispatcher)
-        IdlingRegistry.getInstance().unregister(computationIdlingDispatcher)
     }
 
     @Test
@@ -95,6 +79,7 @@ class NavigationTest {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogInput.TAG_SAVE_BUTTON))
         composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
     }
+
 
     @Test
     fun Clicking_Close_Icon_On_New_Dog_NavigatesBack_To_Dog_List() {
