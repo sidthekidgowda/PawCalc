@@ -431,193 +431,403 @@ class NavigationTest {
 
     @Test
     fun Clicking_On_Settings_Icon_Navigates_To_Settings_Screen_From_Onboarding() {
+        // Onboarding
+        composeTestRule.onNodeWithTag(ONBOARDING_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
     }
 
     @Test
-    fun NavigatingBack_From_Settings_Navigates_To_Onboarding() {
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.Onboarding.TAG_ADD_DOG_BUTTON))
+    fun Navigating_Back_From_Settings_Navigates_To_Onboarding() {
+        // Onboarding
+        composeTestRule.onNodeWithTag(ONBOARDING_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_press_back
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(ONBOARDING_SCREEN_ROUTE).assertIsDisplayed()
+        // Onboarding
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ONBOARDING_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_Dog_List() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_Dog_List_From_Settings() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_press_back
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_Dog_Details() {
         // failed
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
             .performClick()
-        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+
+        // Dog Details
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_dog_details
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_press_back
+            )
+        ).performClick()
+
+        // Dog Details
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_dog_details
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_Dog_Details_From_Settings() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogList.TAG_DOG_LIST_CONTENT))
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
             .performClick()
-        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+
+        // Dog Details
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_dog_details
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_press_back
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog Details
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_dog_details
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
     }
 
     @Test
     fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_Edit_Dog() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogList.TAG_DOG_LIST_CONTENT))
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
             .performClick()
-        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
 
+        // Dog Details
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_dog_details
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogDetails.TAG_EDIT_BUTTON).performClick()
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogInput.TAG_SAVE_BUTTON))
-        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
 
+        // Edit Dog
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_edit_dog
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_Edit_Dog_From_Settings() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogList.TAG_DOG_LIST_CONTENT))
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
             .performClick()
-        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
 
+        // Dog Details
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_dog_details
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogDetails.TAG_EDIT_BUTTON).performClick()
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogInput.TAG_SAVE_BUTTON))
-        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
 
+        // Edit Dog
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_edit_dog
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_press_back
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
+        // Edit Dog
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_edit_dog
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_New_Dog() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TestTags.DogList.TAG_DOG_LIST_CONTENT))
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_ADD_DOG_BUTTON).performClick()
-        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
+
+        // New Dog
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_add_dog
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_New_Dog_From_Settings() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
-        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        // Dog List
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_home
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_ADD_DOG_BUTTON).performClick()
-        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
+
+        // New Dog
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_add_dog
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_settings_action_icon
             )
         ).performClick()
-        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+
+        // Settings
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_settings
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithContentDescription(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
                 R.string.cd_press_back
             )
         ).performClick()
 
-        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
+        // New Dog
+        composeTestRule.onNodeWithText(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.title_add_dog
+            )
+        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertExists()
     }
 }
