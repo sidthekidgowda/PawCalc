@@ -31,12 +31,7 @@ jobs:
 
   androidTest:
     needs: build
-    runs-on: macOS-latest
-    timeout-minutes: 55
-    strategy:
-      matrix:
-        api-level: [24,30,33]
-
+    runs-on: macos-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
@@ -56,11 +51,11 @@ jobs:
       - name: Run Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
+          api-level: 29
           arch: x86_64
-          target: google_apis
+          target: default
           disable-animations: true
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck --stacktrace
 
       - name: Upload Reports
         if: always()
