@@ -275,42 +275,154 @@ class NavigationTest {
     }
 
     @Test
-    fun Clicking_On_Settings_Icons_Navigates_To_Settings_From_Dog_List() {
+    fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_Dog_List() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_Dog_List_From_Settings() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_press_back
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
-    fun Clicking_On_Settings_Icons_Navigates_To_Settings_From_Dog_Details() {
+    fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_Dog_Details() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
+            .onChildAt(1)
+            .performClick()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_Dog_Details_From_Settings() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
+            .onChildAt(1)
+            .performClick()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_press_back
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
-    fun Clicking_On_Settings_Icons_Navigates_To_Settings_From_Edit_Dog() {
+    fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_Edit_Dog() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
+            .onChildAt(1)
+            .performClick()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogDetails.TAG_EDIT_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_Edit_Dog_From_Settings() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
+            .onChildAt(1)
+            .performClick()
+        composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogDetails.TAG_EDIT_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_press_back
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
-    fun Clicking_On_Settings_Icons_Navigates_To_Settings_From_New_Dog() {
+    fun Clicking_On_Settings_Icon_Navigates_To_Settings_From_New_Dog() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogList.TAG_ADD_DOG_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
     }
 
     @Test
     fun Clicking_On_Back_Arrow_Navigates_Back_To_New_Dog_From_Settings() {
+        FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
+        composeTestRule.onNodeWithTag(DOG_LIST_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TestTags.DogList.TAG_ADD_DOG_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_settings_action_icon
+            )
+        ).performClick()
+        composeTestRule.onNodeWithTag(SETTINGS_SCREEN_ROUTE).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(
+                R.string.cd_press_back
+            )
+        ).performClick()
 
+        composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
     }
 }
