@@ -5,7 +5,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.sidgowda.pawcalc.PawCalcActivity
 import com.sidgowda.pawcalc.R
 import com.sidgowda.pawcalc.data.modules.OnboardingDataModule
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState

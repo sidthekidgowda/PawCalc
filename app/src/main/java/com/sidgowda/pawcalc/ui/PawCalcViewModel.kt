@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
