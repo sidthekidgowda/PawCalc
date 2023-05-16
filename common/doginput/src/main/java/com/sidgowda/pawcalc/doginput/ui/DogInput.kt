@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,6 +48,7 @@ import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.ui.*
+import com.sidgowda.pawcalc.test.TestTags.DogInput.TAG_SAVE_BUTTON
 import com.sidgowda.pawcalc.ui.component.EmptyDogPictureWithCamera
 import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PictureWithCameraIcon
@@ -260,6 +262,7 @@ internal fun DogInputScreen(
         )
         // todo verify double clicks to not add multiple dogs
         PawCalcButton(
+            modifier = Modifier.testTag(TAG_SAVE_BUTTON),
             enabled = dogInputState.isInputValid(),
             text = stringResource(id = R.string.save_input),
             onClick = onSaveDog

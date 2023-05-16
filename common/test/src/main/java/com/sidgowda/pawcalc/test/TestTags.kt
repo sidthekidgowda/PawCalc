@@ -15,6 +15,10 @@ object TestTags {
 
     }
 
+    object DogInput {
+        const val TAG_SAVE_BUTTON = "dog_input_save_button"
+    }
+
     object DogList {
         const val TAG_ADD_DOG_BUTTON = "add_dog_button"
         const val TAG_DOG_LIST_CONTENT = "dog_list_content"

@@ -32,6 +32,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     testOptions {
         unitTests.apply {
@@ -74,6 +75,7 @@ dependencies {
     implementation(projects.common.test)
     implementation(projects.core.data)
     implementation(projects.core.db)
+    coreLibraryDesugaring(libs.android.tools.desugarJdk)
     implementation(projects.core.domain)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.accompanist.systemuicontroller)
