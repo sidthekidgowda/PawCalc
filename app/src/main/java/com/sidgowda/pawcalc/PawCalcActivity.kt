@@ -56,7 +56,7 @@ class PawCalcActivity : AppCompatActivity() {
             PawCalcTheme(
                 darkTheme = darkTheme
             ) {
-                PawCalc()
+                PawCalcHost()
             }
         }
     }
@@ -79,6 +79,6 @@ private fun shouldUseDarkTheme(
 @Composable
 fun PreviewPawCalcActivity() {
     PawCalcTheme {
-        PawCalc()
+        PawCalcHost()
     }
 }

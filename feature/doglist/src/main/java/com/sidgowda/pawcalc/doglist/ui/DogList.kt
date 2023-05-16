@@ -58,6 +58,7 @@ import com.sidgowda.pawcalc.doglist.model.NavigateEvent
 import com.sidgowda.pawcalc.navigation.DOG_LIST_SCREEN_ROUTE
 import com.sidgowda.pawcalc.navigation.ONBOARDING_SCREEN_ROUTE
 import com.sidgowda.pawcalc.test.TestTags
+import com.sidgowda.pawcalc.test.TestTags.DogList.TAG_DOG_LIST_CONTENT
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import com.sidgowda.pawcalc.ui.R as UiR
@@ -187,7 +188,7 @@ internal fun DogListScreen(
                     } else {
                         val lazyColumnState = rememberLazyListState()
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().testTag(TAG_DOG_LIST_CONTENT),
                             contentPadding = contentPadding,
                             state = lazyColumnState
                         ) {

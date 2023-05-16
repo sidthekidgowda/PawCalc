@@ -37,6 +37,7 @@ import com.sidgowda.pawcalc.dogdetails.R
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.NavigateEvent
 import com.sidgowda.pawcalc.navigation.DOG_DETAILS_SCREEN_ROUTE
+import com.sidgowda.pawcalc.test.TestTags.DogDetails.TAG_EDIT_BUTTON
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
@@ -147,7 +148,7 @@ fun ProfilePicWithEditButton(
             modifier = Modifier.constrainAs(editButton) {
                 top.linkTo(parent.top)
                 end.linkTo(parent.end)
-            },
+            }.testTag(TAG_EDIT_BUTTON),
             onEditDog = onEditDog
         )
     }

@@ -19,7 +19,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun PawCalc() {
+fun PawCalcHost() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination by derivedStateOf {
@@ -55,11 +55,13 @@ fun PawCalc() {
 
 @Composable
 fun HomeTopBar(
+    modifier: Modifier = Modifier,
     currentDestination: Destination,
     onNavIconClick: () -> Unit,
     onActionClick: () -> Unit
 ) {
     PawCalcTopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(id = currentDestination.title),

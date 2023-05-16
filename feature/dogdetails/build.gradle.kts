@@ -54,6 +54,7 @@ dependencies {
     implementation(projects.common.settings)
     implementation(projects.common.ui)
     implementation(projects.common.navigation)
+    implementation(projects.common.test)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
