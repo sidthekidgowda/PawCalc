@@ -104,7 +104,6 @@ class HomeTopBarTest {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
-            .performScrollTo()
             .performClick()
         composeTestRule.onNodeWithText(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
@@ -118,7 +117,6 @@ class HomeTopBarTest {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
-            .performScrollTo()
             .performClick()
         composeTestRule.onNodeWithTag(TestTags.DogDetails.TAG_EDIT_BUTTON).performClick()
         composeTestRule.onNodeWithText(
@@ -211,7 +209,6 @@ class HomeTopBarTest {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(0)
-            .performScrollTo()
             .performClick()
         composeTestRule.onNodeWithText(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
@@ -231,7 +228,6 @@ class HomeTopBarTest {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
         composeTestRule.onNodeWithTag(TestTags.DogList.TAG_DOG_LIST_CONTENT)
             .onChildAt(1)
-            .performScrollTo()
             .performClick()
         composeTestRule.onNodeWithText(
             InstrumentationRegistry.getInstrumentation().targetContext.getString(
