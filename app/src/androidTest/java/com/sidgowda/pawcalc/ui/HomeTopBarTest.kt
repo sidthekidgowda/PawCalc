@@ -1,10 +1,12 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.ui
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.sidgowda.pawcalc.PawCalcActivity
+import com.sidgowda.pawcalc.R
 import com.sidgowda.pawcalc.data.modules.OnboardingDataModule
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
@@ -12,6 +14,7 @@ import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepoImpl
 import com.sidgowda.pawcalc.db.di.DbModule
 import com.sidgowda.pawcalc.test.IdlingResourceCoroutineDispatcher
 import com.sidgowda.pawcalc.test.TestTags
+import com.sidgowda.pawcalc.test.fakes.FakeOnboardingDataSourceSingleton
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

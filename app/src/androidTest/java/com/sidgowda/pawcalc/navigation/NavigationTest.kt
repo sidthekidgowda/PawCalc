@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc
+package com.sidgowda.pawcalc.navigation
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -7,6 +7,9 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.sidgowda.pawcalc.test.fakes.FakeOnboardingDataSourceSingleton
+import com.sidgowda.pawcalc.PawCalcActivity
+import com.sidgowda.pawcalc.R
 import com.sidgowda.pawcalc.data.modules.OnboardingDataModule
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.data.onboarding.repo.OnboardingRepo
@@ -167,6 +170,8 @@ class NavigationTest {
         composeTestRule.onNodeWithTag(NEW_DOG_SCREEN_ROUTE).assertIsDisplayed()
     }
 
+    // clicking close navigates back to dog list
+
     @Test
     fun Clicking_On_Any_Dog_In_DogList_Navigates_To_Dog_Details() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
@@ -176,6 +181,8 @@ class NavigationTest {
 
         composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertIsDisplayed()
     }
+
+    // clicking back navigates back to dog details
 
     @Test
     fun Clicking_On_Edit_Button_In_Dog_Details_Navigates_To_Edit_Dog() {
@@ -187,6 +194,8 @@ class NavigationTest {
 
         composeTestRule.onNodeWithTag(EDIT_DOG_SCREEN_ROUTE).assertIsDisplayed()
     }
+
+    // clicking close on edit dog navigates back to dog details
 
     @Test
     fun Clicking_On_Settings_Icon_Navigates_To_Settings_Screen_From_Onboarding() {
@@ -222,19 +231,26 @@ class NavigationTest {
 
     }
 
+    // clicking back navigates back to dog list
+
     @Test
     fun Clicking_On_Settings_Icons_Navigate_To_Settings_From_Dog_Details() {
 
     }
+
+    // clicking back navigates to dog details
 
     @Test
     fun Clicking_On_Settings_Icons_Navigate_To_Settings_From_Edit_Dog() {
 
     }
 
+    // clicking back navigates to edit dog
+
     @Test
     fun Clicking_On_Settings_Icons_Navigate_To_Settings_From_New_Dog() {
 
     }
 
+    // clicking back navigates to new dog
 }

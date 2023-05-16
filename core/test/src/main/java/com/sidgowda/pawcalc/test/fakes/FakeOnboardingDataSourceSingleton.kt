@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class FakeOnboardingDataSource(onboardedState: OnboardingState) : OnboardingDataSource {
+object FakeOnboardingDataSourceSingleton : OnboardingDataSource {
 
-    val onboardingStateFlow = MutableStateFlow(onboardedState)
+    var onboarding = MutableStateFlow(OnboardingState.NotOnboarded)
 
     override val onboardingState: Flow<OnboardingState>
-        get() = onboardingStateFlow.asStateFlow()
+        get() = onboarding.asStateFlow()
 
     override suspend fun setUserOnboarded() {
-        onboardingStateFlow.update { OnboardingState.Onboarded }
+        onboarding.update { OnboardingState.Onboarded }
     }
 }
