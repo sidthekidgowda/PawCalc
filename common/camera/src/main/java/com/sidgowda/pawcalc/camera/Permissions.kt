@@ -79,7 +79,7 @@ fun PermissionDialog(
         confirmButton = {
             TextButton(onClick = requestPermission) {
                 Text(
-                    text = stringResource(id = R.string.go_to_settings).uppercase(),
+                    text = stringResource(id = R.string.go_to_settings),
                     style = PawCalcTheme.typography.h6
                 )
             }
@@ -87,7 +87,7 @@ fun PermissionDialog(
         dismissButton = {
             TextButton(onClick = onCancel) {
                 Text(
-                    text = stringResource(id = R.string.cancel).uppercase(),
+                    text = stringResource(id = R.string.cancel),
                     style = PawCalcTheme.typography.h6
                 )
             }
