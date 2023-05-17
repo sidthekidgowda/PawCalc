@@ -29,6 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -262,7 +264,9 @@ internal fun DogInputScreen(
         )
         // todo verify double clicks to not add multiple dogs
         PawCalcButton(
-            modifier = Modifier.testTag(TAG_SAVE_BUTTON).padding(top = 10.dp),
+            modifier = Modifier
+                .testTag(TAG_SAVE_BUTTON)
+                .padding(top = 10.dp),
             enabled = dogInputState.isInputValid(),
             text = stringResource(id = R.string.save_input),
             onClick = onSaveDog
@@ -279,23 +283,37 @@ internal fun CameraInput(
     imageUri: Uri?,
     showBottomSheet: () -> Unit
 ) {
-    if (imageUri == null) {
+    val imageDoesNotExist = imageUri == null
+    val clickLabel = if (imageDoesNotExist) {
+        stringResource(id = R.string.cd_camera_icon_empty)
+    } else {
+        stringResource(id = R.string.cd_camera_icon_update)
+    }
+    if (imageDoesNotExist) {
         EmptyDogPictureWithCamera(
-            modifier = modifier.clickable {
-                // open bottom sheet
-                if (!bottomSheetState.isVisible) {
-                    showBottomSheet()
+            modifier = modifier
+                .clickable {
+                    // open bottom sheet
+                    if (!bottomSheetState.isVisible) {
+                        showBottomSheet()
+                    }
                 }
-            }
+                .semantics {
+                    contentDescription = clickLabel
+                }
         )
     } else {
         PictureWithCameraIcon(
-            modifier = modifier.clickable {
-                // open bottom sheet
-                if (!bottomSheetState.isVisible) {
-                    showBottomSheet()
+            modifier = modifier
+                .clickable {
+                    // open bottom sheet
+                    if (!bottomSheetState.isVisible) {
+                        showBottomSheet()
+                    }
                 }
-            }
+                .semantics {
+                    contentDescription = clickLabel
+                }
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(imageUri).build(),
@@ -322,10 +340,12 @@ internal fun NameInput(
     ) {
         val (header, textInput, errorText) = createRefs()
         Text(
-            modifier = Modifier.constrainAs(header) {
-                start.linkTo(textInput.start)
-                top.linkTo(parent.top)
-            }.padding(start = 44.dp, bottom = 10.dp),
+            modifier = Modifier
+                .constrainAs(header) {
+                    start.linkTo(textInput.start)
+                    top.linkTo(parent.top)
+                }
+                .padding(start = 44.dp, bottom = 10.dp),
             text = stringResource(id = R.string.name_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
@@ -375,16 +395,13 @@ internal fun NameInput(
         )
         if (isNameError) {
             Text(
-                modifier = Modifier.constrainAs(errorText) {
-                    start.linkTo(textInput.start)
-                    top.linkTo(textInput.bottom)
-                    end.linkTo(textInput.end)
-                    width = Dimension.fillToConstraints
-                }.padding(
-                    top = 2.dp,
-                    start = 44.dp,
-                    end = 44.dp
-                ),
+                modifier = Modifier
+                    .constrainAs(errorText) {
+                        start.linkTo(textInput.start, 44.dp)
+                        top.linkTo(textInput.bottom, 2.dp)
+                        end.linkTo(textInput.end, 44.dp)
+                        width = Dimension.fillToConstraints
+                    },
                 text = stringResource(id = R.string.name_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
@@ -406,19 +423,23 @@ internal fun WeightInput(
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (header, spacer, textInput, errorText) = createRefs()
         Text(
-            modifier = Modifier.constrainAs(header) {
-                start.linkTo(textInput.start)
-                top.linkTo(parent.top)
-            }.padding(bottom = 10.dp),
+            modifier = Modifier
+                .constrainAs(header) {
+                    start.linkTo(textInput.start)
+                    top.linkTo(parent.top)
+                }
+                .padding(bottom = 10.dp),
             text = stringResource(id = R.string.weight_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
         Spacer(
-            modifier = Modifier.constrainAs(spacer) {
-                start.linkTo(parent.start)
-                top.linkTo(header.bottom)
-            }.width(44.dp)
+            modifier = Modifier
+                .constrainAs(spacer) {
+                    start.linkTo(parent.start)
+                    top.linkTo(header.bottom)
+                }
+                .width(44.dp)
         )
         TextField(
             modifier = Modifier
@@ -488,14 +509,13 @@ internal fun WeightInput(
         )
         if (isWeightError) {
             Text(
-                modifier = Modifier.constrainAs(errorText) {
-                    start.linkTo(textInput.start)
-                    top.linkTo(textInput.bottom)
-                    end.linkTo(textInput.end)
-                    width = Dimension.fillToConstraints
-                }.padding(
-                    top = 2.dp
-                ),
+                modifier = Modifier
+                    .constrainAs(errorText) {
+                        start.linkTo(textInput.start)
+                        top.linkTo(textInput.bottom, 2.dp)
+                        end.linkTo(textInput.end)
+                        width = Dimension.fillToConstraints
+                    },
                 textAlign = TextAlign.Start,
                 text = stringResource(
                     id = if (weightFormat == WeightFormat.POUNDS) R.string.weight_input_error else R.string.weight_input_error_kg
@@ -515,25 +535,36 @@ internal fun BirthDateInput(
     birthDateFocusRequester: FocusRequester,
     onDatePickerRequest: () -> Unit
 ) {
+    val datePickerLabel = stringResource(id = R.string.cd_date_picker)
+    val dateFormatLabel = if (dateFormat == DateFormat.AMERICAN) {
+        stringResource(id = R.string.cd_months_days_years)
+    } else {
+        stringResource(id = R.string.cd_days_months_years)
+    }
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (header, spacer, textInput, errorText) = createRefs()
         Text(
-            modifier = Modifier.constrainAs(header) {
-                start.linkTo(textInput.start)
-                top.linkTo(parent.top)
-            }.padding(bottom = 10.dp),
+            modifier = Modifier
+                .constrainAs(header) {
+                    start.linkTo(textInput.start)
+                    top.linkTo(parent.top)
+                }
+                .padding(bottom = 10.dp),
             text = stringResource(id = R.string.birth_date_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
         Spacer(
-            modifier = Modifier.constrainAs(spacer) {
-                start.linkTo(parent.start)
-                top.linkTo(header.bottom)
-            }.width(44.dp)
+            modifier = Modifier
+                .constrainAs(spacer) {
+                    start.linkTo(parent.start)
+                    top.linkTo(header.bottom)
+                }
+                .width(44.dp)
         )
         TextField(
-            modifier = Modifier.constrainAs(textInput) {
+            modifier = Modifier
+                .constrainAs(textInput) {
                     start.linkTo(spacer.end)
                     top.linkTo(header.bottom)
                 }
@@ -541,6 +572,9 @@ internal fun BirthDateInput(
                 .fillMaxWidth(.6f)
                 .clickable {
                     onDatePickerRequest()
+                }
+                .semantics {
+                    contentDescription = datePickerLabel
                 }
                 .focusRequester(birthDateFocusRequester)
                 .onFocusChanged {
@@ -554,8 +588,11 @@ internal fun BirthDateInput(
             onValueChange = {},
             placeholder = {
                 Text(
+                    modifier = Modifier.semantics {
+                        contentDescription = dateFormatLabel
+                    },
                     text = stringResource(
-                        id = if (dateFormat == DateFormat.AMERICAN){
+                        id = if (dateFormat == DateFormat.AMERICAN) {
                             R.string.birth_date_american_placeholder
                         } else {
                             R.string.birth_date_international_placeholder
@@ -595,7 +632,6 @@ internal fun BirthDateInput(
                         onDatePickerRequest()
                     }
                 ) {
-                    // todo content description
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = "",
@@ -616,14 +652,16 @@ internal fun BirthDateInput(
         )
         if (isBirthDateError) {
             Text(
-                modifier = Modifier.constrainAs(errorText) {
-                    start.linkTo(textInput.start)
-                    top.linkTo(textInput.bottom)
-                    end.linkTo(textInput.end)
-                    width = Dimension.fillToConstraints
-                }.padding(
-                    top = 2.dp
-                ),
+                modifier = Modifier
+                    .constrainAs(errorText) {
+                        start.linkTo(textInput.start)
+                        top.linkTo(textInput.bottom)
+                        end.linkTo(textInput.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .padding(
+                        top = 2.dp
+                    ),
                 textAlign = TextAlign.Start,
                 text = stringResource(id = R.string.birth_date_input_error),
                 style = PawCalcTheme.typography.error,
