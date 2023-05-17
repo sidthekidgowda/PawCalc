@@ -95,7 +95,7 @@ internal fun DogDetailsScreen(
         DogWeight(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp),
+                .padding(start = 30.dp),
             weight = dog.weight,
             weightFormat = dog.weightFormat
         )
@@ -103,14 +103,14 @@ internal fun DogDetailsScreen(
         BirthDate(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp),
+                .padding(start = 30.dp),
             birthDate = dog.birthDate
         )
         Spacer(modifier = Modifier.height(10.dp))
         DogYears(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp),
+                .padding(start = 30.dp),
             dogYears = dog.dogYears
         )
         Spacer(modifier = Modifier.height(10.dp))

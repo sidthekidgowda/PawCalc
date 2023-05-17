@@ -320,6 +320,7 @@ internal fun DogListItem(
                 .padding(start = 16.dp)
         ) {
             val (image, name, birthdate, weight, dogYears, humanYears) = createRefs()
+            val endBarrier = createEndBarrier(weight, dogYears)
             AsyncImage(
                 model = dog.profilePic,
                 modifier = Modifier
@@ -336,11 +337,10 @@ internal fun DogListItem(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 10.dp, top = 12.dp, end = 16.dp)
                     .constrainAs(name) {
-                        start.linkTo(image.end)
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
+                        start.linkTo(image.end, 10.dp)
+                        top.linkTo(parent.top, 12.dp)
+                        end.linkTo(parent.end, 16.dp)
                         width = Dimension.fillToConstraints
                     },
                 text = dog.name,
@@ -351,11 +351,10 @@ internal fun DogListItem(
                 overflow = TextOverflow.Ellipsis
             )
             IconText(
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
                 constraintName = weight,
                 constrainBlock = {
-                    start.linkTo(image.end)
-                    top.linkTo(name.bottom)
+                    start.linkTo(image.end, 10.dp)
+                    top.linkTo(name.bottom, 10.dp)
                 },
                 icon = {
                     Icon(
@@ -371,14 +370,16 @@ internal fun DogListItem(
                             stringResource(id = R.string.dog_list_lb, dog.weight)
                         } else {
                             stringResource(id = R.string.dog_list_kg, dog.weight)
-                        }
+                        },
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
             IconText(
-                modifier = Modifier.padding(end = 54.dp, top = 10.dp),
                 constraintName = birthdate,
                 constrainBlock = {
+                    start.linkTo(endBarrier)
                     end.linkTo(parent.end)
                     top.linkTo(name.bottom)
                     baseline.linkTo(weight.baseline)
@@ -393,16 +394,17 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.birthDate
+                        text = dog.birthDate,
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
             IconText(
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
                 constraintName = dogYears,
                 constrainBlock = {
-                    start.linkTo(image.end)
-                    top.linkTo(birthdate.bottom)
+                    start.linkTo(image.end, 10.dp)
+                    top.linkTo(birthdate.bottom, 10.dp)
                 },
                 icon = {
                     Icon(
@@ -416,16 +418,17 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.dogYears.toText()
+                        text = dog.dogYears.toText(),
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
             IconText(
-                modifier = Modifier.padding(end = 20.dp, top = 10.dp),
                 constraintName = humanYears,
                 constrainBlock = {
                     start.linkTo(birthdate.start)
-                    top.linkTo(birthdate.bottom)
+                    top.linkTo(birthdate.bottom, 10.dp)
                     baseline.linkTo(dogYears.baseline)
                 },
                 icon = {
@@ -438,7 +441,9 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.humanYears.toText()
+                        text = dog.humanYears.toText(),
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
