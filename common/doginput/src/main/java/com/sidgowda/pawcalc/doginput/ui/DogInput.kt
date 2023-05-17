@@ -379,8 +379,11 @@ internal fun NameInput(
                     start.linkTo(textInput.start)
                     top.linkTo(textInput.bottom)
                     end.linkTo(textInput.end)
+                    width = Dimension.fillToConstraints
                 }.padding(
-                    top = 2.dp
+                    top = 2.dp,
+                    start = 44.dp,
+                    end = 44.dp
                 ),
                 text = stringResource(id = R.string.name_input_error),
                 style = PawCalcTheme.typography.error,
