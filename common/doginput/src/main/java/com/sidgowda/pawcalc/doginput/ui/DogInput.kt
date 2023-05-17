@@ -406,7 +406,7 @@ internal fun WeightInput(
             modifier = Modifier.constrainAs(header) {
                 start.linkTo(textInput.start)
                 top.linkTo(parent.top)
-            }.padding( bottom = 10.dp),
+            }.padding(start = 40.dp, bottom = 10.dp),
             text = stringResource(id = R.string.weight_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
@@ -416,8 +416,8 @@ internal fun WeightInput(
                 .constrainAs(textInput) {
                     start.linkTo(parent.start)
                     top.linkTo(header.bottom)
-                    end.linkTo(parent.end)
                 }
+                .padding(start = 40.dp)
                 .height(60.dp)
                 .fillMaxWidth(.6f)
                 .focusRequester(weightFocusRequester),
