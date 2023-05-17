@@ -3,17 +3,34 @@
     <string name="settings_date_header">Date Format</string>
     <string name="settings_weight_header">Weight Format</string>
     <string name="settings_theme_header">Theme</string>
+    <string name="cd_settings_lb">Pounds</string>
+    <string name="cd_settings_kg">Kilograms</string>
+    <string name="cd_settings_selected_option">Selected %s</string>
+    <string name="cd_settings_not_selected_option">Not Selected %s</string>
     <string-array name="settings_options_date">
         <item>mm/dd/yyyy</item>
         <item>dd/mm/yyyy</item>
+    </string-array>
+    <string-array name="cd_settings_options_date">
+        <item>Months Days Years</item>
+        <item>Days Months Years</item>
     </string-array>
     <string-array name="settings_options_weight">
         <item>lb</item>
         <item>kg</item>
     </string-array>
+    <string-array name="cd_settings_options_weight">
+        <item>Pounds</item>
+        <item>Kilograms</item>
+    </string-array>
     <string-array name="settings_options_theme">
         <item>System</item>
         <item>Dark</item>
         <item>Light</item>
+    </string-array>
+    <string-array name="cd_settings_options_theme">
+        <item>System Theme</item>
+        <item>Dark Theme</item>
+        <item>Light Theme</item>
     </string-array>
 </resources>
