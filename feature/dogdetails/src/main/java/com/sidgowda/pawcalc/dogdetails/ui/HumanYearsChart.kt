@@ -62,7 +62,7 @@ internal fun HumanYearsChartWithLegend(
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                 }
-                .padding(top = 20.dp, start = 20.dp)
+                .padding(top = 10.dp, start = 10.dp)
         )
     }
 }
@@ -285,7 +285,7 @@ internal fun LegendItem(
 ) {
     Row(
         modifier = modifier
-            .padding(6.dp)
+            .padding(2.dp)
             .semantics(mergeDescendants = true) { },
         verticalAlignment = Alignment.CenterVertically
     ) {

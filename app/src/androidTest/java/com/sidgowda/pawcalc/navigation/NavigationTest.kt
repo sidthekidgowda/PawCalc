@@ -131,14 +131,13 @@ class NavigationTest {
         }
     }
 
-    @Ignore
     @Test
     fun Clicking_Back_Button_On_New_Dog_Navigates_To_Dog_List() {
         // failed
         // Onboarding
         composeTestRule.onNodeWithTag(ONBOARDING_SCREEN_ROUTE).assertExists()
         composeTestRule.onNodeWithTag(TestTags.Onboarding.TAG_ADD_DOG_BUTTON).performClick()
-        Espresso.pressBack()
+        Espresso.pressBackUnconditionally()
 
         // wait till activity is resumed
         composeTestRule.waitForIdle()
