@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -228,23 +229,22 @@ internal fun DogInputScreen(
             .fillMaxSize()
             .verticalScroll(scrollState)
             .background(PawCalcTheme.colors.background),
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(10.dp))
         CameraInput(
             bottomSheetState = bottomSheetState,
             imageUri = dogInputState.profilePic,
             showBottomSheet = showBottomSheet
         )
         NameInput(
-            modifier = Modifier.padding(horizontal = 48.dp),
             name = dogInputState.name,
             isNameError = !dogInputState.isNameValid,
             onNameChanged = onNameChanged,
             weightFocusRequester = weightFocusRequester
         )
         WeightInput(
-            modifier = Modifier.padding(horizontal = 48.dp),
             weight = dogInputState.weight,
             weightFormat = dogInputState.weightFormat,
             isWeightError = !dogInputState.isWeightValid,
@@ -253,7 +253,6 @@ internal fun DogInputScreen(
             birthDateFocusRequester = birthDateFocusRequester
         )
         BirthDateInput(
-            modifier = Modifier.padding(horizontal = 48.dp),
             birthDate = dogInputState.birthDate,
             dateFormat = dogInputState.dateFormat,
             isBirthDateError = !dogInputState.isBirthDateValid,
@@ -267,6 +266,7 @@ internal fun DogInputScreen(
             text = stringResource(id = R.string.save_input),
             onClick = onSaveDog
         )
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 
@@ -316,15 +316,27 @@ internal fun NameInput(
     onNameChanged: (name: String) -> Unit,
     weightFocusRequester: FocusRequester
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    ConstraintLayout(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        val (header, textInput, errorText) = createRefs()
         Text(
+            modifier = Modifier.constrainAs(header) {
+                start.linkTo(textInput.start)
+                top.linkTo(parent.top)
+            }.padding(start = 40.dp, bottom = 10.dp),
             text = stringResource(id = R.string.name_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
-        Spacer(modifier = Modifier.height(10.dp))
         TextField(
             modifier = Modifier
+                .constrainAs(textInput) {
+                    start.linkTo(parent.start)
+                    top.linkTo(header.bottom)
+                    end.linkTo(parent.end)
+                }
+                .padding(horizontal = 40.dp)
                 .fillMaxWidth()
                 .heightIn(52.dp),
             value = name,
@@ -361,8 +373,15 @@ internal fun NameInput(
             )
         )
         if (isNameError) {
-            Spacer(modifier = Modifier.height(2.dp))
             Text(
+                modifier = Modifier.constrainAs(errorText) {
+                    start.linkTo(parent.start)
+                    top.linkTo(textInput.bottom)
+                }.padding(
+                    top = 2.dp,
+                    start = 40.dp,
+                    end = 40.dp
+                ),
                 text = stringResource(id = R.string.name_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
@@ -381,14 +400,27 @@ internal fun WeightInput(
     weightFocusRequester: FocusRequester,
     birthDateFocusRequester: FocusRequester
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    ConstraintLayout(modifier = modifier.fillMaxWidth()) {
+        val (header, textInput, errorText) = createRefs()
         Text(
+            modifier = Modifier.constrainAs(header) {
+                start.linkTo(textInput.start)
+                top.linkTo(parent.top)
+            }.padding( bottom = 10.dp),
             text = stringResource(id = R.string.weight_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
-        Spacer(modifier = Modifier.height(10.dp))
         TextField(
+            modifier = Modifier
+                .constrainAs(textInput) {
+                    start.linkTo(parent.start)
+                    top.linkTo(header.bottom)
+                    end.linkTo(parent.end)
+                }
+                .height(60.dp)
+                .fillMaxWidth(.6f)
+                .focusRequester(weightFocusRequester),
             value = weight,
             onValueChange = {
                 onWeightChanged(it)
@@ -400,10 +432,6 @@ internal fun WeightInput(
                     style = PawCalcTheme.typography.h7
                 )
             },
-            modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth(.6f)
-                .focusRequester(weightFocusRequester),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = PawCalcTheme.colors.surface(),
                 textColor = Color.Black,
@@ -451,8 +479,15 @@ internal fun WeightInput(
             }
         )
         if (isWeightError) {
-            Spacer(modifier = Modifier.height(2.dp))
             Text(
+                modifier = Modifier.constrainAs(errorText) {
+                    start.linkTo(parent.start)
+                    top.linkTo(textInput.bottom)
+                }.padding(
+                    top = 2.dp,
+                    start = 40.dp,
+                    end = 40.dp
+                ),
                 text = stringResource(id = R.string.weight_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
@@ -469,14 +504,36 @@ internal fun BirthDateInput(
     birthDateFocusRequester: FocusRequester,
     onDatePickerRequest: () -> Unit
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    ConstraintLayout(modifier = modifier.fillMaxWidth()) {
+        val (header, textInput, errorText) = createRefs()
         Text(
+            modifier = Modifier.constrainAs(header) {
+                start.linkTo(textInput.start)
+                top.linkTo(parent.top)
+            }.padding(bottom = 10.dp),
             text = stringResource(id = R.string.birth_date_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
+            modifier = Modifier.constrainAs(textInput) {
+                    start.linkTo(parent.start)
+                    top.linkTo(header.bottom)
+                    end.linkTo(parent.end)
+                }
+                .height(60.dp)
+                .fillMaxWidth(.6f)
+                .clickable {
+                    onDatePickerRequest()
+                }
+                .focusRequester(birthDateFocusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        onDatePickerRequest()
+                    }
+                }
+                .focusable(),
             value = birthDate,
             enabled = false,
             onValueChange = {},
@@ -494,19 +551,6 @@ internal fun BirthDateInput(
                 )
             },
             readOnly = true,
-            modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth(.6f)
-                .clickable {
-                    onDatePickerRequest()
-                }
-                .focusRequester(birthDateFocusRequester)
-                .onFocusChanged {
-                    if (it.isFocused) {
-                        onDatePickerRequest()
-                    }
-                }
-                .focusable(),
             shape = PawCalcTheme.shapes.mediumRoundedCornerShape.copy(
                 bottomStart = ZeroCornerSize,
                 bottomEnd = ZeroCornerSize
@@ -536,6 +580,7 @@ internal fun BirthDateInput(
                         onDatePickerRequest()
                     }
                 ) {
+                    // todo content description
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = "",

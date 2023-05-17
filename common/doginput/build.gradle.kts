@@ -54,6 +54,7 @@ dependencies {
     implementation(projects.common.settings)
     implementation(projects.common.test)
     implementation(projects.core.data)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
