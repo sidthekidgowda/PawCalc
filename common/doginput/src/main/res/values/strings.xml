@@ -28,4 +28,6 @@
     <string name="cd_date_picker">Select a birth date from the date picker</string>
     <string name="cd_months_days_years">Months Days Years</string>
     <string name="cd_days_months_years">Days Months Year</string>
+    <string name="cd_weight_format_lb">Pounds</string>
+    <string name="cd_weight_format_kg">Kilograms</string>
 </resources>

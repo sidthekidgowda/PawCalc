@@ -420,6 +420,12 @@ internal fun WeightInput(
     weightFocusRequester: FocusRequester,
     birthDateFocusRequester: FocusRequester
 ) {
+    val isWeightFormatInPounds = weightFormat == WeightFormat.POUNDS
+    val weightFormatLabel = if (isWeightFormatInPounds) {
+        stringResource(id = R.string.cd_weight_format_lb)
+    } else {
+        stringResource(id = R.string.cd_weight_format_kg)
+    }
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (header, spacer, textInput, errorText) = createRefs()
         Text(
@@ -495,10 +501,13 @@ internal fun WeightInput(
                                 topStart = ZeroCornerSize
                             )
                         )
+                        .semantics {
+                            contentDescription = weightFormatLabel
+                        }
                         .wrapContentSize(),
                     textAlign = TextAlign.Center,
                     text = stringResource(
-                        id = if (weightFormat == WeightFormat.POUNDS)
+                        id = if (isWeightFormatInPounds)
                             R.string.weight_input_unit_lb
                         else R.string.weight_input_unit_kg
                     ),
@@ -518,7 +527,7 @@ internal fun WeightInput(
                     },
                 textAlign = TextAlign.Start,
                 text = stringResource(
-                    id = if (weightFormat == WeightFormat.POUNDS) R.string.weight_input_error else R.string.weight_input_error_kg
+                    id = if (isWeightFormatInPounds) R.string.weight_input_error else R.string.weight_input_error_kg
                 ),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
@@ -536,7 +545,8 @@ internal fun BirthDateInput(
     onDatePickerRequest: () -> Unit
 ) {
     val datePickerLabel = stringResource(id = R.string.cd_date_picker)
-    val dateFormatLabel = if (dateFormat == DateFormat.AMERICAN) {
+    val isDateFormatAmerican = dateFormat == DateFormat.AMERICAN
+    val dateFormatLabel = if (isDateFormatAmerican) {
         stringResource(id = R.string.cd_months_days_years)
     } else {
         stringResource(id = R.string.cd_days_months_years)
@@ -592,7 +602,7 @@ internal fun BirthDateInput(
                         contentDescription = dateFormatLabel
                     },
                     text = stringResource(
-                        id = if (dateFormat == DateFormat.AMERICAN) {
+                        id = if (isDateFormatAmerican) {
                             R.string.birth_date_american_placeholder
                         } else {
                             R.string.birth_date_international_placeholder
