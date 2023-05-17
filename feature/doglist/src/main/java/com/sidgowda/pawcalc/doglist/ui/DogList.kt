@@ -379,8 +379,7 @@ internal fun DogListItem(
             IconText(
                 constraintName = birthdate,
                 constrainBlock = {
-                    start.linkTo(endBarrier)
-                    end.linkTo(parent.end)
+                    start.linkTo(humanYears.start)
                     top.linkTo(name.bottom)
                     baseline.linkTo(weight.baseline)
                 },
@@ -395,6 +394,7 @@ internal fun DogListItem(
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
                         text = dog.birthDate,
+                        textAlign = TextAlign.Center,
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
                     )
@@ -418,7 +418,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.dogYears.toText(),
+                        text = dog.dogYears.copy(years = 12, days = 30, months = 12).toText(),
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
                     )
@@ -427,8 +427,9 @@ internal fun DogListItem(
             IconText(
                 constraintName = humanYears,
                 constrainBlock = {
-                    start.linkTo(birthdate.start)
+                    start.linkTo(endBarrier)
                     top.linkTo(birthdate.bottom, 10.dp)
+                    end.linkTo(parent.end)
                     baseline.linkTo(dogYears.baseline)
                 },
                 icon = {
@@ -440,8 +441,8 @@ internal fun DogListItem(
                 },
                 text = {
                     Text(
-                        modifier = Modifier.padding(start = 6.dp),
-                        text = dog.humanYears.toText(),
+                        modifier = Modifier.padding(start = 2.dp, end = 6.dp),
+                        text = dog.humanYears.copy(years = 12, days = 30, months = 12).toText(),
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
                     )
