@@ -262,7 +262,7 @@ internal fun DogInputScreen(
         )
         // todo verify double clicks to not add multiple dogs
         PawCalcButton(
-            modifier = Modifier.testTag(TAG_SAVE_BUTTON),
+            modifier = Modifier.testTag(TAG_SAVE_BUTTON).padding(top = 10.dp),
             enabled = dogInputState.isInputValid(),
             text = stringResource(id = R.string.save_input),
             onClick = onSaveDog
