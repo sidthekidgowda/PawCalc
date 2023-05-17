@@ -505,7 +505,7 @@ internal fun BirthDateInput(
     onDatePickerRequest: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-        val (header, textInput, errorText) = createRefs()
+        val (header, spacer, textInput, errorText) = createRefs()
         Text(
             modifier = Modifier.constrainAs(header) {
                 start.linkTo(textInput.start)
@@ -515,12 +515,16 @@ internal fun BirthDateInput(
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(
+            modifier = Modifier.constrainAs(spacer) {
+                start.linkTo(parent.start)
+                top.linkTo(header.bottom)
+            }.width(40.dp)
+        )
         TextField(
             modifier = Modifier.constrainAs(textInput) {
-                    start.linkTo(parent.start)
+                    start.linkTo(spacer.end)
                     top.linkTo(header.bottom)
-                    end.linkTo(parent.end)
                 }
                 .height(60.dp)
                 .fillMaxWidth(.6f)
@@ -600,8 +604,15 @@ internal fun BirthDateInput(
             )
         )
         if (isBirthDateError) {
-            Spacer(modifier = Modifier.height(2.dp))
             Text(
+                modifier = Modifier.constrainAs(errorText) {
+                    start.linkTo(parent.start)
+                    top.linkTo(textInput.bottom)
+                }.padding(
+                    top = 2.dp,
+                    start = 40.dp,
+                    end = 40.dp
+                ),
                 text = stringResource(id = R.string.birth_date_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
