@@ -7,6 +7,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.shouldShowRationale
@@ -64,14 +65,14 @@ fun PermissionDialog(
         title = {
             Text(
                 text = stringResource(id = R.string.permission_denied_title, permission),
-                style = PawCalcTheme.typography.h3,
+                style = PawCalcTheme.typography.h6.copy(fontSize = 18.sp),
                 color = PawCalcTheme.colors.onSurface
             )
         },
         text = {
             Text(
                 text = stringResource(id = R.string.permission_denied_message),
-                style = PawCalcTheme.typography.body2,
+                style = PawCalcTheme.typography.body1.copy(fontSize = 14.sp),
                 color = PawCalcTheme.colors.onSurface
             )
         },
