@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -62,11 +64,22 @@ fun HomeTopBar(
     onNavIconClick: () -> Unit,
     onActionClick: () -> Unit
 ) {
+    val title = stringResource(id = currentDestination.title)
+    val screenLabel = stringResource(
+        id = R.string.cd_current_screen, if (currentDestination == Destination.DogList) {
+            "$title ${stringResource(id = R.string.cd_home_screen)}"
+        } else {
+            title
+        }
+    )
     PawCalcTopAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = stringResource(id = currentDestination.title),
+                modifier = Modifier.semantics {
+                    contentDescription = screenLabel
+                },
+                text = title,
                 style = PawCalcTheme.typography.h2,
                 color = PawCalcTheme.colors.onPrimarySurface()
             )

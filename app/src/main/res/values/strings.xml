@@ -7,4 +7,6 @@
     <string name="cd_settings_action_icon">Navigate to settings</string>
     <string name="cd_close_nav_icon">Close current page</string>
     <string name="cd_press_back">Press back</string>
+    <string name="cd_home_screen">Home</string>
+    <string name="cd_current_screen">%s screen</string>
 </resources>
