@@ -6,6 +6,7 @@
     <string name="profile_picture_requirements">We require a profile picture of your dog.</string>
     <string name="name_input_error">Name must be at least 1 character and at most 50 characters</string>
     <string name="weight_input_error">Weight must be a number, more than 0 lbs, and at most 500 lbs</string>
+    <string name="weight_input_error_kg">Weight must be a number, more than 0 lbs, and at most 225 kgs</string>
     <string name="birth_date_input_error">Please select a birth date</string>
     <string name="save_input">Save</string>
     <string name="bottom_sheet_take_photo">Take photo</string>

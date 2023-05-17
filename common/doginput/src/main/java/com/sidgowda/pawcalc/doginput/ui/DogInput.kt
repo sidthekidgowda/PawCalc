@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -324,7 +325,7 @@ internal fun NameInput(
             modifier = Modifier.constrainAs(header) {
                 start.linkTo(textInput.start)
                 top.linkTo(parent.top)
-            }.padding(start = 40.dp, bottom = 10.dp),
+            }.padding(start = 44.dp, bottom = 10.dp),
             text = stringResource(id = R.string.name_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
@@ -336,7 +337,7 @@ internal fun NameInput(
                     top.linkTo(header.bottom)
                     end.linkTo(parent.end)
                 }
-                .padding(horizontal = 40.dp)
+                .padding(horizontal = 44.dp)
                 .fillMaxWidth()
                 .heightIn(52.dp),
             value = name,
@@ -375,12 +376,11 @@ internal fun NameInput(
         if (isNameError) {
             Text(
                 modifier = Modifier.constrainAs(errorText) {
-                    start.linkTo(parent.start)
+                    start.linkTo(textInput.start)
                     top.linkTo(textInput.bottom)
+                    end.linkTo(textInput.end)
                 }.padding(
-                    top = 2.dp,
-                    start = 40.dp,
-                    end = 40.dp
+                    top = 2.dp
                 ),
                 text = stringResource(id = R.string.name_input_error),
                 style = PawCalcTheme.typography.error,
@@ -401,23 +401,28 @@ internal fun WeightInput(
     birthDateFocusRequester: FocusRequester
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-        val (header, textInput, errorText) = createRefs()
+        val (header, spacer, textInput, errorText) = createRefs()
         Text(
             modifier = Modifier.constrainAs(header) {
                 start.linkTo(textInput.start)
                 top.linkTo(parent.top)
-            }.padding(start = 40.dp, bottom = 10.dp),
+            }.padding(bottom = 10.dp),
             text = stringResource(id = R.string.weight_text_input),
             style = PawCalcTheme.typography.h4,
             color = PawCalcTheme.colors.contentColor()
         )
+        Spacer(
+            modifier = Modifier.constrainAs(spacer) {
+                start.linkTo(parent.start)
+                top.linkTo(header.bottom)
+            }.width(44.dp)
+        )
         TextField(
             modifier = Modifier
                 .constrainAs(textInput) {
-                    start.linkTo(parent.start)
+                    start.linkTo(spacer.end)
                     top.linkTo(header.bottom)
                 }
-                .padding(start = 40.dp)
                 .height(60.dp)
                 .fillMaxWidth(.6f)
                 .focusRequester(weightFocusRequester),
@@ -481,14 +486,17 @@ internal fun WeightInput(
         if (isWeightError) {
             Text(
                 modifier = Modifier.constrainAs(errorText) {
-                    start.linkTo(parent.start)
+                    start.linkTo(textInput.start)
                     top.linkTo(textInput.bottom)
+                    end.linkTo(textInput.end)
+                    width = Dimension.fillToConstraints
                 }.padding(
-                    top = 2.dp,
-                    start = 40.dp,
-                    end = 40.dp
+                    top = 2.dp
                 ),
-                text = stringResource(id = R.string.weight_input_error),
+                textAlign = TextAlign.Start,
+                text = stringResource(
+                    id = if (weightFormat == WeightFormat.POUNDS) R.string.weight_input_error else R.string.weight_input_error_kg
+                ),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
             )
@@ -519,7 +527,7 @@ internal fun BirthDateInput(
             modifier = Modifier.constrainAs(spacer) {
                 start.linkTo(parent.start)
                 top.linkTo(header.bottom)
-            }.width(40.dp)
+            }.width(44.dp)
         )
         TextField(
             modifier = Modifier.constrainAs(textInput) {
@@ -606,13 +614,14 @@ internal fun BirthDateInput(
         if (isBirthDateError) {
             Text(
                 modifier = Modifier.constrainAs(errorText) {
-                    start.linkTo(parent.start)
+                    start.linkTo(textInput.start)
                     top.linkTo(textInput.bottom)
+                    end.linkTo(textInput.end)
+                    width = Dimension.fillToConstraints
                 }.padding(
-                    top = 2.dp,
-                    start = 40.dp,
-                    end = 40.dp
+                    top = 2.dp
                 ),
+                textAlign = TextAlign.Start,
                 text = stringResource(id = R.string.birth_date_input_error),
                 style = PawCalcTheme.typography.error,
                 color = MaterialTheme.colors.error
