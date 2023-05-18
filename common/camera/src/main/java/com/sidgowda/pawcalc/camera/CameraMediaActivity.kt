@@ -14,6 +14,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sidgowda.pawcalc.doginput.ui.OpenCamera
 import com.sidgowda.pawcalc.doginput.ui.OpenMedia
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import timber.log.Timber
 
 class CameraMediaActivity : ComponentActivity() {
 
@@ -51,11 +52,13 @@ class CameraMediaActivity : ComponentActivity() {
                             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                     }
                     val onClose = {
+                        Timber.d("Cancelled taking image or picking image from gallery")
                         setResult(RESULT_CANCELED)
                         this@CameraMediaActivity.finish()
                     }
                     val onSavePhoto: (Uri) -> Unit = { uri ->
                         // pass image uri back to previous screen
+                        Timber.d("Successfully took image or picked image from gallery")
                         val uriIntent = Intent().apply { data = uri }
                         setResult(RESULT_OK, uriIntent)
                         this@CameraMediaActivity.finish()

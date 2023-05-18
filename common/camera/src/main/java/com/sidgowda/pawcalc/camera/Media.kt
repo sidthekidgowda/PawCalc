@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.camera.MediaImage
 import com.sidgowda.pawcalc.camera.R
@@ -28,6 +30,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import com.sidgowda.pawcalc.ui.R as UiR
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -58,13 +61,13 @@ internal fun OpenMedia(
             scope.launch(Dispatchers.IO) {
                 val mediaImages = retrieveImagesFromMedia(context)
                 withContext(Dispatchers.Main) {
+                    Timber.tag("Media").d("Finished loading images, total images: ${mediaImages.size}")
                     images = mediaImages
                 }
             }
         }
-        // don't show content till there are images
+        // don't show content till images has loaded
         if (images != null) {
-            // future - create a shared Container Transition when clicking on image
             AnimatedContent(
                 targetState = chosenMediaImageUri
             ) { targetState ->
@@ -108,6 +111,18 @@ internal fun BoxScope.MediaGallery(
     onChoosePhoto: (Uri) -> Unit,
     onClose: () -> Unit
 ) {
+    if (images.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                stringResource(id = R.string.media_no_images),
+                color = Color.White,
+                style = PawCalcTheme.typography.h5,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
     LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),
         state = gridState,

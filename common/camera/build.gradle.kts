@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.extensions)
     implementation(libs.androidx.concurrent.futures)
+    implementation(libs.jakewharton.timber.logging)
     implementation(libs.coil.compose)
     implementation(libs.androidx.window.manager)
     implementation(libs.androidx.compose.ui.viewbinding)
