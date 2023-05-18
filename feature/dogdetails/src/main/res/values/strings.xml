@@ -8,4 +8,5 @@
     <string name="legend_years">Years</string>
     <string name="legend_months">Months</string>
     <string name="legend_days">Days</string>
+    <string name="cd_dog_details_picture">Current picture of your dog</string>
 </resources>

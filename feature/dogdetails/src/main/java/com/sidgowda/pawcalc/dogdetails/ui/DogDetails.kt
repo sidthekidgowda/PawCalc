@@ -145,10 +145,12 @@ fun ProfilePicWithEditButton(
             image = image
         )
         EditButton(
-            modifier = Modifier.constrainAs(editButton) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-            }.testTag(TAG_EDIT_BUTTON),
+            modifier = Modifier
+                .constrainAs(editButton) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+                .testTag(TAG_EDIT_BUTTON),
             onEditDog = onEditDog
         )
     }
@@ -183,7 +185,7 @@ internal fun ProfilePic(
             .clip(CircleShape)
             .border(2.dp, PawCalcTheme.colors.onPrimarySurface(), CircleShape),
         contentScale = ContentScale.Crop,
-        contentDescription = null
+        contentDescription = stringResource(id = R.string.cd_dog_details_picture)
     )
 }
 
