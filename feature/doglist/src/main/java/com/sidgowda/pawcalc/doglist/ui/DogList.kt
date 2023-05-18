@@ -380,8 +380,7 @@ internal fun DogListItem(
                 constraintName = birthdate,
                 constrainBlock = {
                     start.linkTo(humanYears.start)
-                    top.linkTo(name.bottom)
-                    baseline.linkTo(weight.baseline)
+                    top.linkTo(name.bottom, 10.dp)
                 },
                 icon = {
                     Icon(
@@ -409,8 +408,7 @@ internal fun DogListItem(
                 icon = {
                     Icon(
                         modifier = Modifier
-                            .size(18.dp)
-                            .padding(top = 2.dp),
+                            .size(18.dp),
                         imageVector = ImageVector.vectorResource(id = UiR.drawable.ic_paw),
                         contentDescription = null
                     )
@@ -418,7 +416,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.dogYears.copy(years = 12, days = 30, months = 12).toText(),
+                        text = dog.dogYears.toText(),
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
                     )
@@ -430,7 +428,6 @@ internal fun DogListItem(
                     start.linkTo(endBarrier)
                     top.linkTo(birthdate.bottom, 10.dp)
                     end.linkTo(parent.end)
-                    baseline.linkTo(dogYears.baseline)
                 },
                 icon = {
                     Icon(
@@ -442,7 +439,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 2.dp, end = 6.dp),
-                        text = dog.humanYears.copy(years = 12, days = 30, months = 12).toText(),
+                        text = dog.humanYears.toText(),
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
                     )
