@@ -3,4 +3,5 @@
     <string name="dog_list_empty">You have not added your dog. Please add your dog to see how old they are in human years.</string>
     <string name="dog_list_kg">%s kg</string>
     <string name="dog_list_lb">%s lb</string>
+    <string name="cd_dog_list_navigate_new_dog">Navigate to new dog</string>
 </resources>

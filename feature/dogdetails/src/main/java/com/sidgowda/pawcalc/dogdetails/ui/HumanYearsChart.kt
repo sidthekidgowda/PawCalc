@@ -42,25 +42,24 @@ internal fun HumanYearsChartWithLegend(
     shouldAnimate: Boolean,
     onAnimationFinished: () -> Unit
 ) {
+    val humanYearsLabel = stringResource(
+        id = R.string.cd_human_years_chart, age.years, age.months, age.days
+    )
     ConstraintLayout(
         modifier = modifier
             .background(PawCalcTheme.colors.background)
             .fillMaxWidth()
-            .semantics(mergeDescendants = true) {}
+            .semantics(mergeDescendants = true) {
+                contentDescription = humanYearsLabel
+            }
     ) {
         val (legend, chart) =  createRefs()
-        val humanYearsLabel = stringResource(
-            id = R.string.cd_human_years_chart, age.years, age.months, age.days
-        )
         HumanYearsChart(
             modifier = Modifier
                 .constrainAs(chart) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
-                }
-                .semantics {
-                    contentDescription = humanYearsLabel
                 },
             age = age,
             shouldAnimate = shouldAnimate,

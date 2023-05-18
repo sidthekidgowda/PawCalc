@@ -19,6 +19,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -154,6 +156,7 @@ fun ProfilePicWithEditButton(
                     end.linkTo(parent.end)
                 }
                 .testTag(TAG_EDIT_BUTTON),
+            name = name,
             onEditDog = onEditDog
         )
     }
@@ -163,10 +166,14 @@ fun ProfilePicWithEditButton(
 @Composable
 internal fun EditButton(
     modifier: Modifier = Modifier,
+    name: String,
     onEditDog: () -> Unit
 ) {
+    val navigateToEditDogLabel = stringResource(id = R.string.cd_dog_details_navigate_edit_dog, name)
     TextButton(
-        modifier = modifier,
+        modifier = modifier.semantics(mergeDescendants = true) {
+            contentDescription = navigateToEditDogLabel
+        },
         onClick = onEditDog
     ) {
         Text(
