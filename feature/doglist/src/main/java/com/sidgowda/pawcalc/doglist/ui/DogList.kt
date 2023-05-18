@@ -31,8 +31,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -190,6 +189,7 @@ internal fun DogListScreen(
                         )
                     } else {
                         val lazyColumnState = rememberLazyListState()
+                        val deleteDogAccessibilityLabel = stringResource(id = R.string.cd_delete_dog)
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -221,6 +221,14 @@ internal fun DogListScreen(
                                     }
                                 )
                                 SwipeToDismiss(
+                                    modifier = Modifier.semantics {
+                                        customActions = listOf(
+                                            CustomAccessibilityAction(deleteDogAccessibilityLabel) {
+                                                handleEvent(DogListEvent.DeleteDog(dog))
+                                                true
+                                            }
+                                        )
+                                    },
                                     directions = setOf(DismissDirection.StartToEnd),
                                     state = dismissState,
                                     dismissThresholds = {
@@ -317,14 +325,15 @@ internal fun DogListItem(
 ) {
     val dogItemContentDescription = dogContentDescription(dog)
     Card(
-        modifier = modifier.clearAndSetSemantics {
-            contentDescription = dogItemContentDescription
-        },
+        modifier = modifier,
         shape = RectangleShape
     ) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
+                .semantics {
+                    contentDescription = dogItemContentDescription
+                }
                 .padding(start = 16.dp)
         ) {
             val (image, name, birthdate, weight, dogYears, humanYears) = createRefs()

@@ -8,4 +8,5 @@
     <string name="cd_dog_weight">Weighs %1$s %2$s</string>
     <string name="cd_in_dog_years">%s in dog years.</string>
     <string name="cd_in_human_years">%s in human years.</string>
+    <string name="cd_delete_dog">Delete Dog</string>
 </resources>
