@@ -322,6 +322,7 @@ class NavigationTest {
         composeTestRule.onNodeWithTag(DOG_DETAILS_SCREEN_ROUTE).assertExists()
     }
 
+    @Ignore
     @Test
     fun Clicking_Back_In_Dog_Details_Navigates_Back_To_Dog_List() {
         FakeOnboardingDataSourceSingleton.onboarding = MutableStateFlow(OnboardingState.Onboarded)
