@@ -1,6 +1,8 @@
 package com.sidgowda.pawcalc.data.date
 
+import android.content.Context
 import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.data.R
 import com.sidgowda.pawcalc.date.dateFromLong
 import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import kotlin.math.round
@@ -56,6 +58,25 @@ fun Age.toText(): String {
         stringBuilder.append("${days}d")
     }
    return stringBuilder.toString()
+}
+fun Age.toAccessibilityText(context: Context): String {
+    val stringBuilder = StringBuilder()
+    if (years > 0) {
+        stringBuilder.append(context.getString(R.string.years, years))
+        if (months > 0 || days > 0) {
+            stringBuilder.append(" ")
+        }
+    }
+    if (months > 0) {
+        stringBuilder.append(context.getString(R.string.months, months))
+        if (days > 0) {
+            stringBuilder.append(" ")
+        }
+    }
+    if (years == 0 && months == 0 || days > 0) {
+        stringBuilder.append(context.getString(R.string.days, days))
+    }
+    return stringBuilder.toString()
 }
 
 /**

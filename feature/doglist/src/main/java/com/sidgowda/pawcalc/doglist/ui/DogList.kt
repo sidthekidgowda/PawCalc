@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -48,6 +47,7 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
+import com.sidgowda.pawcalc.data.date.toAccessibilityText
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.date.toText
@@ -315,10 +315,10 @@ internal fun DogListItem(
     modifier: Modifier = Modifier,
     dog: Dog
 ) {
+    val dogItemContentDescription = dogContentDescription(dog)
     Card(
-        modifier = modifier.semantics(mergeDescendants = true) {}
-            .clearAndSetSemantics {
-            contentDescription = "${dog.name} ${dog.weight} lb. Born on ${dog.birthDate}. ${dog.dogYears.years} years ${dog.dogYears.months} months ${dog.dogYears.days} days in dog years. ${dog.humanYears.years} years ${dog.humanYears.months} months ${dog.humanYears.days}  in human years"
+        modifier = modifier.clearAndSetSemantics {
+            contentDescription = dogItemContentDescription
         },
         shape = RectangleShape
     ) {
@@ -455,6 +455,18 @@ internal fun DogListItem(
             )
         }
     }
+}
+
+@Composable
+private fun dogContentDescription(dog: Dog): String {
+    val context = LocalContext.current
+    val weight = stringResource(id = R.string.cd_dog_weight, dog.weight, dog.weightFormat.toString())
+    val birthDate = stringResource(id = R.string.cd_born_on, dog.birthDate)
+    val dogYears =
+        stringResource(id = R.string.cd_in_dog_years, dog.dogYears.toAccessibilityText(context))
+    val humanYears =
+        stringResource(id = R.string.cd_in_human_years, dog.humanYears.toAccessibilityText(context))
+    return "${dog.name}. $weight. $birthDate. $dogYears. $humanYears"
 }
 
 @OptIn(ExperimentalMaterialApi::class)
