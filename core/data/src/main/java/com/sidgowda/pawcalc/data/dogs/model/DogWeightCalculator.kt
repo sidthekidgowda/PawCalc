@@ -1,6 +1,7 @@
 package com.sidgowda.pawcalc.data.dogs.model
 
 import com.sidgowda.pawcalc.common.settings.WeightFormat
+import timber.log.Timber
 import java.text.DecimalFormat
 
 private const val ONE_KG_TO_LBS = 2.20462
@@ -19,6 +20,9 @@ fun Double.toNewWeight(newWeightFormat: WeightFormat): Double {
         }
     }
     // round new weight to 2 digits
+    val calculatedWeight = newWeight.formattedToTwoDecimals()
+    Timber.tag("DogWeightCalculator")
+        .d("Old Weight: $this, New Weight: $calculatedWeight $newWeightFormat")
     return newWeight.formattedToTwoDecimals()
 }
 
@@ -27,6 +31,7 @@ fun Double.formattedToTwoDecimals(): Double {
 }
 
 fun Double.formattedToString(): String {
-    val formatter = DecimalFormat(WEIGHT_FORMAT)
-    return formatter.format(this)
+    val weightFormatted = DecimalFormat(WEIGHT_FORMAT).format(this)
+    Timber.tag("DogWeightCalculator").d("Formatted weight: $weightFormatted")
+    return weightFormatted
 }

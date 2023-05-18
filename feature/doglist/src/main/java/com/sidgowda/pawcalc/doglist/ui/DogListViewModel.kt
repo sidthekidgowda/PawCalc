@@ -30,7 +30,7 @@ class DogListViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val THROTTLE_DURATION = 300L
+        private const val THROTTLE_DURATION = 500L
         private const val KEY_SAVED_LOCAL_STATE = "saved_dog_list_local_state"
     }
 
