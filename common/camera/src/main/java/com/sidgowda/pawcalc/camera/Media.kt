@@ -64,7 +64,7 @@ internal fun OpenMedia(
         }
         // don't show content till there are images
         if (images != null) {
-            // todo create a shared Container Transition when clicking on image
+            // future - create a shared Container Transition when clicking on image
             AnimatedContent(
                 targetState = chosenMediaImageUri
             ) { targetState ->

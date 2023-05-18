@@ -264,7 +264,6 @@ internal fun DogInputScreen(
             birthDateFocusRequester = birthDateFocusRequester,
             onDatePickerRequest = onDatePickerRequest
         )
-        // todo verify double clicks to not add multiple dogs
         PawCalcButton(
             modifier = Modifier
                 .testTag(TAG_SAVE_BUTTON)
