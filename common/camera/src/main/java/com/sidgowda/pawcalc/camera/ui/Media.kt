@@ -23,8 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.sidgowda.pawcalc.camera.MediaImage
 import com.sidgowda.pawcalc.camera.R
+import com.sidgowda.pawcalc.camera.model.MediaImage
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +61,8 @@ internal fun OpenMedia(
             scope.launch(Dispatchers.IO) {
                 val mediaImages = retrieveImagesFromMedia(context)
                 withContext(Dispatchers.Main) {
-                    Timber.tag("Media").d("Finished loading images, total images: ${mediaImages.size}")
+                    Timber.tag("Media")
+                        .d("Finished loading images, total images: ${mediaImages.size}")
                     images = mediaImages
                 }
             }

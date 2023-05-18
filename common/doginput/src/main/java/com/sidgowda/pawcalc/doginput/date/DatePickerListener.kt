@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.date
+package com.sidgowda.pawcalc.doginput.date
 
 interface DatePickerListener {
     fun dateSelected(date: String)

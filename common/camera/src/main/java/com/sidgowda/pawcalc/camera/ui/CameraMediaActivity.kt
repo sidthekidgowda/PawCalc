@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.camera
+package com.sidgowda.pawcalc.camera.ui
 
 import android.app.Activity
 import android.content.Context

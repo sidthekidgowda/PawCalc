@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.camera
+package com.sidgowda.pawcalc.camera.model
 
 import android.net.Uri
 

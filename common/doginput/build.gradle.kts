@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.com.google.android.material)
     implementation(libs.hilt.android)
+    implementation(libs.jakewharton.timber.logging)
     kapt(libs.hilt.android.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
