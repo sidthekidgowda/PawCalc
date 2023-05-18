@@ -6,6 +6,7 @@ import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.model.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -40,6 +41,7 @@ class DogsRepoImpl @Inject constructor(
     .onEach { dogState ->
         // update disk for next session to use updated weight and date format
         if (dogState.dogs.isNotEmpty()) {
+            Timber.d("Updating dogs for next session in disk")
             disk.updateDogs(*dogState.dogs.toTypedArray())
         }
     }
@@ -52,17 +54,22 @@ class DogsRepoImpl @Inject constructor(
         // if dogs exists in memory, do nothing
         val inMemoryDogs = memory.dogs().first()
         if (inMemoryDogs.isNotEmpty()) {
+            Timber.d("Dogs exist in memory. No need to fetch dogs")
             loadState.update { LoadState.Idle }
             // add log statement
         } else {
+            Timber.d("Dogs do not exist in memory. Loading from disk")
             loadState.update { LoadState.Loading }
             try {
                 val inDiskDogs = disk.dogs().first()
                 if (inDiskDogs.isNotEmpty()) {
+                   Timber.d("Finished loading: Dogs exist in disk. Add to memory")
                    memory.addDogs(*inDiskDogs.toTypedArray())
+                } else {
+                    Timber.d("Finished Loading: Dogs do not exist in disk")
                 }
             } catch (e: Exception) {
-                // todo add log statement
+                Timber.e(e, "Failed to load from disk")
             } finally {
                 loadState.update { LoadState.Idle }
             }
@@ -76,6 +83,7 @@ class DogsRepoImpl @Inject constructor(
         } else {
             1
         }
+        Timber.d("Creating new dog with id: $id")
         val dog = Dog(
             id = id,
             name = dogInput.name,
