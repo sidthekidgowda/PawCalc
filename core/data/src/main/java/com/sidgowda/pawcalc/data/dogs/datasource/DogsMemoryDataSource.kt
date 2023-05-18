@@ -22,6 +22,7 @@ class DogsMemoryDataSource @Inject constructor(
     override fun dogs(): Flow<List<Dog>> {
         // transform current list of dogs any time settings is updated
         return combine(dogs.asStateFlow(), settingsDataSource.settings()) { dogs, settings ->
+            Timber.d("Transforming dogs with current settings")
             dogs.transformWithSettings(settings)
         }.flowOn(computationDispatcher)
     }
