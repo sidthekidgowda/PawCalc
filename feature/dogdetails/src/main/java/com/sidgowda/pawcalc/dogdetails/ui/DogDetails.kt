@@ -85,6 +85,7 @@ internal fun DogDetailsScreen(
     ) {
         ProfilePicWithEditButton(
             image = dog.profilePic,
+            name = dog.name,
             onEditDog = {
                 handleEvent(DogDetailsEvent.EditDog)
             }
@@ -128,6 +129,7 @@ internal fun DogDetailsScreen(
 fun ProfilePicWithEditButton(
     modifier: Modifier = Modifier,
     image: Uri,
+    name: String,
     onEditDog: () -> Unit
 ) {
     ConstraintLayout(
@@ -142,7 +144,8 @@ fun ProfilePicWithEditButton(
                     end.linkTo(parent.end)
                 }
                 .padding(top = 26.dp),
-            image = image
+            image = image,
+            name = name
         )
         EditButton(
             modifier = Modifier
@@ -176,7 +179,8 @@ internal fun EditButton(
 @Composable
 internal fun ProfilePic(
     modifier: Modifier = Modifier,
-    image: Uri
+    image: Uri,
+    name: String
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(image).build(),
@@ -185,7 +189,7 @@ internal fun ProfilePic(
             .clip(CircleShape)
             .border(2.dp, PawCalcTheme.colors.onPrimarySurface(), CircleShape),
         contentScale = ContentScale.Crop,
-        contentDescription = stringResource(id = R.string.cd_dog_details_picture)
+        contentDescription = stringResource(id = R.string.cd_dog_details_picture, name)
     )
 }
 
