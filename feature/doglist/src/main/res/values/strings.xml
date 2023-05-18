@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="dog_list_empty">You have not added your dog(s). Please add your dog(s) to see how old they are in human years.</string>
+    <string name="dog_list_empty">You have not added your dog. Please add your dog to see how old they are in human years.</string>
     <string name="dog_list_kg">%s kg</string>
     <string name="dog_list_lb">%s lb</string>
+    <string name="cd_dog_list_navigate_new_dog">Navigate to new dog</string>
+    <string name="cd_born_on">Born on %s</string>
+    <string name="cd_dog_weight">Weighs %1$s %2$s</string>
+    <string name="cd_in_dog_years">%s in dog years.</string>
+    <string name="cd_in_human_years">%s in human years.</string>
+    <string name="cd_delete_dog">Delete Dog</string>
 </resources>

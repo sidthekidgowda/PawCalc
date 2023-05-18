@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
+import com.sidgowda.pawcalc.data.date.toAccessibilityText
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.date.toText
@@ -160,7 +162,7 @@ internal fun DogListScreen(
                     modifier = Modifier.size(34.dp),
                     imageVector = Icons.Default.Add,
                     tint = Color.Black,
-                    contentDescription = null
+                    contentDescription = stringResource(id = R.string.cd_dog_list_navigate_new_dog)
                 )
             }
         }
@@ -177,18 +179,21 @@ internal fun DogListScreen(
                 else -> {
                     if (dogListState.dogs.isEmpty()) {
                         Text(
-                            text = stringResource(id = com.sidgowda.pawcalc.doglist.R.string.dog_list_empty),
+                            text = stringResource(id = R.string.dog_list_empty),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 40.dp),
+                                .padding(horizontal = 20.dp, vertical = 20.dp),
                             style = PawCalcTheme.typography.h5.copy(fontSize = 30.sp),
                             color = PawCalcTheme.colors.onSurface,
                             textAlign = TextAlign.Center
                         )
                     } else {
                         val lazyColumnState = rememberLazyListState()
+                        val deleteDogAccessibilityLabel = stringResource(id = R.string.cd_delete_dog)
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().testTag(TAG_DOG_LIST_CONTENT),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .testTag(TAG_DOG_LIST_CONTENT),
                             contentPadding = contentPadding,
                             state = lazyColumnState
                         ) {
@@ -216,6 +221,14 @@ internal fun DogListScreen(
                                     }
                                 )
                                 SwipeToDismiss(
+                                    modifier = Modifier.semantics {
+                                        customActions = listOf(
+                                            CustomAccessibilityAction(deleteDogAccessibilityLabel) {
+                                                handleEvent(DogListEvent.DeleteDog(dog))
+                                                true
+                                            }
+                                        )
+                                    },
                                     directions = setOf(DismissDirection.StartToEnd),
                                     state = dismissState,
                                     dismissThresholds = {
@@ -310,6 +323,7 @@ internal fun DogListItem(
     modifier: Modifier = Modifier,
     dog: Dog
 ) {
+    val dogItemContentDescription = dogContentDescription(dog)
     Card(
         modifier = modifier,
         shape = RectangleShape
@@ -317,9 +331,13 @@ internal fun DogListItem(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
+                .semantics {
+                    contentDescription = dogItemContentDescription
+                }
                 .padding(start = 16.dp)
         ) {
             val (image, name, birthdate, weight, dogYears, humanYears) = createRefs()
+            val endBarrier = createEndBarrier(weight, dogYears)
             AsyncImage(
                 model = dog.profilePic,
                 modifier = Modifier
@@ -336,11 +354,10 @@ internal fun DogListItem(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 10.dp, top = 12.dp, end = 16.dp)
                     .constrainAs(name) {
-                        start.linkTo(image.end)
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
+                        start.linkTo(image.end, 10.dp)
+                        top.linkTo(parent.top, 12.dp)
+                        end.linkTo(parent.end, 16.dp)
                         width = Dimension.fillToConstraints
                     },
                 text = dog.name,
@@ -351,11 +368,10 @@ internal fun DogListItem(
                 overflow = TextOverflow.Ellipsis
             )
             IconText(
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
                 constraintName = weight,
                 constrainBlock = {
-                    start.linkTo(image.end)
-                    top.linkTo(name.bottom)
+                    start.linkTo(image.end, 10.dp)
+                    top.linkTo(name.bottom, 10.dp)
                 },
                 icon = {
                     Icon(
@@ -371,17 +387,17 @@ internal fun DogListItem(
                             stringResource(id = R.string.dog_list_lb, dog.weight)
                         } else {
                             stringResource(id = R.string.dog_list_kg, dog.weight)
-                        }
+                        },
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
             IconText(
-                modifier = Modifier.padding(end = 54.dp, top = 10.dp),
                 constraintName = birthdate,
                 constrainBlock = {
-                    end.linkTo(parent.end)
-                    top.linkTo(name.bottom)
-                    baseline.linkTo(weight.baseline)
+                    start.linkTo(humanYears.start)
+                    top.linkTo(name.bottom, 10.dp)
                 },
                 icon = {
                     Icon(
@@ -393,22 +409,23 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.birthDate
+                        text = dog.birthDate,
+                        textAlign = TextAlign.Center,
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
             IconText(
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
                 constraintName = dogYears,
                 constrainBlock = {
-                    start.linkTo(image.end)
-                    top.linkTo(birthdate.bottom)
+                    start.linkTo(image.end, 10.dp)
+                    top.linkTo(birthdate.bottom, 10.dp)
                 },
                 icon = {
                     Icon(
                         modifier = Modifier
-                            .size(18.dp)
-                            .padding(top = 2.dp),
+                            .size(18.dp),
                         imageVector = ImageVector.vectorResource(id = UiR.drawable.ic_paw),
                         contentDescription = null
                     )
@@ -416,17 +433,18 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.dogYears.toText()
+                        text = dog.dogYears.toText(),
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
             IconText(
-                modifier = Modifier.padding(end = 20.dp, top = 10.dp),
                 constraintName = humanYears,
                 constrainBlock = {
-                    start.linkTo(birthdate.start)
-                    top.linkTo(birthdate.bottom)
-                    baseline.linkTo(dogYears.baseline)
+                    start.linkTo(endBarrier)
+                    top.linkTo(birthdate.bottom, 10.dp)
+                    end.linkTo(parent.end)
                 },
                 icon = {
                     Icon(
@@ -437,13 +455,27 @@ internal fun DogListItem(
                 },
                 text = {
                     Text(
-                        modifier = Modifier.padding(start = 6.dp),
-                        text = dog.humanYears.toText()
+                        modifier = Modifier.padding(start = 2.dp, end = 6.dp),
+                        text = dog.humanYears.toText(),
+                        style = PawCalcTheme.typography.body3,
+                        color = PawCalcTheme.colors.onBackground
                     )
                 }
             )
         }
     }
+}
+
+@Composable
+private fun dogContentDescription(dog: Dog): String {
+    val context = LocalContext.current
+    val weight = stringResource(id = R.string.cd_dog_weight, dog.weight, dog.weightFormat.toString())
+    val birthDate = stringResource(id = R.string.cd_born_on, dog.birthDate)
+    val dogYears =
+        stringResource(id = R.string.cd_in_dog_years, dog.dogYears.toAccessibilityText(context))
+    val humanYears =
+        stringResource(id = R.string.cd_in_human_years, dog.humanYears.toAccessibilityText(context))
+    return "${dog.name}. $weight. $birthDate. $dogYears. $humanYears"
 }
 
 @OptIn(ExperimentalMaterialApi::class)

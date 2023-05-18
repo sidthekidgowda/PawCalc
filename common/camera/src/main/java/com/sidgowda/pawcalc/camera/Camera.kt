@@ -24,11 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.concurrent.futures.await
 import androidx.core.net.toUri
-import com.sidgowda.pawcalc.ui.R
+import com.sidgowda.pawcalc.camera.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.CoroutineScope
@@ -104,7 +105,7 @@ internal fun OpenCamera(
                 onSavePhoto = {
                     onSavePhoto(capturedImageUri!!)
                 },
-                fallback = R.drawable.ic_paw
+                fallback = com.sidgowda.pawcalc.ui.R.drawable.ic_paw
             )
         }
     }
@@ -144,6 +145,7 @@ internal fun BoxScope.CameraPreview(
             .align(Alignment.TopStart)
             .padding(16.dp),
         imageVector = Icons.Default.Close,
+        contentDescription = stringResource(id = R.string.cd_camera_close_button),
         onAction = onClose
     )
 }
@@ -160,7 +162,7 @@ internal fun CameraShutterButton(
         Icon(
             imageVector = Icons.Default.Circle,
             tint = Color.Black,
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.cd_camera_shutter_button),
             modifier = Modifier
                 .size(100.dp)
                 .border(10.dp, Color.White.copy(alpha = .7f), CircleShape)

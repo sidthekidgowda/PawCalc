@@ -19,6 +19,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -85,6 +88,7 @@ internal fun DogDetailsScreen(
     ) {
         ProfilePicWithEditButton(
             image = dog.profilePic,
+            name = dog.name,
             onEditDog = {
                 handleEvent(DogDetailsEvent.EditDog)
             }
@@ -95,7 +99,7 @@ internal fun DogDetailsScreen(
         DogWeight(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp),
+                .padding(start = 30.dp),
             weight = dog.weight,
             weightFormat = dog.weightFormat
         )
@@ -103,14 +107,14 @@ internal fun DogDetailsScreen(
         BirthDate(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp),
+                .padding(start = 30.dp),
             birthDate = dog.birthDate
         )
         Spacer(modifier = Modifier.height(10.dp))
         DogYears(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 40.dp),
+                .padding(start = 30.dp),
             dogYears = dog.dogYears
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -128,6 +132,7 @@ internal fun DogDetailsScreen(
 fun ProfilePicWithEditButton(
     modifier: Modifier = Modifier,
     image: Uri,
+    name: String,
     onEditDog: () -> Unit
 ) {
     ConstraintLayout(
@@ -142,13 +147,17 @@ fun ProfilePicWithEditButton(
                     end.linkTo(parent.end)
                 }
                 .padding(top = 26.dp),
-            image = image
+            image = image,
+            name = name
         )
         EditButton(
-            modifier = Modifier.constrainAs(editButton) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-            }.testTag(TAG_EDIT_BUTTON),
+            modifier = Modifier
+                .constrainAs(editButton) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+                .testTag(TAG_EDIT_BUTTON),
+            name = name,
             onEditDog = onEditDog
         )
     }
@@ -158,10 +167,14 @@ fun ProfilePicWithEditButton(
 @Composable
 internal fun EditButton(
     modifier: Modifier = Modifier,
+    name: String,
     onEditDog: () -> Unit
 ) {
+    val navigateToEditDogLabel = stringResource(id = R.string.cd_dog_details_navigate_edit_dog, name)
     TextButton(
-        modifier = modifier,
+        modifier = modifier.clearAndSetSemantics {
+            contentDescription = navigateToEditDogLabel
+        },
         onClick = onEditDog
     ) {
         Text(
@@ -174,7 +187,8 @@ internal fun EditButton(
 @Composable
 internal fun ProfilePic(
     modifier: Modifier = Modifier,
-    image: Uri
+    image: Uri,
+    name: String
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(image).build(),
@@ -183,7 +197,7 @@ internal fun ProfilePic(
             .clip(CircleShape)
             .border(2.dp, PawCalcTheme.colors.onPrimarySurface(), CircleShape),
         contentScale = ContentScale.Crop,
-        contentDescription = null
+        contentDescription = stringResource(id = R.string.cd_dog_details_picture, name)
     )
 }
 
@@ -255,8 +269,13 @@ internal fun HumanYears(
     shouldAnimate: Boolean,
     onAnimationFinished: () -> Unit
 ) {
+    val humanYearsLabel = stringResource(
+        id = R.string.cd_human_years_chart, humanYears.years, humanYears.months, humanYears.days
+    )
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().semantics(mergeDescendants = true) {}.clearAndSetSemantics {
+            contentDescription = humanYearsLabel
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

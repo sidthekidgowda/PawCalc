@@ -2,7 +2,9 @@ package com.sidgowda.pawcalc.settings.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -15,6 +17,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,7 +39,6 @@ internal fun Settings() {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     
     SettingsScreen(
-        modifier = Modifier.fillMaxSize().background(PawCalcTheme.colors.surface),
         settings = settings,
         onSettingsEvent = viewModel::handleEvent
     )
@@ -48,7 +51,11 @@ internal fun SettingsScreen(
     onSettingsEvent: (SettingsEvent) -> Unit
 ) {
     Column(
-        modifier = modifier.testTag(SETTINGS_SCREEN_ROUTE),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(PawCalcTheme.colors.surface)
+            .testTag(SETTINGS_SCREEN_ROUTE),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ChooseDate(
@@ -78,6 +85,7 @@ internal fun ChooseDate(
         modifier = modifier,
         text = header,
         radioGroupOptions = dateOptions,
+        accessibilityOptions = stringArrayResource(id = R.array.cd_settings_options_date),
         selectedOptionIndex = dateFormat.index,
         onOptionSelected = { index ->
             onSettingsEvent(SettingsEvent.DateFormatChange(DateFormat.from(index)))
@@ -98,6 +106,7 @@ internal fun ChooseWeight(
         modifier = modifier,
         text = header,
         radioGroupOptions = weightOptions,
+        accessibilityOptions = stringArrayResource(id = R.array.cd_settings_options_weight),
         selectedOptionIndex = weightFormat.index,
         onOptionSelected = { index ->
             onSettingsEvent(SettingsEvent.WeightFormatChange(WeightFormat.from(index)))
@@ -117,6 +126,7 @@ internal fun ChooseTheme(
         modifier = modifier,
         text = header,
         radioGroupOptions = themeOptions,
+        accessibilityOptions = stringArrayResource(id = R.array.cd_settings_options_theme),
         selectedOptionIndex = themeFormat.index,
         onOptionSelected = { index ->
             onSettingsEvent(SettingsEvent.ThemeChange(ThemeFormat.from(index)))
@@ -129,6 +139,7 @@ internal fun SettingsGroup(
     modifier: Modifier = Modifier,
     text: String,
     radioGroupOptions: Array<String>,
+    accessibilityOptions: Array<String>,
     selectedOptionIndex: Int,
     onOptionSelected: (Int) -> Unit
 ) {
@@ -138,6 +149,7 @@ internal fun SettingsGroup(
             Spacer(modifier = Modifier.height(10.dp))
             RadioGroup(
                 radioGroupOptions = radioGroupOptions,
+                accessibilityOptions = accessibilityOptions,
                 selectedOptionIndex = selectedOptionIndex,
                 onOptionSelected = { optionIndex ->
                     onOptionSelected(optionIndex)
@@ -171,25 +183,35 @@ internal fun RadioGroup(
     modifier: Modifier = Modifier,
     selectedOptionIndex: Int,
     radioGroupOptions: Array<String>,
+    accessibilityOptions: Array<String>,
     onOptionSelected: (option: Int) -> Unit
 ) {
     radioGroupOptions.forEachIndexed { index, option ->
+        val selected = selectedOptionIndex == index
+        val hintsEnabledState = if (selected) {
+            stringResource(id = R.string.cd_settings_selected_option, accessibilityOptions[index])
+        } else {
+            stringResource(id = R.string.cd_settings_not_selected_option, accessibilityOptions[index])
+        }
         Row(
             modifier = modifier
                 .selectable(
-                    selected = selectedOptionIndex == index,
+                    selected = selected,
                     onClick = {
                         onOptionSelected(index)
                     },
                     role = Role.RadioButton
                 )
+                .clearAndSetSemantics {
+                    stateDescription = hintsEnabledState
+                }
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         )
         {
             RadioButton(
-                selected = selectedOptionIndex == index,
+                selected = selected,
                 onClick = null
             )
             Text(
