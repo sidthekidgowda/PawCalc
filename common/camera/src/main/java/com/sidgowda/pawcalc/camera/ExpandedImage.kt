@@ -63,6 +63,7 @@ internal fun BoxScope.ExpandedImageContainer(
             .align(Alignment.TopStart)
             .padding(16.dp),
         imageVector = Icons.Default.ArrowBack,
+        contentDescription = stringResource(id = R.string.cd_navigate_back_button),
         onAction = onBack
     )
 }

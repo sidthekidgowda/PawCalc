@@ -22,12 +22,15 @@
     <string name="weight_input_placeholder">50.0</string>
     <string name="weight_input_unit_lb">lb</string>
     <string name="weight_input_unit_kg">kg</string>
-    <string name="cd_camera_icon_empty">Please take or add a picture of your dog</string>
-    <string name="cd_camera_icon_update">Update picture of your dog</string>
+    <string name="cd_your_dog">your dog</string>
+    <string name="cd_camera_icon_empty">Please take or add a picture of %s</string>
+    <string name="cd_camera_icon_update">Update picture of %s</string>
     <string name="cd_calendar_icon">Calendar</string>
     <string name="cd_date_picker">Select a birth date from the date picker</string>
-    <string name="cd_months_days_years">Months Days Years</string>
-    <string name="cd_days_months_years">Days Months Year</string>
-    <string name="cd_weight_format_lb">Pounds</string>
-    <string name="cd_weight_format_kg">Kilograms</string>
+    <string name="cd_name_input">Enter your dog\'s name</string>
+    <string name="cd_weight_input">Enter your dog\'s weight</string>
+    <string name="cd_months_days_years">&#160;as Months Days Years</string>
+    <string name="cd_days_months_years">&#160;as Days Months Year</string>
+    <string name="cd_weight_format_lb">&#160;as Pounds</string>
+    <string name="cd_weight_format_kg">&#160;as Kilograms</string>
 </resources>

@@ -31,6 +31,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -160,7 +163,7 @@ internal fun DogListScreen(
                     modifier = Modifier.size(34.dp),
                     imageVector = Icons.Default.Add,
                     tint = Color.Black,
-                    contentDescription = null
+                    contentDescription = stringResource(id = R.string.cd_dog_list_navigate_new_dog)
                 )
             }
         }
@@ -188,7 +191,9 @@ internal fun DogListScreen(
                     } else {
                         val lazyColumnState = rememberLazyListState()
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().testTag(TAG_DOG_LIST_CONTENT),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .testTag(TAG_DOG_LIST_CONTENT),
                             contentPadding = contentPadding,
                             state = lazyColumnState
                         ) {
@@ -311,7 +316,10 @@ internal fun DogListItem(
     dog: Dog
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.semantics(mergeDescendants = true) {}
+            .clearAndSetSemantics {
+            contentDescription = "${dog.name} ${dog.weight} lb. Born on ${dog.birthDate}. ${dog.dogYears.years} years ${dog.dogYears.months} months ${dog.dogYears.days} days in dog years. ${dog.humanYears.years} years ${dog.humanYears.months} months ${dog.humanYears.days}  in human years"
+        },
         shape = RectangleShape
     ) {
         ConstraintLayout(

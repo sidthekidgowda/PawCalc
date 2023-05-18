@@ -19,14 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sidgowda.pawcalc.camera.MediaImage
-import com.sidgowda.pawcalc.ui.R
+import com.sidgowda.pawcalc.camera.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.sidgowda.pawcalc.ui.R as UiR
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -79,8 +81,8 @@ internal fun OpenMedia(
                             onSavePhoto(chosenMediaImageUri!!)
                         },
                         contentScale = ContentScale.FillHeight,
-                        placeholder = R.drawable.ic_paw,
-                        fallback = R.drawable.ic_paw
+                        placeholder = UiR.drawable.ic_paw,
+                        fallback = UiR.drawable.ic_paw
                     )
                 } else {
                     MediaGallery(
@@ -126,8 +128,8 @@ internal fun BoxScope.MediaGallery(
                     },
                     image = image.uri,
                     scaleType = ContentScale.Crop,
-                    placeholder = painterResource(id = R.drawable.ic_paw),
-                    fallback = painterResource(id = R.drawable.ic_paw)
+                    placeholder = painterResource(id = UiR.drawable.ic_paw),
+                    fallback = painterResource(id = UiR.drawable.ic_paw)
                 )
             }
         }
@@ -137,6 +139,7 @@ internal fun BoxScope.MediaGallery(
             .align(Alignment.TopStart)
             .padding(16.dp),
         imageVector = Icons.Default.Close,
+        contentDescription = stringResource(id = R.string.cd_media_close_button),
         onAction = onClose
     )
 }

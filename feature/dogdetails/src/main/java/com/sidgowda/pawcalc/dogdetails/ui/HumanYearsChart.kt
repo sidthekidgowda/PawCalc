@@ -19,14 +19,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.sidgowda.pawcalc.data.date.Age
 import com.sidgowda.pawcalc.data.date.daysInMonthToday
-import com.sidgowda.pawcalc.dogdetails.R
 import com.sidgowda.pawcalc.dogdetails.model.LegendType
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.Orange500
@@ -42,16 +40,10 @@ internal fun HumanYearsChartWithLegend(
     shouldAnimate: Boolean,
     onAnimationFinished: () -> Unit
 ) {
-    val humanYearsLabel = stringResource(
-        id = R.string.cd_human_years_chart, age.years, age.months, age.days
-    )
     ConstraintLayout(
         modifier = modifier
             .background(PawCalcTheme.colors.background)
             .fillMaxWidth()
-            .semantics(mergeDescendants = true) {
-                contentDescription = humanYearsLabel
-            }
     ) {
         val (legend, chart) =  createRefs()
         HumanYearsChart(

@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -171,7 +172,7 @@ internal fun EditButton(
 ) {
     val navigateToEditDogLabel = stringResource(id = R.string.cd_dog_details_navigate_edit_dog, name)
     TextButton(
-        modifier = modifier.semantics(mergeDescendants = true) {
+        modifier = modifier.clearAndSetSemantics {
             contentDescription = navigateToEditDogLabel
         },
         onClick = onEditDog
@@ -268,8 +269,13 @@ internal fun HumanYears(
     shouldAnimate: Boolean,
     onAnimationFinished: () -> Unit
 ) {
+    val humanYearsLabel = stringResource(
+        id = R.string.cd_human_years_chart, humanYears.years, humanYears.months, humanYears.days
+    )
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().semantics(mergeDescendants = true) {}.clearAndSetSemantics {
+            contentDescription = humanYearsLabel
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

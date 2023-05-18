@@ -10,5 +10,5 @@
     <string name="legend_days">Days</string>
     <string name="cd_dog_details_picture">Current picture of %s</string>
     <string name="cd_dog_details_navigate_edit_dog">Navigate to edit %s</string>
-    <string name="cd_human_years_chart">%1$d years %2$d months %3$d days</string>
+    <string name="cd_human_years_chart">Human Years: %1$d years %2$d months %3$d days</string>
 </resources>

@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -239,6 +240,7 @@ internal fun DogInputScreen(
         CameraInput(
             bottomSheetState = bottomSheetState,
             imageUri = dogInputState.profilePic,
+            name = dogInputState.name,
             showBottomSheet = showBottomSheet
         )
         NameInput(
@@ -280,14 +282,16 @@ internal fun DogInputScreen(
 internal fun CameraInput(
     modifier: Modifier = Modifier,
     bottomSheetState: ModalBottomSheetState,
+    name: String,
     imageUri: Uri?,
     showBottomSheet: () -> Unit
 ) {
     val imageDoesNotExist = imageUri == null
+    val nameLabel = name.ifEmpty { stringResource(id = R.string.cd_your_dog) }
     val clickLabel = if (imageDoesNotExist) {
-        stringResource(id = R.string.cd_camera_icon_empty)
+        stringResource(id = R.string.cd_camera_icon_empty, nameLabel)
     } else {
-        stringResource(id = R.string.cd_camera_icon_update)
+        stringResource(id = R.string.cd_camera_icon_update, nameLabel)
     }
     if (imageDoesNotExist) {
         EmptyDogPictureWithCamera(
@@ -335,6 +339,9 @@ internal fun NameInput(
     onNameChanged: (name: String) -> Unit,
     weightFocusRequester: FocusRequester
 ) {
+    val nameLabel = name.ifEmpty {
+        stringResource(id = R.string.cd_name_input)
+    }
     ConstraintLayout(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -356,6 +363,9 @@ internal fun NameInput(
                     start.linkTo(parent.start)
                     top.linkTo(header.bottom)
                     end.linkTo(parent.end)
+                }
+                .clearAndSetSemantics {
+                    contentDescription = nameLabel
                 }
                 .padding(horizontal = 44.dp)
                 .fillMaxWidth()
@@ -421,11 +431,15 @@ internal fun WeightInput(
     birthDateFocusRequester: FocusRequester
 ) {
     val isWeightFormatInPounds = weightFormat == WeightFormat.POUNDS
+    val weightInput = weight.ifEmpty {
+        stringResource(id = R.string.cd_weight_input)
+    }
     val weightFormatLabel = if (isWeightFormatInPounds) {
         stringResource(id = R.string.cd_weight_format_lb)
     } else {
         stringResource(id = R.string.cd_weight_format_kg)
     }
+    val weightLabel = "$weightInput$weightFormatLabel"
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (header, spacer, textInput, errorText) = createRefs()
         Text(
@@ -452,6 +466,9 @@ internal fun WeightInput(
                 .constrainAs(textInput) {
                     start.linkTo(spacer.end)
                     top.linkTo(header.bottom)
+                }
+                .clearAndSetSemantics {
+                    contentDescription = weightLabel
                 }
                 .height(60.dp)
                 .fillMaxWidth(.6f)
@@ -544,13 +561,16 @@ internal fun BirthDateInput(
     birthDateFocusRequester: FocusRequester,
     onDatePickerRequest: () -> Unit
 ) {
-    val datePickerLabel = stringResource(id = R.string.cd_date_picker)
+    val datePickerLabel = birthDate.ifEmpty {
+        stringResource(id = R.string.cd_date_picker)
+    }
     val isDateFormatAmerican = dateFormat == DateFormat.AMERICAN
     val dateFormatLabel = if (isDateFormatAmerican) {
         stringResource(id = R.string.cd_months_days_years)
     } else {
         stringResource(id = R.string.cd_days_months_years)
     }
+    val birthDateLabel = "$datePickerLabel$dateFormatLabel"
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (header, spacer, textInput, errorText) = createRefs()
         Text(
@@ -583,8 +603,8 @@ internal fun BirthDateInput(
                 .clickable {
                     onDatePickerRequest()
                 }
-                .semantics {
-                    contentDescription = datePickerLabel
+                .clearAndSetSemantics {
+                    contentDescription = birthDateLabel
                 }
                 .focusRequester(birthDateFocusRequester)
                 .onFocusChanged {
@@ -598,9 +618,6 @@ internal fun BirthDateInput(
             onValueChange = {},
             placeholder = {
                 Text(
-                    modifier = Modifier.semantics {
-                        contentDescription = dateFormatLabel
-                    },
                     text = stringResource(
                         id = if (isDateFormatAmerican) {
                             R.string.birth_date_american_placeholder
@@ -644,7 +661,7 @@ internal fun BirthDateInput(
                 ) {
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
-                        contentDescription = "",
+                        contentDescription = null,
                         tint = Color.Black
                     )
                 }
