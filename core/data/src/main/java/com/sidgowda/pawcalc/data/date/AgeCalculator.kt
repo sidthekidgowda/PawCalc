@@ -5,6 +5,7 @@ import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.data.R
 import com.sidgowda.pawcalc.date.dateFromLong
 import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
+import timber.log.Timber
 import kotlin.math.round
 
 internal enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextMonthId: Int) {
@@ -30,6 +31,7 @@ fun daysInMonthToday(
     today: String = dateFromLong(localDateTimeInMilliseconds()),
     days: Int
 ): Int {
+    Timber.tag("AgeCalculator").d("Today is $today")
     val todaySplit = today.split("/")
     val monthsToday = todaySplit.first().toInt()
     val month = Month from monthsToday
@@ -57,7 +59,8 @@ fun Age.toText(): String {
     if (years == 0 && months == 0 || days > 0) {
         stringBuilder.append("${days}d")
     }
-   return stringBuilder.toString()
+    Timber.tag("AgeCalculator").d("Age.toText() is ${stringBuilder}")
+    return stringBuilder.toString()
 }
 fun Age.toAccessibilityText(context: Context): String {
     val stringBuilder = StringBuilder()
@@ -76,6 +79,7 @@ fun Age.toAccessibilityText(context: Context): String {
     if (years == 0 && months == 0 || days > 0) {
         stringBuilder.append(context.getString(R.string.days, days))
     }
+    Timber.tag("AgeCalculator").d("Age.toAccessibilityText() is ${stringBuilder}")
     return stringBuilder.toString()
 }
 
@@ -163,6 +167,8 @@ fun String.toDogYears(
     if (birthMonth.id > endMonth.id) {
         yearsCount--
     }
+    Timber.tag("AgeCalculator")
+        .d("Dog Years: $yearsCount years $totalMonthsCount months $totalDaysCount days")
     return Age(
         years = yearsCount,
         months = totalMonthsCount,
@@ -212,7 +218,9 @@ fun String.toHumanYears(
     val numberOfDaysDecimal = (numberOfMonthsDecimal - numberOfMonths) * 30.0
     val numberOfDays = round(numberOfDaysDecimal).toInt()
 
-    return dogYears.copy(
+    Timber.tag("AgeCalculator")
+        .d("Human Years: $numberOfYears years $numberOfMonths months $numberOfDays days")
+    return Age(
         years = numberOfYears,
         months = numberOfMonths,
         days = numberOfDays
