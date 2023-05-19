@@ -34,13 +34,13 @@ fun PawCalcNavGraph(
                 navController.navigateToNewDogScreen()
             },
             onDogDetails = { dogId ->
-                Timber.d("Navigate to Dog: $dogId")
+                Timber.d("Navigating to Dog with id: $dogId")
                 navController.navigateToDogDetails(dogId)
             }
         )
         dogDetailsScreenDestination(
             onEditDog = { dogId ->
-                Timber.d("Navigate to Edit Dog: $dogId")
+                Timber.d("Navigating to Edit Dog with id: $dogId")
                 navController.navigateToEditDogScreen(dogId)
             }
         )

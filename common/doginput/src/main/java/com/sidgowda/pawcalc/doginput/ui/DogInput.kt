@@ -243,7 +243,7 @@ internal fun DogInputScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         CameraInput(
             bottomSheetState = bottomSheetState,
             imageUri = dogInputState.profilePic,

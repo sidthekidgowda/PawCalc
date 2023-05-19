@@ -32,6 +32,7 @@ import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 internal fun HumanYearsChartWithLegend(
@@ -115,6 +116,7 @@ internal fun HumanYearsChart(
         LaunchedEffect(key1 = daysAngle, key2 = monthsAngle, key3 = yearsAngle) {
             // add delay to allow compose to load ui
             delay(300)
+            Timber.tag("HumanYearsChart").d("Animation Started")
             val animateJobs = listOf(
                 launch {
                     daysAngle.animateTo(animateToDaysEnd, animationSpec = tween(1_000))
@@ -127,6 +129,7 @@ internal fun HumanYearsChart(
                 }
             )
             animateJobs.joinAll()
+            Timber.tag("HumanYearsChart").d("Animation Finished")
             // notify animation has finished
             onAnimationFinished()
         }
