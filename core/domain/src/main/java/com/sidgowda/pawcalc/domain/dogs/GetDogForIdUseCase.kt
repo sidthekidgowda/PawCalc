@@ -5,6 +5,7 @@ import com.sidgowda.pawcalc.data.dogs.model.Dog
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -17,6 +18,9 @@ class GetDogForIdUseCase @Inject constructor(
         return dogsDataSource.dogs()
             .flatMapConcat { it.asFlow() }
             .filter { dog -> dog.id == id }
+            .onEach {
+                Timber.d("id = $id, Dog id = ${it.id}")
+            }
             .flowOn(computationDispatcher)
     }
 }

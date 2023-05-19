@@ -9,6 +9,7 @@ import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.date.dateToNewFormat
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class DogsMemoryDataSource @Inject constructor(
@@ -21,6 +22,7 @@ class DogsMemoryDataSource @Inject constructor(
     override fun dogs(): Flow<List<Dog>> {
         // transform current list of dogs any time settings is updated
         return combine(dogs.asStateFlow(), settingsDataSource.settings()) { dogs, settings ->
+            Timber.d("Transforming dogs with current settings")
             dogs.transformWithSettings(settings)
         }.flowOn(computationDispatcher)
     }
@@ -29,11 +31,13 @@ class DogsMemoryDataSource @Inject constructor(
         return map { dog ->
             // if date format or weight format does not match -> convert
             val date = if (settings.dateFormat != dog.dateFormat) {
+                Timber.d("Date format changed. Old Date Format: ${dog.dateFormat}, New Date Format: ${settings.dateFormat}")
                 dog.birthDate.dateToNewFormat(settings.dateFormat)
             } else {
                 dog.birthDate
             }
             val weight = if (settings.weightFormat != dog.weightFormat) {
+                Timber.d("Weight format changed. Old Weight Format: ${dog.weightFormat}, New Weight Format: ${settings.weightFormat}")
                 dog.weight.toNewWeight(settings.weightFormat)
             } else {
                 dog.weight
@@ -48,6 +52,7 @@ class DogsMemoryDataSource @Inject constructor(
     }
 
     override suspend fun addDogs(vararg dog: Dog) {
+        Timber.d("Adding Dog to memory")
         dogs.update { list ->
             list.update {
                 it.addAll(dog)
@@ -56,6 +61,7 @@ class DogsMemoryDataSource @Inject constructor(
     }
 
     override suspend fun deleteDog(dog: Dog) {
+        Timber.d("Deleting Dog from memory")
        dogs.update { list ->
            list.update {
                it.remove(dog)
@@ -64,6 +70,7 @@ class DogsMemoryDataSource @Inject constructor(
     }
 
     override suspend fun updateDogs(vararg dog: Dog) {
+        Timber.d("Updating Dog in memory")
         val updatedDogIdsMap: Map<Int, Dog> = dog.associateBy { it.id }
         dogs.update { list ->
             list.update {
@@ -73,6 +80,7 @@ class DogsMemoryDataSource @Inject constructor(
     }
 
     override suspend fun clear() {
+        Timber.d("Deleting all Dogs from memory")
         dogs.update { list ->
             list.update { it.clear() }
         }

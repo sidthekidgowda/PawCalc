@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -56,6 +57,7 @@ class EditDogViewModel @Inject constructor(
                             currentInput.dateFormat != settings.dateFormat &&
                             currentInput.birthDate.isNotEmpty()
                         ) {
+                            Timber.d("Date format changed to ${settings.dateFormat}. Date input is updated")
                             currentInput.birthDate.dateToNewFormat(settings.dateFormat)
                         } else {
                             currentInput.birthDate
@@ -64,6 +66,7 @@ class EditDogViewModel @Inject constructor(
                             currentInput.weightFormat != settings.weightFormat &&
                             currentInput.weight.isNotEmpty() && currentInput.weight.toDoubleOrNull() != null
                         ) {
+                            Timber.d("Weight format changed to ${settings.weightFormat}. Weight input is updated")
                             currentInput.weight
                                 .toDouble()
                                 .toNewWeight(settings.weightFormat)
@@ -94,6 +97,7 @@ class EditDogViewModel @Inject constructor(
                 )
             }.also {
                 // cache the value of the dog
+                Timber.d("Cached editable dog")
                 editableDog.update { dog }
             }
         }
@@ -112,6 +116,7 @@ class EditDogViewModel @Inject constructor(
 
     private fun saveDogInfo() {
         viewModelScope.launch(ioDispatcher) {
+            Timber.d("Updating dog")
             editableDog.updateAndGet { oldDog ->
                 val input = _inputState.value
                 oldDog?.copy(

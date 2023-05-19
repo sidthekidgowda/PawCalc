@@ -16,6 +16,7 @@ import com.sidgowda.pawcalc.newdog.navigation.newDogScreenDestination
 import com.sidgowda.pawcalc.onboarding.navigation.navigateToOnboarding
 import com.sidgowda.pawcalc.onboarding.navigation.onboardingDestination
 import com.sidgowda.pawcalc.settings.navigation.settingsScreenDestination
+import timber.log.Timber
 
 @Composable
 fun PawCalcNavGraph(
@@ -33,11 +34,13 @@ fun PawCalcNavGraph(
                 navController.navigateToNewDogScreen()
             },
             onDogDetails = { dogId ->
+                Timber.d("Navigating to Dog with id: $dogId")
                 navController.navigateToDogDetails(dogId)
             }
         )
         dogDetailsScreenDestination(
             onEditDog = { dogId ->
+                Timber.d("Navigating to Edit Dog with id: $dogId")
                 navController.navigateToEditDogScreen(dogId)
             }
         )

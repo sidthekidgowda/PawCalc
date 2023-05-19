@@ -4,6 +4,7 @@ import android.net.Uri
 import com.sidgowda.pawcalc.common.settings.WeightFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 
 enum class DogInputRequirements {
     OnePicture,
@@ -13,6 +14,7 @@ enum class DogInputRequirements {
 }
 
 fun MutableStateFlow<DogInputState>.updateName(name: String) {
+    Timber.tag("DogInput").d("Update name: $name")
     val inputRequirements = listOf(DogInputRequirements.NameBetweenZeroAndFifty)
     // we don't want show error until we have one character
     val isNameValidForTextInput = name.length <= 50
@@ -31,6 +33,7 @@ fun MutableStateFlow<DogInputState>.updateName(name: String) {
 }
 
 fun MutableStateFlow<DogInputState>.updateWeight(weight: String) {
+    Timber.tag("DogInput").d("Update weight: $weight")
     val inputRequirements = listOf(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
     val weightAsDouble: Double? = weight.toDoubleOrNull()
     val weightUnderLimit =
@@ -52,6 +55,7 @@ fun MutableStateFlow<DogInputState>.updateWeight(weight: String) {
 }
 
 fun MutableStateFlow<DogInputState>.updateProfilePic(pictureUrl: Uri) {
+    Timber.tag("DogInput").d("Update ProfilePic")
     update {
         it.copy(
             profilePic = pictureUrl,
@@ -61,6 +65,7 @@ fun MutableStateFlow<DogInputState>.updateProfilePic(pictureUrl: Uri) {
 }
 
 fun MutableStateFlow<DogInputState>.updateBirthDate(birthDate: String) {
+    Timber.tag("DogInput").d("Update birth date: $birthDate")
     update {
         it.copy(
             birthDate = birthDate,
@@ -75,6 +80,7 @@ fun MutableStateFlow<DogInputState>.updateBirthDate(birthDate: String) {
 }
 
 fun MutableStateFlow<DogInputState>.updateBirthDateDialogShown() {
+    Timber.tag("DogInput").d("Update birth date dialog shown")
     update {
         it.copy(
             birthDateDialogShown = true,

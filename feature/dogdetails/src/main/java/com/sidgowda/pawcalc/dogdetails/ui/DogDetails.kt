@@ -43,6 +43,7 @@ import com.sidgowda.pawcalc.navigation.DOG_DETAILS_SCREEN_ROUTE
 import com.sidgowda.pawcalc.test.TestTags.DogDetails.TAG_EDIT_BUTTON
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import timber.log.Timber
 
 @Composable
 internal fun DogDetails(
@@ -54,9 +55,11 @@ internal fun DogDetails(
         LaunchedEffect(key1 = navigateEvent) {
             when (navigateEvent) {
                 is NavigateEvent.EditDog -> {
+                    Timber.tag("DogDetails").d("Navigated to Edit Dog")
                     onEditDog(navigateEvent.dogId)
                 }
             }
+            Timber.tag("DogDetails").d("Navigation event handled")
             viewModel.handleEvent(DogDetailsEvent.OnNavigated)
         }
     }

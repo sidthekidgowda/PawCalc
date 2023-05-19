@@ -12,6 +12,7 @@ import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -30,7 +31,6 @@ class PawCalcViewModel @Inject constructor(
         )
     }
 
-
     val uiState: StateFlow<PawCalcActivityState> =
         combine(
             getOnboardingState().catch { emit(OnboardingState.NotOnboarded) },
@@ -39,6 +39,15 @@ class PawCalcViewModel @Inject constructor(
             PawCalcActivityState.Initialized(
                 onboarding,
                 settings
+            )
+        }
+        .onEach {
+            val settings = it.settings
+            Timber.d(
+                "Current Settings: " +
+                        "DateFormat-${settings.dateFormat} " +
+                        "WeightFormat-${settings.weightFormat} " +
+                        "Theme-${settings.themeFormat}"
             )
         }
         .flowOn(ioDispatcher)

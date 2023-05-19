@@ -1,7 +1,7 @@
 package com.sidgowda.pawcalc.date
 
-import android.util.Log
 import com.sidgowda.pawcalc.common.settings.DateFormat
+import timber.log.Timber
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -28,7 +28,7 @@ fun dateFromLong(date: Long, isDateFormatInternational: Boolean = false): String
     val localDate = try {
         Instant.ofEpochMilli(date).atZone(ZoneOffset.UTC).toLocalDate()
     } catch (e: Exception) {
-        Log.e("DateUtils", "Failed to parse long: $date into a date", e)
+        Timber.tag("DateUtils").e(e, "Failed to parse long: $date into a date")
         localDateNow()
     }
     return localDate.format(
@@ -56,7 +56,7 @@ fun dateToLong(date: String, isDateFormatInternational: Boolean = false): Long {
             .toInstant()
             .toEpochMilli()
     } catch (e: Exception) {
-        Log.e("DateUtils", "Failed to parse date: $date", e)
+        Timber.tag("DateUtils").e(e, "Failed to parse date: $date")
         LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()
     }
 }
@@ -79,5 +79,7 @@ fun String.dateToNewFormat(newDateFormat: DateFormat): String {
             stringBuilder.append(days).append("/").append(months).append("/")
         }
     }
-    return stringBuilder.append(years).toString()
+    val newDate = stringBuilder.append(years).toString()
+    Timber.tag("DateUtils").d("Old Date: $this, New Date: $newDate")
+    return newDate
 }

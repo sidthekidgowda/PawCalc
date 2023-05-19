@@ -14,6 +14,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 import com.sidgowda.pawcalc.camera.R
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import timber.log.Timber
 import java.util.*
 
 @Composable
@@ -31,6 +32,7 @@ fun mediaPermission(): String {
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HandlePermission(
+    permission: String,
     permissionStatus: PermissionStatus,
     successContent: @Composable () -> Unit,
     firstTimeRequest: () -> Unit,
@@ -38,15 +40,18 @@ fun HandlePermission(
 ) {
     when {
         permissionStatus == PermissionStatus.Granted -> {
+            Timber.tag("Permissions").d("Permission has been approved for $permission")
             successContent()
         }
         !permissionStatus.shouldShowRationale -> {
             // first time permissions are being requested
             LaunchedEffect(key1 = Unit) {
+                Timber.tag("Permissions").d("First time permissions are being requested")
                 firstTimeRequest()
             }
         }
         else -> {
+            Timber.tag("Permissions").d("Permission is denied for $permission")
             deniedContent()
         }
     }

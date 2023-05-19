@@ -43,13 +43,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import com.sidgowda.pawcalc.camera.CameraMediaActivity
+import com.sidgowda.pawcalc.camera.ui.CameraMediaActivity
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.date.DatePickerDialogFragment
-import com.sidgowda.pawcalc.date.DatePickerListener
 import com.sidgowda.pawcalc.date.dateToLong
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
+import com.sidgowda.pawcalc.doginput.date.DatePickerDialogFragment
+import com.sidgowda.pawcalc.doginput.date.DatePickerListener
 import com.sidgowda.pawcalc.doginput.model.DogInputEvent
 import com.sidgowda.pawcalc.doginput.model.DogInputState
 import com.sidgowda.pawcalc.doginput.ui.*
@@ -61,6 +61,7 @@ import com.sidgowda.pawcalc.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -96,12 +97,15 @@ fun DogInput(
     val cameraMediaImageResult = rememberLauncherForActivityResult(
         contract = CameraMediaActivity.GetPhoto(),
         onResult = { uri ->
+            // dismiss bottom sheet only when we update UI with a new picture
             if (uri != null) {
-                // dismiss bottom sheet only when we update UI with a new picture
+                Timber.tag("DogInput").d("New picture arrived, dismiss bottom sheet")
                 scope.launch { bottomSheetState.hide() }
                 imageUri = uri
                 // notify listeners image has possibly updated
                 handleEvent(DogInputEvent.PicChanged(uri))
+            } else {
+                Timber.tag("DogInput").d("No new picture arrived, keep bottom sheet")
             }
         }
     )
@@ -150,6 +154,7 @@ fun DogInput(
             }
         )
         val requestPermission = {
+            Timber.tag("DogInput").d("Requesting permission in Settings.")
             context.startActivity(
                 Intent(
                     Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -159,6 +164,7 @@ fun DogInput(
         }
         if (isCameraRequested) {
             HandlePermission(
+                permission = cameraPermission.permission,
                 permissionStatus = cameraPermission.status,
                 firstTimeRequest = {
                     cameraPermission.launchPermissionRequest()
@@ -178,6 +184,7 @@ fun DogInput(
         }
         if (isMediaRequested) {
             HandlePermission(
+                permission = mediaPermission.permission,
                 permissionStatus = mediaPermission.status,
                 firstTimeRequest = {
                     mediaPermission.launchPermissionRequest()
@@ -236,7 +243,7 @@ internal fun DogInputScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         CameraInput(
             bottomSheetState = bottomSheetState,
             imageUri = dogInputState.profilePic,
@@ -600,6 +607,7 @@ internal fun BirthDateInput(
                 .height(60.dp)
                 .fillMaxWidth(.6f)
                 .clickable {
+                    Timber.tag("DogInput").d("Date picker requested")
                     onDatePickerRequest()
                 }
                 .clearAndSetSemantics {
@@ -608,6 +616,7 @@ internal fun BirthDateInput(
                 .focusRequester(birthDateFocusRequester)
                 .onFocusChanged {
                     if (it.isFocused) {
+                        Timber.tag("DogInput").d("Date picker requested")
                         onDatePickerRequest()
                     }
                 }
@@ -713,8 +722,10 @@ internal fun OpenDatePicker(
     }
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch(Dispatchers.Default) {
+            Timber.tag("DogInput").d("Start converting Date to long")
             dateAsLong = dateToLong(date)
             isDateReadyToShow = true
+            Timber.tag("DogInput").d("Finished converting Date to long")
         }
     }
     if (isDateReadyToShow) {

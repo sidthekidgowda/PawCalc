@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -30,7 +31,7 @@ class DogListViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val THROTTLE_DURATION = 300L
+        private const val THROTTLE_DURATION = 500L
         private const val KEY_SAVED_LOCAL_STATE = "saved_dog_list_local_state"
     }
 
@@ -61,6 +62,7 @@ class DogListViewModel @Inject constructor(
         }
         .catch {
             // if an error is found upstream, use cached list of dogs
+            Timber.e(it, "Error found, use cached list of dogs")
             emit(
                 DogListState(
                     isLoading = false,
@@ -70,6 +72,7 @@ class DogListViewModel @Inject constructor(
         }
         .onEach { dogListState ->
             // update cache
+            Timber.d("Updating local state cached dogs")
             localDogListState.update {
                 it.copy(cachedDogs = dogListState.dogs)
             }
@@ -89,6 +92,7 @@ class DogListViewModel @Inject constructor(
 
     private fun fetchDogs() {
         viewModelScope.launch(ioDispatcher) {
+            Timber.d("Fetching dogs")
             dogsRepo.fetchDogs()
         }
     }

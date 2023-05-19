@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.date
+package com.sidgowda.pawcalc.doginput.date
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.sidgowda.pawcalc.date.calendar
+import com.sidgowda.pawcalc.date.dateFromLong
 import com.sidgowda.pawcalc.doginput.R
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +20,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -46,7 +49,7 @@ class DatePickerDialogFragment : Fragment() {
                 PawCalcTheme {
                     // date should be passed in to minimize delay in using MaterialDatePicker to
                     // calculate time
-                    val birthDate = arguments?.getLong(BUNDLE_DATE_KEY) ?: MaterialDatePicker.todayInUtcMilliseconds()
+                    val birthDate = checkNotNull(arguments?.getLong(BUNDLE_DATE_KEY))
                     showDatePickerDialog(birthDate)
                 }
             }
@@ -71,6 +74,7 @@ class DatePickerDialogFragment : Fragment() {
             .apply {
                 // dialog canceled with back button or touching scrim view
                 addOnCancelListener {
+                    Timber.d("Cancelled selecting birth date")
                     datePickerListener?.onCancel()
                 }
                 // ok button clicked
@@ -80,6 +84,7 @@ class DatePickerDialogFragment : Fragment() {
                 }
                 // cancel button clicked
                 addOnNegativeButtonClickListener {
+                    Timber.d("Cancel button clicked")
                     datePickerListener?.onCancel()
                 }
             }
@@ -88,9 +93,12 @@ class DatePickerDialogFragment : Fragment() {
 
     private fun convertDateFromLongAndSend(date: Long) {
         viewLifecycleOwner.lifecycleScope.launch(computationDispatcher) {
-            val isDateFormatInternational = arguments?.getBoolean(BUNDLE_IS_DATE_FORMAT_INTERNATIONAL) ?: false
+            val isDateFormatInternational = arguments?.getBoolean(
+                BUNDLE_IS_DATE_FORMAT_INTERNATIONAL
+            ) ?: false
             val birthDate: String = dateFromLong(date, isDateFormatInternational)
             withContext(Dispatchers.Main.immediate) {
+                Timber.d("Selected date: $birthDate")
                 datePickerListener?.dateSelected(birthDate)
             }
         }

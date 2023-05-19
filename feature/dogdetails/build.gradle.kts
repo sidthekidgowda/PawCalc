@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.icons)
     implementation(libs.navigation.compose)
+    implementation(libs.jakewharton.timber.logging)
     implementation(libs.coil.compose)
     implementation(libs.hilt.android)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

@@ -63,6 +63,7 @@ import com.sidgowda.pawcalc.test.TestTags
 import com.sidgowda.pawcalc.test.TestTags.DogList.TAG_DOG_LIST_CONTENT
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import timber.log.Timber
 import com.sidgowda.pawcalc.ui.R as UiR
 
 @Composable
@@ -85,14 +86,17 @@ fun DogList(
         viewModel.onboardingState.collect { onboardingState ->
             when (onboardingState) {
                 OnboardingState.Onboarded -> {
+                    Timber.tag("DogList").d("User has been onboarded")
                     isOnboarded = true
                 }
                 OnboardingState.NotOnboarded -> {
                     when (onboardingProgress) {
                         OnboardingProgress.NotStarted -> {
+                            Timber.tag("DogList").d("User has not onboarded yet. Navigating to onboarding")
                             onNavigateToOnboarding()
                         }
                         OnboardingProgress.Cancelled -> {
+                            Timber.tag("DogList").d("User did not successfully onboard yet")
                             val activity = context.findActivity()
                             activity.finish()
                         }
@@ -123,12 +127,15 @@ internal fun OnboardedDogList(
         LaunchedEffect(key1 = navigateEvent) {
             when (navigateEvent) {
                 is NavigateEvent.DogDetails -> {
+                    Timber.tag("DogList").d("Navigating to Dog Details for dog with id: ${navigateEvent.id}")
                     onDogDetails(navigateEvent.id)
                 }
                 NavigateEvent.AddDog -> {
+                    Timber.tag("DogList").d("Navigating to New Dog")
                     onNewDog()
                 }
             }
+            Timber.tag("DogList").d("Navigation event has been handled")
             viewModel.handleEvent(DogListEvent.OnNavigated)
         }
     }
@@ -209,6 +216,7 @@ internal fun DogListScreen(
                                     targetValue = if (!isDogItemDismissed) 120.dp else 0.dp,
                                     animationSpec = tween(delayMillis = 300),
                                     finishedListener = {
+                                        Timber.tag("DogList").d("Deleting dog with id: ${dog.id}")
                                         handleEvent(DogListEvent.DeleteDog(dog))
                                     }
                                 )
@@ -248,6 +256,8 @@ internal fun DogListScreen(
                                                 .height(dogItemHeightAnimation)
                                                 .fillMaxWidth()
                                                 .clickable {
+                                                    Timber.tag("DogList")
+                                                        .d("Dog with id: ${dog.id} clicked")
                                                     handleEvent(DogListEvent.DogDetails(dog.id))
                                                 },
                                             dog = dog

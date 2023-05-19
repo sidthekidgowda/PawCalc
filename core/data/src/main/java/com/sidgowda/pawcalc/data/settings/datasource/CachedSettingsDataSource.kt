@@ -9,6 +9,7 @@ import com.sidgowda.pawcalc.data.settings.model.toSettingsEntity
 import com.sidgowda.pawcalc.db.settings.SettingsDao
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -33,11 +34,14 @@ class CachedSettingsDataSource @Inject constructor(
             try {
                 val savedSettingsList = settingsDao.settings().first()
                 if (savedSettingsList.isEmpty()) {
+                    Timber.d("No user settings exists. Updating with default settings")
                     updateSettings(INITIAL_SETTINGS)
                 } else {
+                    Timber.d("User settings exist. Emitting previous settings")
                     settingsSharedFlow.emit(savedSettingsList.first().toSettings())
                 }
             } catch (e: Exception) {
+                Timber.e(e, "Error loading settings, updating with Default settings")
                 updateSettings(INITIAL_SETTINGS)
             }
         }
@@ -48,6 +52,12 @@ class CachedSettingsDataSource @Inject constructor(
     }
 
     override suspend fun updateSettings(updatedSettings: Settings) {
+        Timber.d(
+            "Updating settings: " +
+                    "DateFormat-${updatedSettings.dateFormat} " +
+                    "WeightFormat-${updatedSettings.weightFormat} " +
+                    "Theme-${updatedSettings.themeFormat}"
+        )
         settingsSharedFlow.emit(updatedSettings)
         // overwrite the current settings
         settingsDao.insert(updatedSettings.toSettingsEntity())

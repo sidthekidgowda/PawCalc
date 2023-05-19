@@ -2,7 +2,6 @@ package com.sidgowda.pawcalc.doginput.ui
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.Surface.ROTATION_0
 import android.view.ViewGroup
 import androidx.camera.core.*
@@ -36,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.Executor
 
@@ -73,10 +73,11 @@ internal fun OpenCamera(
                         executor = Dispatchers.IO.asExecutor(),
                         coroutineScope = coroutineScope,
                         onSuccess = { uri ->
+                            Timber.tag("Camera").d("Successfully took image")
                             capturedImageUri = uri
                         },
                         onFailure = {
-                            Log.e("CameraPreview", "Failed to take image")
+                            Timber.tag("Camera").d("Failed to take image")
                         }
                     )
                 },
@@ -91,7 +92,7 @@ internal fun OpenCamera(
                             lifecycleOwner, cameraSelector, previewUseCase, imageCaptureUseCase
                         )
                     } catch (e: Exception) {
-                        Log.e("CameraPreview", "Use case binding failed", e)
+                        Timber.tag("Camera").e(e, "Use case binding failed")
                     }
                 }
             }
@@ -103,6 +104,7 @@ internal fun OpenCamera(
                     capturedImageUri = null
                 },
                 onSavePhoto = {
+                    Timber.tag("Camera").d("Successfully saved photo from camera")
                     onSavePhoto(capturedImageUri!!)
                 },
                 fallback = com.sidgowda.pawcalc.ui.R.drawable.ic_paw
