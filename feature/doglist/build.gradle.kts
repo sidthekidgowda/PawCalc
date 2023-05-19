@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.accompanist.placeholder.material)
+    implementation(libs.jakewharton.timber.logging)
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
