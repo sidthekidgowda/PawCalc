@@ -53,7 +53,7 @@ android {
     packagingOptions {
         resources {
             excludes += "**/attach_hotspot_windows.dll"
-            excludes += "META-INF/*"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
