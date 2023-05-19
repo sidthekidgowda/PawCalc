@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -40,6 +41,7 @@ class NewDogViewModel @Inject constructor(
                             _inputState.value.dateFormat != settings.dateFormat &&
                             _inputState.value.birthDate.isNotEmpty()
                         ) {
+                            Timber.d("Date format changed to ${settings.dateFormat}. Date input is updated")
                             _inputState.value.birthDate.dateToNewFormat(settings.dateFormat)
                         } else {
                             _inputState.value.birthDate
@@ -65,6 +67,7 @@ class NewDogViewModel @Inject constructor(
 
     private fun saveDogInfo() {
         viewModelScope.launch(ioDispatcher) {
+            Timber.d("Saving dog input")
             val dogInput = DogInput(
                 profilePic = _inputState.value.profilePic!!,
                 name = _inputState.value.name,

@@ -20,6 +20,7 @@ import com.sidgowda.pawcalc.ui.component.PawCalcButton
 import com.sidgowda.pawcalc.ui.component.PawCalcLogo
 import com.sidgowda.pawcalc.ui.theme.LightDarkPreview
 import com.sidgowda.pawcalc.ui.theme.PawCalcTheme
+import timber.log.Timber
 
 @Composable
 fun Onboarding(
@@ -29,6 +30,8 @@ fun Onboarding(
     val viewModel: OnboardingViewModel = hiltViewModel()
     OnboardingScreen(
         onBoarded = {
+            Timber.tag("Onboarding Screen")
+                .d("User has onboarded and is navigating to New Dog")
             onPopBackStack()
             onNavigateToNewDog()
             viewModel.setUserOnboarded()

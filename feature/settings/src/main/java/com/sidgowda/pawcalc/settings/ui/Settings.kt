@@ -89,7 +89,6 @@ internal fun ChooseDate(
         selectedOptionIndex = dateFormat.index,
         onOptionSelected = { index ->
             onSettingsEvent(SettingsEvent.DateFormatChange(DateFormat.from(index)))
-
         }
     )
 }

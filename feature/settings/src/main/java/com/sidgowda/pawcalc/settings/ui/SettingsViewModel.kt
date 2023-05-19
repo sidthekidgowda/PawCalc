@@ -10,8 +10,12 @@ import com.sidgowda.pawcalc.domain.settings.GetSettingsUseCase
 import com.sidgowda.pawcalc.domain.settings.UpdateSettingsUseCase
 import com.sidgowda.pawcalc.settings.model.SettingsEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +43,15 @@ class SettingsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // we only need to use the first emitted settings
-            _settings.update { getSettingsUseCase().first() }
+            val currentSettings = _settings.updateAndGet {
+                getSettingsUseCase().first()
+            }
+            Timber.d(
+                "Current settings: " +
+                        "DateFormat-${currentSettings.dateFormat} " +
+                        "WeightFormat-${currentSettings.weightFormat} " +
+                        "Theme-${currentSettings.themeFormat}"
+            )
         }
     }
 
@@ -52,13 +64,15 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun updateWeightFormat(weightFormat: WeightFormat) {
-       val updatedSettings = _settings.updateAndGet {
+        Timber.d("Updating weight from ${_settings.value.weightFormat} to $weightFormat")
+        val updatedSettings = _settings.updateAndGet {
             it.copy(weightFormat = weightFormat)
         }
         saveUpdatedSettings(updatedSettings)
     }
 
     private fun updateDateFormat(dateFormat: DateFormat) {
+        Timber.d("Updating date from ${_settings.value.dateFormat} to $dateFormat")
         val updatedSettings = _settings.updateAndGet {
             it.copy(dateFormat = dateFormat)
         }
@@ -66,6 +80,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun updateTheme(theme: ThemeFormat) {
+        Timber.d("Updating theme from ${_settings.value.themeFormat} to $theme")
         val updatedSettings = _settings.updateAndGet {
             it.copy(themeFormat = theme)
         }

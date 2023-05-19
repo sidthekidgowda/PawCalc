@@ -70,7 +70,7 @@ dependencies {
     implementation(libs.androidx.compose.material.icons)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.camera.camera2)
+    implementation(libs.jakewharton.timber.logging)
     implementation(libs.navigation.compose)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
