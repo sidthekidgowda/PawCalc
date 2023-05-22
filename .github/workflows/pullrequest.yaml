@@ -28,19 +28,29 @@ jobs:
 
       - name: Sign Bundle
         uses: r0adkll/sign-android-release@v1.0.1
+        id: sign_app
         with:
           releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.SIGNING_PAWCALC_KEYSTORE_BASE_64 }}
+          signingKeyBase64: ${{ secrets.SIGNING_KEYBASE_64 }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION = "30.0.2"
+
+      - name: Verify signature
+        run: $ANDROID_SDK_ROOT/build-tools/30.0.2/apksigner verify --print-certs app/build/outputs/bundle/release/app-release.aab
 
       - name: Upload build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: bundle
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: ${{ steps.sign_app.outputs.signedReleasedFile }}
 
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: Create service_account.json
         id: createServiceAccount
         env:
