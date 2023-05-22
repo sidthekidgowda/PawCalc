@@ -3,13 +3,13 @@ package com.sidgowda.pawcalc.editdog.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.formattedToString
 import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
-import com.sidgowda.pawcalc.date.dateToNewFormat
 import com.sidgowda.pawcalc.doginput.*
 import com.sidgowda.pawcalc.doginput.model.*
 import com.sidgowda.pawcalc.domain.dogs.GetDogForIdUseCase

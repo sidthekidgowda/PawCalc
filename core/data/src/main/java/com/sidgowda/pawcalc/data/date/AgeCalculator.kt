@@ -3,8 +3,6 @@ package com.sidgowda.pawcalc.data.date
 import android.content.Context
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.data.R
-import com.sidgowda.pawcalc.date.dateFromLong
-import com.sidgowda.pawcalc.date.localDateTimeInMilliseconds
 import timber.log.Timber
 import kotlin.math.round
 

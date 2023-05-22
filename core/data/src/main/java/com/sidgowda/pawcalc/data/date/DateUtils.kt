@@ -1,4 +1,4 @@
-package com.sidgowda.pawcalc.date
+package com.sidgowda.pawcalc.data.date
 
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import timber.log.Timber

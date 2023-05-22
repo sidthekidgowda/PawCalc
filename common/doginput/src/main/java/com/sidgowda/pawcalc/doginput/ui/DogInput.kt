@@ -46,7 +46,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.sidgowda.pawcalc.camera.ui.CameraMediaActivity
 import com.sidgowda.pawcalc.common.settings.DateFormat
 import com.sidgowda.pawcalc.common.settings.WeightFormat
-import com.sidgowda.pawcalc.date.dateToLong
+import com.sidgowda.pawcalc.data.date.dateToLong
 import com.sidgowda.pawcalc.doginput.databinding.DatePickerDialogBinding
 import com.sidgowda.pawcalc.doginput.date.DatePickerDialogFragment
 import com.sidgowda.pawcalc.doginput.date.DatePickerListener
@@ -723,7 +723,7 @@ internal fun OpenDatePicker(
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch(Dispatchers.Default) {
             Timber.tag("DogInput").d("Start converting Date to long")
-            dateAsLong = dateToLong(date)
+            dateAsLong = dateToLong(date, isDateFormatInternational)
             isDateReadyToShow = true
             Timber.tag("DogInput").d("Finished converting Date to long")
         }
