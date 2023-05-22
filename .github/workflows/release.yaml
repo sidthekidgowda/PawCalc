@@ -72,5 +72,5 @@ jobs:
           packageName: com.sidgowda.pawcalc
           track: internal
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          mappingFiles: app/build/outputs/mapping/standardRelease/mapping.txt
+          mappingFiles: app/build/outputs/mapping/release/mapping.txt
 
