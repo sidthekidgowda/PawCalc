@@ -15,8 +15,8 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
-        versionCode = 3
-        versionName = "0.1.0-alpha01"
+        versionCode = 5
+        versionName = "0.1.0-alpha03"
 
         testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
