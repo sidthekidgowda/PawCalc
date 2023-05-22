@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="years">%d years</string>
+    <string name="months">%d months</string>
+    <string name="days">%d days</string>
+</resources>
