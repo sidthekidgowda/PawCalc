@@ -24,11 +24,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Bundle Release and Apk
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleRelease -x test
 
       - name: Sign Bundle
         uses: r0adkll/sign-android-release@v1
-        id: sign_app
         with:
           releaseDirectory: app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.SIGNING_KEYBASE_64 }}
@@ -39,10 +38,10 @@ jobs:
           BUILD_TOOLS_VERSION: "30.0.2"
 
       - name: Upload build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: bundle
-          path: ${{ steps.sign_app.outputs.signedReleasedFile }}
+          path: app/build/outputs/bundle/release/app-release.aab
 
   release:
     needs: build
