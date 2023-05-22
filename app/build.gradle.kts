@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+//    alias(libs.plugins.reactivecircus.app.versioning)
 }
 
 android {
@@ -14,8 +15,8 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "0.1.0-alpha01"
 
         testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
@@ -23,9 +24,20 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("pawcalc-keystore.jks")
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_STORE_PATH")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isDebuggable = false
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -53,10 +65,22 @@ android {
     packagingOptions {
         resources {
             excludes += "**/attach_hotspot_windows.dll"
-            excludes += "META-INF/*"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
+
+kapt {
+    correctErrorTypes = true
+}
+
+//
+//appVersioning {
+//    overrideVersionCode { gitTag, _, _ ->
+//        val semVer = gitTag.toSemVer()
+//        semVer.major * 1000000 + semVer.minor * 1000 + semVer.patch
+//    }
+//}
 
 kapt {
     correctErrorTypes = true
