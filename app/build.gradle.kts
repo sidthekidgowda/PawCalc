@@ -15,8 +15,8 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
-        versionCode = 5
-        versionName = "0.1.0-alpha03"
+        versionCode = 7
+        versionName = "0.1.0-alpha05"
 
         testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
@@ -24,17 +24,8 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("pawcalc-keystore.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_STORE_PATH")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
-        }
-    }
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isDebuggable = false
             isShrinkResources = true
