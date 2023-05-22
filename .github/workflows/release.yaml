@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,21 +22,28 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
-      - name: Decode Keystore
-        env:
-          ENCODED_STRING: ${{ secrets.SIGNING_PAWCALC_KEYSTORE_BASE_64 }}
-          SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
-        run: |
-          echo $ENCODED_STRING > keystore-b64.txt
-          base64 -d keystore-b64.txt > $SIGNING_KEY_STORE_PATH
+      - name: Bundle Release and Apk
+        run: ./gradlew bundleRelease assembleRelease
 
-      - name: Build release apk and bundle
-        env:
-          SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-        run: ./gradlew app:assembleRelease app:bundleRelease
+      - name: Sign Bundle
+        id: signBundle
+        uses: r0adkll/sign-android-release@v1.0.1
+          with:
+            releaseDirectory: app/build/outputs/bundle/release
+            signingKeyBase64: ${{ secrets.SIGNING_PAWCALC_KEYSTORE_BASE_64 }}
+            alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+            keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
+            keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
+
+      - name: Sign Apk
+        id: signApk
+        uses: r0adkll/sign-android-release@v1.0.1
+          with:
+            releaseDirectory: app/build/outputs/apk/release
+            signingKeyBase64: ${{ secrets.SIGNING_PAWCALC_KEYSTORE_BASE_64 }}
+            alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+            keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
+            keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
 
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v3
