@@ -24,10 +24,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Bundle Release and Apk
-        run: ./gradlew bundleRelease assembleRelease
+        run: ./gradlew bundleRelease
 
       - name: Sign Bundle
-        uses: r0adkll/sign-android-release@v1.0.1
+        uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
           releaseDirectory: app/build/outputs/bundle/release
@@ -37,9 +37,6 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "30.0.2"
-
-      - name: Verify signature
-        run: $ANDROID_SDK_ROOT/build-tools/30.0.2/apksigner verify --print-certs app/build/outputs/bundle/release/app-release.aab
 
       - name: Upload build
         uses: actions/upload-artifact@v2
