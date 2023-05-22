@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
-//    alias(libs.plugins.reactivecircus.app.versioning)
+    alias(libs.plugins.reactivecircus.app.versioning)
 }
 
 android {
@@ -15,8 +15,6 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
-        versionCode = 7
-        versionName = "0.1.0-alpha05"
 
         testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
@@ -64,14 +62,6 @@ android {
 kapt {
     correctErrorTypes = true
 }
-
-//
-//appVersioning {
-//    overrideVersionCode { gitTag, _, _ ->
-//        val semVer = gitTag.toSemVer()
-//        semVer.major * 1000000 + semVer.minor * 1000 + semVer.patch
-//    }
-//}
 
 kapt {
     correctErrorTypes = true

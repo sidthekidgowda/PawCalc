@@ -23,50 +23,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Bundle Release and Apk
-        run: ./gradlew bundleRelease -x test
+      - name: Build the app
+        run: ./gradlew clean assembleDebug
 
-      - name: Sign Bundle
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEYBASE_64 }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.2"
-
-      - name: Upload build
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundle
-          path: app/build/outputs/bundle/release/app-release.aab
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create service_account.json
-        id: createServiceAccount
-        env:
-          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-        run: |
-          echo $SERVICE_ACCOUNT_JSON > service_account.json
-
-      - name: Downloading build
-        uses: actions/download-artifact@v2
-        with:
-          name: bundle
-
-      - name: Deploy to Play Store Internal
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJson: service_account.json
-          packageName: com.sidgowda.pawcalc
-          track: internal
-          releaseFiles: app-release.aab
-          mappingFiles: app/build/outputs/mapping/release/mapping.txt
+      - name: Run Unit tests
+        run: ./gradlew test
 
   androidTest:
     needs: build
