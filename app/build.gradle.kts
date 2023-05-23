@@ -4,8 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.reactivecircus.app.versioning)
 }
+
+val versionMajor = 0
+val versionMinor = 1
+val versionPatch = 0
 
 android {
     namespace = "com.sidgowda.pawcalc"
@@ -15,6 +18,8 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
+        versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
@@ -35,7 +40,12 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             isShrinkResources = true
+            resValue("string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        getByName("debug") {
+            versionNameSuffix = ".debug"
+            resValue("string", "app_version", "${defaultConfig.versionName}")
         }
     }
     compileOptions {
