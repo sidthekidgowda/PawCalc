@@ -27,6 +27,14 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("pawcalc-keystore.jks")
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_STORE_PATH")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
