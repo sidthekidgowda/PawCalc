@@ -3,9 +3,9 @@ package com.sidgowda.pawcalc.dogdetails.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.dogs.model.throttleFirst
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
-import com.sidgowda.pawcalc.date.dateToNewFormat
 import com.sidgowda.pawcalc.dogdetails.DOG_ID_KEY
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState

@@ -1,12 +1,12 @@
 package com.sidgowda.pawcalc.data.dogs.datasource
 
+import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.dogs.mapInPlace
 import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.update
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
-import com.sidgowda.pawcalc.date.dateToNewFormat
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import timber.log.Timber

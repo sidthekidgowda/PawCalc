@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.reactivecircus.app.versioning)
 }
 
 android {
@@ -14,8 +15,6 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "com.sidgowda.pawcalc.test.PawCalcTestRunner"
         vectorDrawables {
@@ -25,7 +24,9 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isDebuggable = false
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -53,9 +54,13 @@ android {
     packagingOptions {
         resources {
             excludes += "**/attach_hotspot_windows.dll"
-            excludes += "META-INF/*"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 kapt {
