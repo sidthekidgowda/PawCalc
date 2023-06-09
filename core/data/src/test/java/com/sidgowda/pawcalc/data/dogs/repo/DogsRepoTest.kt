@@ -49,7 +49,9 @@ class DogsRepoTest {
         settingsDataSource = FakeSettingsDataSource()
         testScope = TestScope(testCoroutineDispatcher)
         dogsDiskDataSource = FakeDogsDataSource()
-        dogsMemoryDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
+        dogsMemoryDataSource = DogsMemoryDataSource(settingsDataSource, TestScope(
+            UnconfinedTestDispatcher()
+        ))
         dogsRepo = DogsRepoImpl(
             memory = dogsMemoryDataSource,
             disk = dogsDiskDataSource,

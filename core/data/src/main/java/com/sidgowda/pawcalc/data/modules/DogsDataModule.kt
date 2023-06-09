@@ -12,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -24,9 +25,9 @@ object DogsDataModule {
     @Provides
     fun providesMemoryDogsDataSource(
         settingsDataSource: SettingsDataSource,
-        @Named ("computation") computationDispatcher: CoroutineDispatcher
+        @Named("computationScope") scope: CoroutineScope
     ): DogsDataSource {
-        return DogsMemoryDataSource(settingsDataSource, computationDispatcher)
+        return DogsMemoryDataSource(settingsDataSource, scope)
     }
 
     @Named("disk")

@@ -16,9 +16,7 @@ import com.sidgowda.pawcalc.test.fakes.FakeSettingsDataSource
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,15 +33,15 @@ class DogsMemoryDataSourceTest {
     @Before
     fun setup() {
         settingsDataSource = FakeSettingsDataSource()
-        testCoroutineDispatcher = StandardTestDispatcher()
+        testCoroutineDispatcher = UnconfinedTestDispatcher()
         testScope = TestScope(testCoroutineDispatcher)
-        dogsDataSource = DogsMemoryDataSource(settingsDataSource, testCoroutineDispatcher)
+        dogsDataSource = DogsMemoryDataSource(settingsDataSource, TestScope(UnconfinedTestDispatcher()))
     }
 
     @Test
-    fun `assert MemoryDataSource returns nothing if it has no dogs`() = testScope.runTest {
+    fun `assert MemoryDataSource returns emptylist if it has no dogs`() = testScope.runTest {
         dogsDataSource.dogs().test {
-            expectNoEvents()
+            assertEquals(emptyList<Dog>(), awaitItem())
         }
     }
 
@@ -119,7 +117,7 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `when update shouldAnimate to false is called for dog two, then dog two shouldAnimate is updated to false`() = testScope.runTest {
+    fun `when update shouldAnimate to false is called for dog two, then dog two shouldAnimate is updated to false`() = runTest {
         dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
         dogsDataSource.updateDogs(DOG_TWO.copy(shouldAnimate = false))
 
@@ -159,7 +157,7 @@ class DogsMemoryDataSourceTest {
     @Test
     fun `when weight format is changed to kilograms, all dog weights should be in kilograms`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
-        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS)).also { advanceUntilIdle() }
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -221,7 +219,12 @@ class DogsMemoryDataSourceTest {
     fun `when weight is changed first to Kilograms and settings theme is changed, weight should not be changed back`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
         settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
-        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS, themeFormat = ThemeFormat.LIGHT))
+        settingsDataSource.updateSettings(
+            DEFAULT_SETTINGS.copy(
+                weightFormat = WeightFormat.KILOGRAMS,
+                themeFormat = ThemeFormat.LIGHT
+            )
+        ).also { advanceUntilIdle() }
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -260,6 +263,7 @@ class DogsMemoryDataSourceTest {
             )
         )
         settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+            .also { advanceUntilIdle() }
 
         dogsDataSource.dogs().test {
             assertEquals(
