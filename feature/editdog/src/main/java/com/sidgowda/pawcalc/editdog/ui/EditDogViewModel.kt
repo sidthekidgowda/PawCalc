@@ -50,7 +50,7 @@ class EditDogViewModel @Inject constructor(
     private fun syncInputWithSettings() {
         // Collect from settings and update date and weight any time settings is updated
         viewModelScope.launch(ioDispatcher) {
-            settingsUseCase().collect { settings ->
+            settingsUseCase().collectLatest { settings ->
                 _inputState.update { currentInput ->
                     currentInput.copy(
                         birthDate = if (

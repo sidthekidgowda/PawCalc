@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,7 +35,7 @@ class NewDogViewModel @Inject constructor(
 
     private fun syncInputWithSettings() {
         viewModelScope.launch(ioDispatcher) {
-            settingsUseCase().collect { settings ->
+            settingsUseCase().collectLatest { settings ->
                 _inputState.update {
                     it.copy(
                         birthDate = if (

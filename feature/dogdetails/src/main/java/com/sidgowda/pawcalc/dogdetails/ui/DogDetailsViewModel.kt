@@ -60,7 +60,7 @@ class DogDetailsViewModel @Inject constructor(
     private fun syncDetailsWithSettings() {
         // Collect from settings and update date and weight any time settings is updated
         viewModelScope.launch(computationDispatcher) {
-            settingsUseCase().collect { settings ->
+            settingsUseCase().collectLatest { settings ->
                 _dogDetailsState.update { details ->
                     details.copy(
                         dog = details.dog?.copy(

@@ -8,10 +8,7 @@ import com.sidgowda.pawcalc.data.dogs.update
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,7 +23,7 @@ class DogsMemoryDataSource @Inject constructor(
 
     init {
         scope.launch {
-            settingsDataSource.settings().collect { settings ->
+            settingsDataSource.settings().collectLatest { settings ->
                 dogs.update { oldDogs ->
                     // transform current list of dogs any time settings is updated
                     Timber.d("Transforming dogs with current settings")

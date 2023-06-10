@@ -14,7 +14,6 @@ import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.test.fakes.FakeSettingsDataSource
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.Before
@@ -27,15 +26,13 @@ class DogsMemoryDataSourceTest {
 
     private lateinit var dogsDataSource: DogsDataSource
     private lateinit var settingsDataSource: SettingsDataSource
-    private lateinit var testCoroutineDispatcher: CoroutineDispatcher
     private lateinit var testScope: TestScope
 
     @Before
     fun setup() {
         settingsDataSource = FakeSettingsDataSource()
-        testCoroutineDispatcher = UnconfinedTestDispatcher()
-        testScope = TestScope(testCoroutineDispatcher)
-        dogsDataSource = DogsMemoryDataSource(settingsDataSource, TestScope(UnconfinedTestDispatcher()))
+        testScope = TestScope(UnconfinedTestDispatcher())
+        dogsDataSource = DogsMemoryDataSource(settingsDataSource, testScope.backgroundScope)
     }
 
     @Test
@@ -117,7 +114,7 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `when update shouldAnimate to false is called for dog two, then dog two shouldAnimate is updated to false`() = runTest {
+    fun `when update shouldAnimate to false is called for dog two, then dog two shouldAnimate is updated to false`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
         dogsDataSource.updateDogs(DOG_TWO.copy(shouldAnimate = false))
 
@@ -157,7 +154,7 @@ class DogsMemoryDataSourceTest {
     @Test
     fun `when weight format is changed to kilograms, all dog weights should be in kilograms`() = testScope.runTest {
         dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
-        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS)).also { advanceUntilIdle() }
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -181,17 +178,28 @@ class DogsMemoryDataSourceTest {
     }
 
     @Test
-    fun `when weight format is changed back to lbs from kilograms, all dog weights should be in lbs`() = testScope.runTest {
+    fun `when weight format is changed back to lbs from kilograms, all dog weights should be in lbs`() = runTest {
         dogsDataSource.addDogs(DOG_ONE, DOG_TWO, DOG_THREE)
         settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
         settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.POUNDS))
+        val weightInKg = 65.0.toNewWeight(WeightFormat.KILOGRAMS)
+        val weightInLb = weightInKg.toNewWeight(WeightFormat.POUNDS)
 
         dogsDataSource.dogs().test {
             assertEquals(
                 listOf(
-                    DOG_ONE,
-                    DOG_TWO,
-                    DOG_THREE
+                    DOG_ONE.copy(
+                        weight = weightInLb,
+                        weightFormat = WeightFormat.POUNDS
+                    ),
+                    DOG_TWO.copy(
+                        weight = weightInLb,
+                        weightFormat = WeightFormat.POUNDS
+                    ),
+                    DOG_THREE.copy(
+                        weight = weightInLb,
+                        weightFormat = WeightFormat.POUNDS
+                    )
                 ),
                 awaitItem()
             )
@@ -224,7 +232,7 @@ class DogsMemoryDataSourceTest {
                 weightFormat = WeightFormat.KILOGRAMS,
                 themeFormat = ThemeFormat.LIGHT
             )
-        ).also { advanceUntilIdle() }
+        )
 
         dogsDataSource.dogs().test {
             assertEquals(
@@ -263,7 +271,6 @@ class DogsMemoryDataSourceTest {
             )
         )
         settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
-            .also { advanceUntilIdle() }
 
         dogsDataSource.dogs().test {
             assertEquals(
