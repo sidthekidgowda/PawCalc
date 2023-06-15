@@ -263,7 +263,7 @@ class DogsMemoryDataSourceTest {
                 humanYears = "10/30/2019".toHumanYears()
             )
         )
-        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL)).also { advanceUntilIdle() }
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
 
         dogsDataSource.dogs().test {
             assertEquals(
