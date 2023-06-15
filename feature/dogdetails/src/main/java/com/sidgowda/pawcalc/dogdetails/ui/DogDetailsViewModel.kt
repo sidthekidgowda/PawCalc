@@ -3,9 +3,7 @@ package com.sidgowda.pawcalc.dogdetails.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.dogs.model.throttleFirst
-import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.dogdetails.DOG_ID_KEY
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsState
@@ -58,25 +56,12 @@ class DogDetailsViewModel @Inject constructor(
     }
 
     private fun syncDetailsWithSettings() {
-        // Collect from settings and update date and weight any time settings is updated
+        // Collect from settings and update date format and weight format any time settings is updated
         viewModelScope.launch(computationDispatcher) {
             settingsUseCase().collectLatest { settings ->
                 _dogDetailsState.update { details ->
                     details.copy(
                         dog = details.dog?.copy(
-                            birthDate = if (
-                                details.dog.dateFormat != settings.dateFormat &&
-                                details.dog.birthDate.isNotEmpty()
-                            ) {
-                                details.dog.birthDate.dateToNewFormat(settings.dateFormat)
-                            } else {
-                                details.dog.birthDate
-                            },
-                            weight = if (details.dog.weightFormat != settings.weightFormat) {
-                                details.dog.weight.toNewWeight(settings.weightFormat)
-                            } else {
-                                details.dog.weight
-                            },
                             weightFormat = settings.weightFormat,
                             dateFormat = settings.dateFormat
                         )

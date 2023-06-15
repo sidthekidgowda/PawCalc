@@ -3,7 +3,14 @@ package com.sidgowda.pawcalc.dogdetails.ui
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -103,7 +110,7 @@ internal fun DogDetailsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 30.dp),
-            weight = dog.weight,
+            weight = if (dog.weightFormat == WeightFormat.POUNDS) dog.weightInLb else dog.weightInKg,
             weightFormat = dog.weightFormat
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -111,7 +118,7 @@ internal fun DogDetailsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 30.dp),
-            birthDate = dog.birthDate
+            birthDate = if (dog.dateFormat == DateFormat.AMERICAN ) dog.birthDateAmerican else dog.birthDateInternational
         )
         Spacer(modifier = Modifier.height(10.dp))
         DogYears(
@@ -307,9 +314,11 @@ fun PreviewDogDetailsContent() {
                 id = 1,
                 profilePic = Uri.parse(""),
                 name = "Mowgli",
-                weight = 80.0,
+                weightInLb = 80.0,
+                weightInKg = 40.0,
                 weightFormat = WeightFormat.POUNDS,
-                birthDate = "7/30/2019",
+                birthDateAmerican = "7/30/2019",
+                birthDateInternational = "30/7/2019",
                 dogYears = "7/30/2019".toDogYears(),
                 dateFormat = DateFormat.AMERICAN,
                 humanYears = "7/30/2019".toHumanYears(),

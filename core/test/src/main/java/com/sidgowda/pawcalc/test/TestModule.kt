@@ -8,6 +8,7 @@ import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepoImpl
 import com.sidgowda.pawcalc.data.modules.DispatchersModule
@@ -56,9 +57,11 @@ object TestModule {
                     Dog(
                         id = 1,
                         name = "Dog_1",
-                        weight = 68.0,
+                        weightInLb = 68.0,
+                        weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
                         profilePic = Uri.EMPTY,
-                        birthDate = "12/1/2021",
+                        birthDateAmerican = "12/1/2021",
+                        birthDateInternational = "1/12/2021",
                         dogYears = "12/1/2021".toDogYears(),
                         humanYears = "12/1/2021".toHumanYears(),
                         weightFormat = WeightFormat.POUNDS,
@@ -67,9 +70,11 @@ object TestModule {
                     ), Dog(
                         id = 2,
                         name = "Dog_2",
-                        weight = 68.0,
+                        weightInLb = 68.0,
+                        weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
                         profilePic = Uri.EMPTY,
-                        birthDate = "12/2/2021",
+                        birthDateAmerican = "12/2/2021",
+                        birthDateInternational = "2/12/2021",
                         dogYears = "12/2/2021".toDogYears(),
                         humanYears = "12/2/2021".toHumanYears(),
                         weightFormat = WeightFormat.POUNDS,
@@ -78,9 +83,11 @@ object TestModule {
                     ), Dog(
                         id = 3,
                         name = "Dog_3",
-                        weight = 68.0,
+                        weightInLb = 68.0,
+                        weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
                         profilePic = Uri.EMPTY,
-                        birthDate = "12/3/2021",
+                        birthDateAmerican = "12/3/2021",
+                        birthDateInternational = "3/12/2021",
                         dogYears = "12/3/2021".toDogYears(),
                         humanYears = "12/3/2021".toHumanYears(),
                         weightFormat = WeightFormat.POUNDS,

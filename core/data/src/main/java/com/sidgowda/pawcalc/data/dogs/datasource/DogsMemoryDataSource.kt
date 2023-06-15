@@ -1,14 +1,16 @@
 package com.sidgowda.pawcalc.data.dogs.datasource
 
-import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.dogs.mapInPlace
 import com.sidgowda.pawcalc.data.dogs.model.Dog
-import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.update
 import com.sidgowda.pawcalc.data.settings.datasource.SettingsDataSource
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,7 +27,7 @@ class DogsMemoryDataSource @Inject constructor(
         scope.launch {
             settingsDataSource.settings().collectLatest { settings ->
                 dogs.update { oldDogs ->
-                    // transform current list of dogs any time settings is updated
+                    // update date and weight format any time settings is updated
                     Timber.d("Transforming dogs with current settings")
                     oldDogs.transformWithSettings(settings)
                 }
@@ -39,23 +41,9 @@ class DogsMemoryDataSource @Inject constructor(
 
     private fun List<Dog>.transformWithSettings(settings: Settings): List<Dog> {
         return map { dog ->
-            // if date format or weight format does not match -> convert
-            val date = if (settings.dateFormat != dog.dateFormat) {
-                Timber.d("Date format changed. Old Date Format: ${dog.dateFormat}, New Date Format: ${settings.dateFormat}")
-                dog.birthDate.dateToNewFormat(settings.dateFormat)
-            } else {
-                dog.birthDate
-            }
-            val weight = if (settings.weightFormat != dog.weightFormat) {
-                Timber.d("Weight format changed. Old Weight Format: ${dog.weightFormat}, New Weight Format: ${settings.weightFormat}")
-                dog.weight.toNewWeight(settings.weightFormat)
-            } else {
-                dog.weight
-            }
+            // update date format or weight format
             dog.copy(
-                birthDate = date,
                 dateFormat = settings.dateFormat,
-                weight = weight,
                 weightFormat = settings.weightFormat
             )
         }

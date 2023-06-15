@@ -1,5 +1,8 @@
 package com.sidgowda.pawcalc.data.dogs.repo
 
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
+import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
@@ -87,9 +90,27 @@ class DogsRepoImpl @Inject constructor(
         val dog = Dog(
             id = id,
             name = dogInput.name,
-            birthDate = dogInput.birthDate,
             dateFormat = dogInput.dateFormat,
-            weight = dogInput.weight.toDouble().formattedToTwoDecimals(),
+            birthDateAmerican = if (dogInput.dateFormat == DateFormat.AMERICAN) {
+                dogInput.birthDate
+            } else {
+                dogInput.birthDate.dateToNewFormat(DateFormat.AMERICAN)
+            },
+            birthDateInternational = if (dogInput.dateFormat == DateFormat.INTERNATIONAL) {
+                dogInput.birthDate
+            } else {
+                dogInput.birthDate.dateToNewFormat(DateFormat.INTERNATIONAL)
+            },
+            weightInKg = if (dogInput.weightFormat == WeightFormat.KILOGRAMS) {
+                dogInput.weight.toDouble().formattedToTwoDecimals()
+            } else {
+                dogInput.weight.toDouble().toNewWeight(WeightFormat.KILOGRAMS)
+            },
+            weightInLb = if (dogInput.weightFormat == WeightFormat.POUNDS) {
+                dogInput.weight.toDouble().formattedToTwoDecimals()
+            } else {
+                dogInput.weight.toDouble().toNewWeight(WeightFormat.POUNDS)
+            },
             weightFormat = dogInput.weightFormat,
             dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
             humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),

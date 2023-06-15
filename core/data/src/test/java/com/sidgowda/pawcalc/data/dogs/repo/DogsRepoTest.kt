@@ -258,9 +258,11 @@ class DogsRepoTest {
         dogsRepo.dogState().first().dogs.last() shouldBe Dog(
             id = 7,
             name = "Dog_7",
-            weight = 68.0,
+            weightInLb = 68.0,
+            weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = Uri.EMPTY,
-            birthDate = "12/7/2021",
+            birthDateAmerican = "12/7/2021",
+            birthDateInternational = "7/12/2021",
             dogYears = "12/7/2021".toDogYears(),
             humanYears = "12/7/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -449,16 +451,13 @@ class DogsRepoTest {
                 isLoading = false,
                 listOf(
                     DOG_ONE.copy(
-                        weightFormat = WeightFormat.KILOGRAMS,
-                        weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                        weightFormat = WeightFormat.KILOGRAMS
                     ),
                     DOG_TWO.copy(
-                        weightFormat = WeightFormat.KILOGRAMS,
-                        weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                        weightFormat = WeightFormat.KILOGRAMS
                     ),
                     DOG_THREE.copy(
-                        weightFormat = WeightFormat.KILOGRAMS,
-                        weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                        weightFormat = WeightFormat.KILOGRAMS
                     )
                 )
             )
@@ -486,16 +485,13 @@ class DogsRepoTest {
         }
         spyDisk.dogs().first() shouldContainExactly listOf(
             DOG_ONE.copy(
-                weightFormat = WeightFormat.KILOGRAMS,
-                weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                weightFormat = WeightFormat.KILOGRAMS
             ),
             DOG_TWO.copy(
-                weightFormat = WeightFormat.KILOGRAMS,
-                weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                weightFormat = WeightFormat.KILOGRAMS
             ),
             DOG_THREE.copy(
-                weightFormat = WeightFormat.KILOGRAMS,
-                weight = 68.0.toNewWeight(WeightFormat.KILOGRAMS)
+                weightFormat = WeightFormat.KILOGRAMS
             )
         )
     }
@@ -532,16 +528,13 @@ class DogsRepoTest {
                 isLoading = false,
                 listOf(
                     DOG_ONE.copy(
-                        dateFormat = DateFormat.INTERNATIONAL,
-                        birthDate = "1/12/2021"
+                        dateFormat = DateFormat.INTERNATIONAL
                     ),
                     DOG_TWO.copy(
-                        dateFormat = DateFormat.INTERNATIONAL,
-                        birthDate = "2/12/2021"
+                        dateFormat = DateFormat.INTERNATIONAL
                     ),
                     DOG_THREE.copy(
-                        dateFormat = DateFormat.INTERNATIONAL,
-                        birthDate = "3/12/2021"
+                        dateFormat = DateFormat.INTERNATIONAL
                     )
                 )
             )
@@ -569,16 +562,13 @@ class DogsRepoTest {
         }
         spyDisk.dogs().first() shouldContainExactly listOf(
             DOG_ONE.copy(
-                dateFormat = DateFormat.INTERNATIONAL,
-                birthDate = "1/12/2021"
+                dateFormat = DateFormat.INTERNATIONAL
             ),
             DOG_TWO.copy(
-                dateFormat = DateFormat.INTERNATIONAL,
-                birthDate = "2/12/2021"
+                dateFormat = DateFormat.INTERNATIONAL
             ),
             DOG_THREE.copy(
-                dateFormat = DateFormat.INTERNATIONAL,
-                birthDate = "3/12/2021"
+                dateFormat = DateFormat.INTERNATIONAL
             )
         )
     }
@@ -613,9 +603,11 @@ class DogsRepoTest {
          val DOG_ONE = Dog(
              id = 1,
              name = "Dog_1",
-             weight = 68.0,
+             weightInLb = 68.0,
+             weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
              profilePic = Uri.EMPTY,
-             birthDate = "12/1/2021",
+             birthDateAmerican = "12/1/2021",
+             birthDateInternational = "1/12/2021",
              dogYears = "12/1/2021".toDogYears(),
              humanYears = "12/1/2021".toHumanYears(),
              weightFormat = WeightFormat.POUNDS,
@@ -625,9 +617,11 @@ class DogsRepoTest {
         val DOG_TWO = Dog(
             id = 2,
             name = "Dog_2",
-            weight = 68.0,
+            weightInLb = 68.0,
+            weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = Uri.EMPTY,
-            birthDate = "12/2/2021",
+            birthDateAmerican = "12/2/2021",
+            birthDateInternational = "2/12/2021",
             dogYears = "12/2/2021".toDogYears(),
             humanYears = "12/2/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -637,9 +631,11 @@ class DogsRepoTest {
         val DOG_THREE = Dog(
             id = 3,
             name = "Dog_3",
-            weight = 68.0,
+            weightInLb = 68.0,
+            weightInKg = 68.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = Uri.EMPTY,
-            birthDate = "12/3/2021",
+            birthDateAmerican = "12/3/2021",
+            birthDateInternational = "3/12/2021",
             dogYears = "12/3/2021".toDogYears(),
             humanYears = "12/3/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,

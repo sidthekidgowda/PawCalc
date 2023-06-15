@@ -160,15 +160,12 @@ class DogsMemoryDataSourceTest {
             assertEquals(
                 listOf(
                     DOG_ONE.copy(
-                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
                         weightFormat = WeightFormat.KILOGRAMS
                     ),
                     DOG_TWO.copy(
-                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
                         weightFormat = WeightFormat.KILOGRAMS
                     ),
                     DOG_THREE.copy(
-                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
                         weightFormat = WeightFormat.KILOGRAMS
                     )
                 ),
@@ -189,15 +186,12 @@ class DogsMemoryDataSourceTest {
             assertEquals(
                 listOf(
                     DOG_ONE.copy(
-                        weight = weightInLb,
                         weightFormat = WeightFormat.POUNDS
                     ),
                     DOG_TWO.copy(
-                        weight = weightInLb,
                         weightFormat = WeightFormat.POUNDS
                     ),
                     DOG_THREE.copy(
-                        weight = weightInLb,
                         weightFormat = WeightFormat.POUNDS
                     )
                 ),
@@ -238,15 +232,12 @@ class DogsMemoryDataSourceTest {
             assertEquals(
                 listOf(
                     DOG_ONE.copy(
-                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
                         weightFormat = WeightFormat.KILOGRAMS
                     ),
                     DOG_TWO.copy(
-                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
                         weightFormat = WeightFormat.KILOGRAMS
                     ),
                     DOG_THREE.copy(
-                        weight = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
                         weightFormat = WeightFormat.KILOGRAMS
                     )
                 ),
@@ -260,37 +251,38 @@ class DogsMemoryDataSourceTest {
         dogsDataSource.addDogs(
             DOG_ONE,
             DOG_TWO.copy(
-                birthDate = "4/20/2023",
+                birthDateAmerican = "4/20/2023",
+                birthDateInternational = "20/4/2023",
                 dogYears = "4/20/2023".toDogYears(),
                 humanYears = "4/20/2023".toHumanYears()
             ),
             DOG_THREE.copy(
-                birthDate = "10/30/2019",
+                birthDateAmerican = "10/30/2019",
+                birthDateInternational = "30/10/2019",
                 dogYears = "10/30/2019".toDogYears(),
                 humanYears = "10/30/2019".toHumanYears()
             )
         )
-        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
+        settingsDataSource.updateSettings(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL)).also { advanceUntilIdle() }
 
         dogsDataSource.dogs().test {
             assertEquals(
                 listOf(
                     DOG_ONE.copy(
-                        birthDate = "22/12/2021",
-                        dogYears = "22/12/2021".toDogYears(dateFormat = DateFormat.INTERNATIONAL),
-                        humanYears = "22/12/2021".toHumanYears(dateFormat = DateFormat.INTERNATIONAL),
                         dateFormat = DateFormat.INTERNATIONAL
                     ),
                     DOG_TWO.copy(
-                        birthDate = "20/4/2023",
-                        dogYears = "20/4/2023".toDogYears(dateFormat = DateFormat.INTERNATIONAL),
-                        humanYears = "20/4/2023".toHumanYears(dateFormat = DateFormat.INTERNATIONAL),
+                        birthDateAmerican = "4/20/2023",
+                        birthDateInternational = "20/4/2023",
+                        dogYears = "4/20/2023".toDogYears(),
+                        humanYears = "4/20/2023".toHumanYears(),
                         dateFormat = DateFormat.INTERNATIONAL
                     ),
                     DOG_THREE.copy(
-                        birthDate = "30/10/2019",
-                        dogYears = "30/10/2019".toDogYears(dateFormat = DateFormat.INTERNATIONAL),
-                        humanYears = "30/10/2019".toHumanYears(dateFormat = DateFormat.INTERNATIONAL),
+                        birthDateAmerican = "10/30/2019",
+                        birthDateInternational = "30/10/2019",
+                        dogYears = "10/30/2019".toDogYears(),
+                        humanYears = "10/30/2019".toHumanYears(),
                         dateFormat = DateFormat.INTERNATIONAL
                     )
                 ),
@@ -333,9 +325,11 @@ class DogsMemoryDataSourceTest {
         val DOG_ONE = Dog(
             id = 1,
             name = "Dog",
-            weight = 65.0,
+            weightInLb = 65.0,
+            weightInKg = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = Uri.EMPTY,
-            birthDate = "12/22/2021",
+            birthDateAmerican = "12/22/2021",
+            birthDateInternational = "22/12/2021",
             dogYears = "12/22/2021".toDogYears(),
             humanYears = "12/22/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -345,9 +339,11 @@ class DogsMemoryDataSourceTest {
         val DOG_TWO = Dog(
             id = 2,
             name = "Dog",
-            weight = 65.0,
+            weightInLb = 65.0,
+            weightInKg = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = Uri.EMPTY,
-            birthDate = "12/12/2021",
+            birthDateAmerican = "12/12/2021",
+            birthDateInternational = "12/12/2021",
             dogYears = "12/12/2021".toDogYears(),
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -357,9 +353,11 @@ class DogsMemoryDataSourceTest {
         val DOG_THREE = Dog(
             id = 3,
             name = "Dog",
-            weight = 65.0,
+            weightInLb = 65.0,
+            weightInKg = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = Uri.EMPTY,
-            birthDate = "12/12/2021",
+            birthDateAmerican = "12/12/2021",
+            birthDateInternational = "12/12/2021",
             dogYears = "12/12/2021".toDogYears(),
             humanYears = "12/12/2021".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,

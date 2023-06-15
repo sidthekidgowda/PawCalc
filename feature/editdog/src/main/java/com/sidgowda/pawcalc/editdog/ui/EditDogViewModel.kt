@@ -3,6 +3,8 @@ package com.sidgowda.pawcalc.editdog.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
@@ -89,9 +91,9 @@ class EditDogViewModel @Inject constructor(
                 it.copy(
                     profilePic = dog.profilePic,
                     name = dog.name,
-                    weight = dog.weight.toString(),
+                    weight = if (dog.weightFormat == WeightFormat.POUNDS) dog.weightInLb.toString() else dog.weightInKg.toString(),
                     weightFormat = dog.weightFormat,
-                    birthDate = dog.birthDate,
+                    birthDate = if (dog.dateFormat == DateFormat.AMERICAN) dog.birthDateAmerican else dog.birthDateInternational,
                     dateFormat = dog.dateFormat,
                     inputRequirements = DogInputRequirements.values().toSet()
                 )
@@ -121,9 +123,27 @@ class EditDogViewModel @Inject constructor(
                 val input = _inputState.value
                 oldDog?.copy(
                     name = input.name,
-                    weight = input.weight.toDouble().formattedToTwoDecimals(),
                     weightFormat = input.weightFormat,
-                    birthDate = input.birthDate,
+                    weightInKg = if (input.weightFormat == WeightFormat.KILOGRAMS) {
+                        input.weight.toDouble().formattedToTwoDecimals()
+                    } else {
+                        input.weight.toDouble().toNewWeight(WeightFormat.KILOGRAMS)
+                    },
+                    weightInLb = if (input.weightFormat == WeightFormat.POUNDS) {
+                        input.weight.toDouble().formattedToTwoDecimals()
+                    } else {
+                        input.weight.toDouble().toNewWeight(WeightFormat.POUNDS)
+                    },
+                    birthDateAmerican = if (input.dateFormat == DateFormat.AMERICAN) {
+                        input.birthDate
+                    } else {
+                        input.birthDate.dateToNewFormat(DateFormat.AMERICAN)
+                    },
+                    birthDateInternational = if (input.dateFormat == DateFormat.INTERNATIONAL) {
+                        input.birthDate
+                    } else {
+                        input.birthDate.dateToNewFormat(DateFormat.INTERNATIONAL)
+                    },
                     dateFormat = input.dateFormat,
                     profilePic = input.profilePic!!,
                     dogYears = input.birthDate.toDogYears(dateFormat = input.dateFormat),

@@ -394,9 +394,9 @@ internal fun DogListItem(
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
                         text = if (dog.weightFormat == WeightFormat.POUNDS) {
-                            stringResource(id = R.string.dog_list_lb, dog.weight)
+                            stringResource(id = R.string.dog_list_lb, dog.weightInLb)
                         } else {
-                            stringResource(id = R.string.dog_list_kg, dog.weight)
+                            stringResource(id = R.string.dog_list_kg, dog.weightInKg)
                         },
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
@@ -419,7 +419,7 @@ internal fun DogListItem(
                 text = {
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
-                        text = dog.birthDate,
+                        text = if (dog.dateFormat == DateFormat.AMERICAN) dog.birthDateAmerican else dog.birthDateInternational,
                         textAlign = TextAlign.Center,
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
@@ -479,8 +479,10 @@ internal fun DogListItem(
 @Composable
 private fun dogContentDescription(dog: Dog): String {
     val context = LocalContext.current
-    val weight = stringResource(id = R.string.cd_dog_weight, dog.weight, dog.weightFormat.toString())
-    val birthDate = stringResource(id = R.string.cd_born_on, dog.birthDate)
+    val dogWeight = if (dog.weightFormat == WeightFormat.POUNDS) dog.weightInLb else dog.weightInKg
+    val dogBirthDate = if (dog.dateFormat == DateFormat.AMERICAN) dog.birthDateAmerican else dog.birthDateInternational
+    val weight = stringResource(id = R.string.cd_dog_weight, dogWeight, dog.weightFormat.toString())
+    val birthDate = stringResource(id = R.string.cd_born_on, dogBirthDate)
     val dogYears =
         stringResource(id = R.string.cd_in_dog_years, dog.dogYears.toAccessibilityText(context))
     val humanYears =
@@ -563,8 +565,10 @@ fun PreviewDogListItemNotLoading() {
             dog = Dog(
                 id = 0,
                 name = "Mowgli",
-                weight = 80.0,
-                birthDate = "7/30/2019",
+                weightInLb = 80.0,
+                weightInKg = 40.0,
+                birthDateAmerican = "7/30/2019",
+                birthDateInternational = "30/7/2019",
                 profilePic = Uri.EMPTY,
                 dogYears = "7/30/2019".toDogYears(),
                 humanYears = "7/30/2019".toHumanYears(),
