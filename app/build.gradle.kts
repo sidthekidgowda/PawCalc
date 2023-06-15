@@ -18,6 +18,7 @@ android {
         applicationId = "com.sidgowda.pawcalc"
         minSdk = 24
         targetSdk = 33
+        // todo refactor - generate not in configuration phase
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
