@@ -91,9 +91,17 @@ class EditDogViewModel @Inject constructor(
                 it.copy(
                     profilePic = dog.profilePic,
                     name = dog.name,
-                    weight = if (dog.weightFormat == WeightFormat.POUNDS) dog.weightInLb.toString() else dog.weightInKg.toString(),
+                    weight = if (dog.weightFormat == WeightFormat.POUNDS) {
+                        dog.weightInLb.formattedToString()
+                    } else {
+                        dog.weightInKg.formattedToString()
+                    },
                     weightFormat = dog.weightFormat,
-                    birthDate = if (dog.dateFormat == DateFormat.AMERICAN) dog.birthDateAmerican else dog.birthDateInternational,
+                    birthDate = if (dog.dateFormat == DateFormat.AMERICAN) {
+                        dog.birthDateAmerican
+                    } else {
+                        dog.birthDateInternational
+                    },
                     dateFormat = dog.dateFormat,
                     inputRequirements = DogInputRequirements.values().toSet()
                 )

@@ -16,10 +16,10 @@ fun DogEntity.toDog(): Dog {
         weightFormat = weightFormat,
         weightInKg = if (weightFormat == WeightFormat.KILOGRAMS) weight else weight.toNewWeight(
             WeightFormat.KILOGRAMS
-        ).formattedToTwoDecimals(),
+        ),
         weightInLb = if (weightFormat == WeightFormat.POUNDS) weight else weight.toNewWeight(
             WeightFormat.POUNDS
-        ).formattedToTwoDecimals(),
+        ),
         dateFormat = dateFormat,
         birthDateAmerican = if (dateFormat == DateFormat.AMERICAN) birthDate else birthDate.dateToNewFormat(DateFormat.AMERICAN),
         birthDateInternational = if (dateFormat == DateFormat.INTERNATIONAL) birthDate else birthDate.dateToNewFormat(DateFormat.INTERNATIONAL),

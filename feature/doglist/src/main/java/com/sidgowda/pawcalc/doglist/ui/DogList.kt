@@ -51,6 +51,7 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.date.toText
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.formattedToString
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingProgress
 import com.sidgowda.pawcalc.data.onboarding.model.OnboardingState
 import com.sidgowda.pawcalc.doglist.R
@@ -394,9 +395,9 @@ internal fun DogListItem(
                     Text(
                         modifier = Modifier.padding(start = 6.dp),
                         text = if (dog.weightFormat == WeightFormat.POUNDS) {
-                            stringResource(id = R.string.dog_list_lb, dog.weightInLb)
+                            stringResource(id = R.string.dog_list_lb, dog.weightInLb.formattedToString())
                         } else {
-                            stringResource(id = R.string.dog_list_kg, dog.weightInKg)
+                            stringResource(id = R.string.dog_list_kg, dog.weightInKg.formattedToString())
                         },
                         style = PawCalcTheme.typography.body3,
                         color = PawCalcTheme.colors.onBackground
