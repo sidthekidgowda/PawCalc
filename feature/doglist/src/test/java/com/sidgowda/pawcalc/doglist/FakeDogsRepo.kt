@@ -1,5 +1,8 @@
 package com.sidgowda.pawcalc.doglist
 
+import com.sidgowda.pawcalc.common.settings.DateFormat
+import com.sidgowda.pawcalc.common.settings.WeightFormat
+import com.sidgowda.pawcalc.data.date.dateToNewFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsDataSource
@@ -7,8 +10,13 @@ import com.sidgowda.pawcalc.data.dogs.model.Dog
 import com.sidgowda.pawcalc.data.dogs.model.DogInput
 import com.sidgowda.pawcalc.data.dogs.model.DogState
 import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.dogs.repo.DogsRepo
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 
 class FakeDogsRepo(
     private val dogsDataSource: DogsDataSource,
@@ -48,13 +56,15 @@ class FakeDogsRepo(
         val dog = Dog(
             id = id,
             name = dogInput.name,
-            birthDate = dogInput.birthDate,
-            dateFormat = dogInput.dateFormat,
-            weight = dogInput.weight.toDouble().formattedToTwoDecimals(),
+            birthDateAmerican = dogInput.birthDate,
+            birthDateInternational = dogInput.birthDate.dateToNewFormat(DateFormat.INTERNATIONAL),
+            weightInLb = dogInput.weight.toDouble().formattedToTwoDecimals(),
+            weightInKg = dogInput.weight.toDouble().toNewWeight(WeightFormat.KILOGRAMS),
             weightFormat = dogInput.weightFormat,
             dogYears = dogInput.birthDate.toDogYears(dateFormat = dogInput.dateFormat),
             humanYears = dogInput.birthDate.toHumanYears(dateFormat = dogInput.dateFormat),
             profilePic = dogInput.profilePic,
+            dateFormat = dogInput.dateFormat,
             shouldAnimate = true
         )
         dogsDataSource.addDogs(dog)
