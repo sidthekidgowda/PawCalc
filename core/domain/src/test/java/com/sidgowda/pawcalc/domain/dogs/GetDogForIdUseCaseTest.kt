@@ -9,6 +9,7 @@ import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.datasource.DogsMemoryDataSource
 import com.sidgowda.pawcalc.data.dogs.model.Dog
+import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -110,15 +111,12 @@ class GetDogForIdUseCaseTest {
         } andThenAnswer {
             flowOf(listOf(
                 DOG_ONE.copy(
-                    weight = 40.0,
                     weightFormat = WeightFormat.KILOGRAMS
                 ),
                 DOG_TWO.copy(
-                    weight = 40.0,
                     weightFormat = WeightFormat.KILOGRAMS
                 ),
                 DOG_THREE.copy(
-                    weight = 40.0,
                     weightFormat = WeightFormat.KILOGRAMS
                 )
             ))
@@ -131,7 +129,6 @@ class GetDogForIdUseCaseTest {
         getDogForIdUseCase.invoke(1).test {
             assertEquals(
                 DOG_ONE.copy(
-                    weight = 40.0,
                     weightFormat = WeightFormat.KILOGRAMS
                 ), awaitItem()
             )
@@ -147,15 +144,12 @@ class GetDogForIdUseCaseTest {
             flowOf(
                 listOf(
                     DOG_ONE.copy(
-                        birthDate = "20/12/1999",
                         dateFormat = DateFormat.INTERNATIONAL
                     ),
                     DOG_TWO.copy(
-                        birthDate = "20/12/1999",
                         dateFormat = DateFormat.INTERNATIONAL
                     ),
                     DOG_THREE.copy(
-                        birthDate = "20/12/1999",
                         dateFormat = DateFormat.INTERNATIONAL
                     )
                 )
@@ -169,7 +163,6 @@ class GetDogForIdUseCaseTest {
         getDogForIdUseCase.invoke(2).test {
             assertEquals(
                 DOG_TWO.copy(
-                    birthDate = "20/12/1999",
                     dateFormat = DateFormat.INTERNATIONAL
                 ), awaitItem()
             )
@@ -184,8 +177,10 @@ class GetDogForIdUseCaseTest {
             id = 1,
             profilePic = Uri.EMPTY,
             name = "dog_1",
-            weight = 84.0,
-            birthDate = "12/20/1999",
+            weightInLb = 84.0,
+            weightInKg = 84.0.toNewWeight(WeightFormat.KILOGRAMS),
+            birthDateAmerican = "12/20/1999",
+            birthDateInternational = "20/12/1999",
             dogYears =  "12/20/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -197,9 +192,11 @@ class GetDogForIdUseCaseTest {
             id = 2,
             profilePic = Uri.EMPTY,
             name = "dog_2",
-            weight = 84.0,
-            birthDate = "12/20/1999",
-            dogYears =  "12/2/1999".toDogYears(),
+            weightInLb = 84.0,
+            weightInKg = 84.0.toNewWeight(WeightFormat.KILOGRAMS),
+            birthDateAmerican = "12/20/1999",
+            birthDateInternational = "20/12/1999",
+            dogYears =  "12/20/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
             dateFormat = DateFormat.AMERICAN,
@@ -210,8 +207,10 @@ class GetDogForIdUseCaseTest {
             id = 3,
             profilePic = Uri.EMPTY,
             name = "dog_3",
-            weight = 84.0,
-            birthDate = "12/20/1999",
+            weightInLb = 84.0,
+            weightInKg = 84.0.toNewWeight(WeightFormat.KILOGRAMS),
+            birthDateAmerican = "12/20/1999",
+            birthDateInternational = "20/12/1999",
             dogYears =  "12/20/1999".toDogYears(),
             humanYears = "12/20/1999".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,

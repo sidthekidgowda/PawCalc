@@ -6,19 +6,19 @@ import com.sidgowda.pawcalc.data.R
 import timber.log.Timber
 import kotlin.math.round
 
-internal enum class Month(val id: Int, val days: Int, val hasLeapYear: Boolean, val nextMonthId: Int) {
-    JAN(1, 31, false, 2),
-    FEB(2,28, hasLeapYear = true, 3),
-    MARCH(3,31, hasLeapYear = false, 4),
-    APRIL(4,30, hasLeapYear = false, 5),
-    MAY(5,31, hasLeapYear = false, 6),
-    JUNE(6,30, hasLeapYear = false, 7),
-    JULY(7,31, hasLeapYear = false, 8),
-    AUGUST(8,31, hasLeapYear = false, 9),
-    SEPTEMBER(9,30, hasLeapYear = false, 10),
-    OCTOBER(10,31, hasLeapYear = false, 11),
-    NOVEMBER(11,30, hasLeapYear = false, 12),
-    DECEMBER(12,31, hasLeapYear = false, 1);
+internal enum class Month(val id: Int, val days: Int, val prevMonthId: Int) {
+    JAN(1, 31, 12),
+    FEB(2,28, 1),
+    MARCH(3,31, 2),
+    APRIL(4,30, 3),
+    MAY(5,31, 4),
+    JUNE(6,30, 5),
+    JULY(7,31, 6),
+    AUGUST(8,31, 7),
+    SEPTEMBER(9,30, 8),
+    OCTOBER(10,31,  9),
+    NOVEMBER(11,30,  10),
+    DECEMBER(12,31, 11);
 
     companion object {
         infix fun from(monthId: Int): Month = Month.values().first { it.id == monthId }
@@ -125,50 +125,60 @@ fun String.toDogYears(
                 )
     )
 
-    var totalMonthsCount = 0
-    var totalDaysCount: Int
-    val birthMonth = Month from monthsOfBirthDate
-    var startMonth = birthMonth
-    val endMonth = Month from monthsToday
-    //edge case if birth month = end month
-    totalDaysCount = daysToday - daysOfBirthDate
+    val totalMonthsCount = if (monthsOfBirthDate > monthsToday) {
+        var total = 12 - monthsOfBirthDate + monthsToday
+        if (daysOfBirthDate > daysToday) {
+            total -= 1
+        }
+        total
+    } else if (daysToday < daysOfBirthDate && monthsOfBirthDate == monthsToday) {
+        11
+    } else if (daysOfBirthDate > daysToday && monthsToday - monthsOfBirthDate == 1) {
+        0
+    } else if (daysOfBirthDate > daysToday && monthsToday - monthsOfBirthDate > 1) {
+        monthsToday - 1 - monthsOfBirthDate
+    } else {
+        monthsToday - monthsOfBirthDate
+    }
 
-    while (startMonth != endMonth) {
-        totalDaysCount = 0
-        val nextMonth = Month from startMonth.nextMonthId
-        val daysBetweenBirthDates = if (nextMonth != endMonth) {
-            if (startMonth.hasLeapYear && yearsToday / 4 == 0 ) {
-                // edge case for feb having 29 days
-                startMonth.days + 1
-            } else {
-                startMonth.days
-            }
-        } else {
-            if (daysOfBirthDate < daysToday) {
-                // edge case if next month bday date is less than today
-                // ex: bday is 4/4/2023 and start month is March, next and end month is April
-                // and today is 4/20/2023
-                totalMonthsCount++
-                Math.abs(daysOfBirthDate - daysToday)
-            } else  {
-                startMonth.days - daysOfBirthDate + daysToday
-            }
+    val totayYearsCount = if (yearsToday > yearsOfBirthDate) {
+        var numOfyears = yearsToday - yearsOfBirthDate
+        if (daysToday <= daysOfBirthDate && (monthsOfBirthDate > monthsToday || monthsOfBirthDate == monthsToday)
+            && !(daysToday == daysOfBirthDate && monthsOfBirthDate == monthsToday)) {
+            // subtract by 1 if birthDate is after today and months of birth date is more or equal to monthsToday
+            // and days and months are not equal
+            // ex: birthdate 12/20/2019 today 4/20/2021, 2021 - 2019 is 2 years but real age is 1 year and x months y days
+            numOfyears -= 1
         }
-        if (daysBetweenBirthDates >= startMonth.days) {
-            totalMonthsCount++
+        numOfyears
+    } else {
+        0
+    }
+
+    val totalDaysCount = if (daysOfBirthDate == daysToday) {
+        0
+    } else if (daysOfBirthDate < daysToday) {
+        daysToday - daysOfBirthDate
+    } else {
+        // daysOfBirthDate > daysToday
+        val currentMonth = Month from monthsToday
+        val previousMonthId = currentMonth.prevMonthId
+        val previousMonth = Month from previousMonthId
+        // leap year
+        val diffToEndOfMonth = if (
+            previousMonth == Month.FEB && yearsToday % 4 == 0 && yearsToday % 100 != 0
+        ) {
+            previousMonth.days + 1 - daysOfBirthDate
         } else {
-            totalDaysCount = daysBetweenBirthDates
+            previousMonth.days - daysOfBirthDate
         }
-        startMonth = nextMonth
+        diffToEndOfMonth + daysToday
     }
-    var yearsCount = yearsToday - yearsOfBirthDate
-    if (birthMonth.id > endMonth.id) {
-        yearsCount--
-    }
+
     Timber.tag("AgeCalculator")
-        .d("Dog Years: $yearsCount years $totalMonthsCount months $totalDaysCount days")
+        .d("Dog Years: $totayYearsCount years $totalMonthsCount months $totalDaysCount days")
     return Age(
-        years = yearsCount,
+        years = totayYearsCount,
         months = totalMonthsCount,
         days = totalDaysCount
     )
@@ -199,7 +209,7 @@ fun String.toHumanYears(
     val yearsToday = today.split("/").last().toInt()
     val humanYearsToMonthsRatio = 7.0 / 12.0
     val numberOfDaysInYear =
-        if (yearsToday % 4 == 0 &&
+        if (yearsToday % 4 == 0 && yearsToday % 100 != 0 &&
             (monthsOfBirthDate > 2 || (monthsOfBirthDate == 2 && daysOfBirthDate == 29))
         ) {
             366

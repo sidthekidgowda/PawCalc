@@ -15,7 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +33,7 @@ class SettingsDataSourceTest {
     fun setup() {
         settingsDao = mockk()
         capturedSettings = slot()
-        scope = TestScope()
+        scope = TestScope(UnconfinedTestDispatcher())
     }
 
     @Test
@@ -44,8 +44,6 @@ class SettingsDataSourceTest {
             settingsDao = settingsDao,
             scope = scope
         )
-
-        advanceUntilIdle()
 
         coVerify(exactly = 1) { settingsDao.insert(DEFAULT_SETTINGS_ENTITY) }
         capturedSettings.captured shouldBe DEFAULT_SETTINGS_ENTITY
@@ -78,8 +76,6 @@ class SettingsDataSourceTest {
             settingsDao = settingsDao,
             scope = scope
         )
-
-        advanceUntilIdle()
 
         coVerify(exactly = 1) { settingsDao.insert(DEFAULT_SETTINGS_ENTITY) }
         capturedSettings.captured shouldBe DEFAULT_SETTINGS_ENTITY
