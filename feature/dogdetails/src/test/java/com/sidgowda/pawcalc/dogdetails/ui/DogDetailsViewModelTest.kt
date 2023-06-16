@@ -9,7 +9,6 @@ import com.sidgowda.pawcalc.common.settings.WeightFormat
 import com.sidgowda.pawcalc.data.date.toDogYears
 import com.sidgowda.pawcalc.data.date.toHumanYears
 import com.sidgowda.pawcalc.data.dogs.model.Dog
-import com.sidgowda.pawcalc.data.dogs.model.formattedToTwoDecimals
 import com.sidgowda.pawcalc.data.dogs.model.toNewWeight
 import com.sidgowda.pawcalc.data.settings.model.Settings
 import com.sidgowda.pawcalc.dogdetails.model.DogDetailsEvent
@@ -25,7 +24,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -54,13 +52,13 @@ class DogDetailsViewModelTest {
 
     @Before
     fun setup() {
-        ioDispatcher = StandardTestDispatcher()
-        computationDispatcher = StandardTestDispatcher()
+        ioDispatcher = mainDispatcherRule.testDispatcher
+        computationDispatcher = mainDispatcherRule.testDispatcher
         getDogForIdUseCase = mockk()
         updateDogUseCase = mockk()
         settingsUseCase = mockk()
         savedStateHandle = mockk(relaxed = true)
-        scope = TestScope(computationDispatcher)
+        scope = TestScope(mainDispatcherRule.testDispatcher)
         settingsFlow = MutableStateFlow(DEFAULT_SETTINGS)
         dogFlow = MutableSharedFlow()
         every { settingsUseCase.invoke() } returns settingsFlow
@@ -72,8 +70,8 @@ class DogDetailsViewModelTest {
     fun `when fetchDog is called for id 1 then dog 1 must be emitted as state`()  = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 1
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_ONE)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -88,8 +86,8 @@ class DogDetailsViewModelTest {
         every { savedStateHandle.get<Int>("dogId") } returns 2
         dogFlow.emit(DOG_TWO)
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_TWO)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -103,8 +101,8 @@ class DogDetailsViewModelTest {
     fun `when fetchDog is called for id 3 then dog 3 must be emitted as state`()  = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 3
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_THREE)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -118,7 +116,7 @@ class DogDetailsViewModelTest {
     fun `when fetchDog is called for id that does not exist then no dog should be emitted`()  = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 4
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
 
         history shouldContainExactly listOf(
             INITIAL_STATE
@@ -129,9 +127,9 @@ class DogDetailsViewModelTest {
     fun `when settings date format is changed, then current dog date should be updated`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 3
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
-        settingsFlow.emit(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL)).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_THREE)
+        settingsFlow.emit(DEFAULT_SETTINGS.copy(dateFormat = DateFormat.INTERNATIONAL))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -140,8 +138,7 @@ class DogDetailsViewModelTest {
             ),
             DogDetailsState(
                 dog = DOG_THREE.copy(
-                    dateFormat = DateFormat.INTERNATIONAL,
-                    birthDate = "1/12/2022"
+                    dateFormat = DateFormat.INTERNATIONAL
                 )
             )
         )
@@ -151,10 +148,9 @@ class DogDetailsViewModelTest {
     fun `when settings weight format is changed, then current dog weight should be updated`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 2
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_TWO)
         settingsFlow.emit(DEFAULT_SETTINGS.copy(weightFormat = WeightFormat.KILOGRAMS))
-            .also { advanceUntilIdle() }
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -163,8 +159,7 @@ class DogDetailsViewModelTest {
             ),
             DogDetailsState(
                 dog = DOG_TWO.copy(
-                    weightFormat = WeightFormat.KILOGRAMS,
-                    weight = DOG_TWO.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals()
+                    weightFormat = WeightFormat.KILOGRAMS
                 )
             )
         )
@@ -195,9 +190,9 @@ class DogDetailsViewModelTest {
     fun `when dog 1 is edited and updated, updated dog should be emitted as new state`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 1
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE.copy(weight = 55.0)).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_ONE)
+        dogFlow.emit(DOG_ONE.copy(weightInLb = 58.0))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -206,7 +201,7 @@ class DogDetailsViewModelTest {
             ),
             DogDetailsState(
                 dog = DOG_ONE.copy(
-                    weight = 55.0
+                    weightInLb = 58.0
                 )
             )
         )
@@ -216,12 +211,12 @@ class DogDetailsViewModelTest {
     fun `when dog 3 is edited and updated, updated dog should be emitted as new state`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 3
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_THREE)
         dogFlow.emit(
             DOG_THREE.copy(
-            birthDate = "7/30/2019"
-        )).also { advanceUntilIdle() }
+            birthDateAmerican = "7/30/2019"
+        ))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -230,7 +225,7 @@ class DogDetailsViewModelTest {
             ),
             DogDetailsState(
                 dog = DOG_THREE.copy(
-                    birthDate = "7/30/2019"
+                    birthDateAmerican = "7/30/2019"
                 )
             )
         )
@@ -240,9 +235,9 @@ class DogDetailsViewModelTest {
     fun `when event edit dog is called for dog 1, navigate event edit dog is emitted as state`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 1
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_ONE)
+        viewModel.handleEvent(DogDetailsEvent.EditDog)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -260,9 +255,9 @@ class DogDetailsViewModelTest {
     fun `when event edit dog is called for dog 2, navigate event edit dog is emitted as state`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 2
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_TWO)
+        viewModel.handleEvent(DogDetailsEvent.EditDog)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -280,9 +275,9 @@ class DogDetailsViewModelTest {
     fun `when event edit dog is called for dog 3, navigate event edit dog is emitted as state`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 3
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_THREE)
+        viewModel.handleEvent(DogDetailsEvent.EditDog)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -300,10 +295,10 @@ class DogDetailsViewModelTest {
     fun `when OnNavigated is called for dog 1, then navigate event is reset to null`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 1
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.OnNavigated).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_ONE)
+        viewModel.handleEvent(DogDetailsEvent.EditDog)
+        viewModel.handleEvent(DogDetailsEvent.OnNavigated)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -325,10 +320,10 @@ class DogDetailsViewModelTest {
     fun `when OnNavigated is called for dog 2, then navigate event is reset to null`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 2
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.OnNavigated).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_TWO)
+        viewModel.handleEvent(DogDetailsEvent.EditDog)
+        viewModel.handleEvent(DogDetailsEvent.OnNavigated)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -350,10 +345,10 @@ class DogDetailsViewModelTest {
     fun `when OnNavigated is called for dog 3, then navigate event is reset to null`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 3
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_THREE).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.EditDog).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.OnNavigated).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_THREE)
+        viewModel.handleEvent(DogDetailsEvent.EditDog)
+        viewModel.handleEvent(DogDetailsEvent.OnNavigated)
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -375,10 +370,10 @@ class DogDetailsViewModelTest {
     fun `when event OnAnimationFinished is called for Dog2, then Dog2 shouldAnimate will be updated to false`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 2
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_TWO).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.OnAnimationFinished).also { advanceUntilIdle() }
-        dogFlow.emit(DOG_TWO.copy(shouldAnimate = false)).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_TWO)
+        viewModel.handleEvent(DogDetailsEvent.OnAnimationFinished)
+        dogFlow.emit(DOG_TWO.copy(shouldAnimate = false))
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -395,11 +390,13 @@ class DogDetailsViewModelTest {
     fun `when Dog 1 birthdate is changed after animation has finished, then shouldAnimate will be updated to true`() = scope.runTest {
         every { savedStateHandle.get<Int>("dogId") } returns 1
         initializeViewModel()
-        val history = viewModel.createStateHistory().also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE).also { advanceUntilIdle() }
-        viewModel.handleEvent(DogDetailsEvent.OnAnimationFinished).also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE.copy(shouldAnimate = false)).also { advanceUntilIdle() }
-        dogFlow.emit(DOG_ONE.copy(birthDate = "7/28/2022", shouldAnimate = true)).also { advanceUntilIdle() }
+        val history = viewModel.createStateHistory()
+        dogFlow.emit(DOG_ONE)
+        viewModel.handleEvent(DogDetailsEvent.OnAnimationFinished)
+        dogFlow.emit(DOG_ONE.copy(shouldAnimate = false))
+        dogFlow.emit(
+            DOG_ONE.copy(birthDateAmerican = "7/30/2022", shouldAnimate = true)
+        )
 
         history shouldContainExactly listOf(
             INITIAL_STATE,
@@ -410,7 +407,7 @@ class DogDetailsViewModelTest {
                 dog = DOG_ONE.copy(shouldAnimate = false),
             ),
             DogDetailsState(
-                dog = DOG_ONE.copy(shouldAnimate = true, birthDate = "7/28/2022")
+                dog = DOG_ONE.copy(shouldAnimate = true, birthDateAmerican = "7/30/2022")
             )
         )
     }
@@ -438,8 +435,10 @@ class DogDetailsViewModelTest {
             id = 1,
             name = "Mowgli",
             profilePic = Uri.parse("http://image1"),
-            birthDate = "7/30/2019",
-            weight = 75.0,
+            birthDateAmerican = "7/30/2019",
+            birthDateInternational = "30/7/2019",
+            weightInLb = 75.0,
+            weightInKg = 75.0.toNewWeight(WeightFormat.KILOGRAMS),
             dogYears = "7/30/2019".toDogYears(),
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -450,8 +449,10 @@ class DogDetailsViewModelTest {
             id = 2,
             name = "Tucker",
             profilePic = Uri.parse("http://image2"),
-            birthDate = "4/15/2019",
-            weight = 85.0,
+            birthDateAmerican = "4/15/2019",
+            birthDateInternational = "15/4/2019",
+            weightInLb = 85.0,
+            weightInKg = 85.0.toNewWeight(WeightFormat.KILOGRAMS),
             dogYears = "4/15/2019".toDogYears(),
             humanYears = "4/15/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -462,8 +463,10 @@ class DogDetailsViewModelTest {
             id = 3,
             name = "Todd",
             profilePic = Uri.parse("http://image2"),
-            birthDate = "12/1/2022",
-            weight = 65.0,
+            birthDateAmerican = "12/1/2022",
+            birthDateInternational = "1/12/2019",
+            weightInLb = 65.0,
+            weightInKg = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
             dogYears = "12/1/2022".toDogYears(),
             humanYears = "12/1/2022".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,

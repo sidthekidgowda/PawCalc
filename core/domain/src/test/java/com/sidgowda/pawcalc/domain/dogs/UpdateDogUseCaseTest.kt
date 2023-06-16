@@ -49,9 +49,27 @@ class UpdateDogUseCaseTest {
 
     @Test
     fun `verify updateDog updated with correct date format`() = runTest {
-        updateDogUseCase.invoke(DOG.copy(birthDateInternational = "20/5/2000", birthDateAmerican = "" dateFormat = DateFormat.INTERNATIONAL))
-        coVerify(exactly = 1) { dogsRepo.updateDog(DOG.copy(birthDate = "20/5/2000", dateFormat = DateFormat.INTERNATIONAL)) }
-        capturedDog.captured shouldBe DOG.copy(birthDate = "20/5/2000", dateFormat = DateFormat.INTERNATIONAL)
+        updateDogUseCase.invoke(
+            DOG.copy(
+                birthDateInternational = "20/5/2000",
+                birthDateAmerican = "5/20/2000",
+                dateFormat = DateFormat.INTERNATIONAL
+            )
+        )
+        coVerify(exactly = 1) {
+            dogsRepo.updateDog(
+                DOG.copy(
+                    birthDateInternational = "20/5/2000",
+                    birthDateAmerican = "5/20/2000",
+                    dateFormat = DateFormat.INTERNATIONAL
+                )
+            )
+        }
+        capturedDog.captured shouldBe DOG.copy(
+            birthDateInternational = "20/5/2000",
+            birthDateAmerican = "5/20/2000",
+            dateFormat = DateFormat.INTERNATIONAL
+        )
     }
 
     @Test
@@ -67,7 +85,7 @@ class UpdateDogUseCaseTest {
             profilePic = Uri.EMPTY,
             name = "dog",
             weightInLb = 84.0,
-            weightInKg = 84.0.toNewWeight(WeightFormat.KILOGRAMS)
+            weightInKg = 84.0.toNewWeight(WeightFormat.KILOGRAMS),
             birthDateAmerican = "12/20/1999",
             birthDateInternational = "20/12/1999",
             dogYears =  "12/20/1999".toDogYears(),
