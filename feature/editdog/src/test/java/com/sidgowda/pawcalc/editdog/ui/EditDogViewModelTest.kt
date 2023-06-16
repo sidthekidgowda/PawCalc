@@ -91,8 +91,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
-                birthDate = DOG_ONE.birthDate,
+                weight = DOG_ONE.weightInLb.formattedToString(),
+                birthDate = DOG_ONE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -109,8 +109,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -127,8 +127,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
+                weight = DOG_THREE.weightInLb.formattedToString(),
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -146,15 +146,15 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
+                weight = DOG_THREE.weightInLb.formattedToString(),
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = "New name",
-                weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
+                weight = DOG_THREE.weightInLb.formattedToString(),
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -178,16 +178,16 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = nameWith60,
                 isNameValid = false,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = setOf(
                     DogInputRequirements.BirthDate,
                     DogInputRequirements.OnePicture,
@@ -210,14 +210,14 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
+                weight = DOG_THREE.weightInLb.formattedToString(),
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
+                weight = DOG_THREE.weightInLb.formattedToString(),
                 birthDateDialogShown = false,
                 birthDate = "12/20/2021",
                 inputRequirements = DogInputRequirements.values().toSet()
@@ -225,7 +225,7 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
+                weight = DOG_THREE.weightInLb.formattedToString(),
                 birthDate = "12/20/2021",
                 birthDateDialogShown = true,
                 inputRequirements = DogInputRequirements.values().toSet()
@@ -245,14 +245,14 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
+                weight = DOG_THREE.weightInLb.formattedToString(),
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
+                weight = DOG_THREE.weightInLb.formattedToString(),
                 birthDate = "",
                 birthDateDialogShown = false,
                 inputRequirements = setOf(
@@ -264,7 +264,7 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
+                weight = DOG_THREE.weightInLb.formattedToString(),
                 birthDate = "",
                 isBirthDateValid = false,
                 birthDateDialogShown = true,
@@ -290,15 +290,15 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
-                birthDate = DOG_ONE.birthDate,
+                weight = DOG_ONE.weightInLb.formattedToString(),
+                birthDate = DOG_ONE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
                 weight = "80.0",
-                birthDate = DOG_ONE.birthDate,
+                birthDate = DOG_ONE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -316,8 +316,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
@@ -325,7 +325,7 @@ class EditDogViewModelTest {
                 name = DOG_TWO.name,
                 weight = "-50.0",
                 isWeightValid = false,
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = setOf(
                     DogInputRequirements.BirthDate,
                     DogInputRequirements.OnePicture,
@@ -348,8 +348,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
@@ -357,7 +357,7 @@ class EditDogViewModelTest {
                 name = DOG_TWO.name,
                 weight = "1.23.0",
                 isWeightValid = false,
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = setOf(
                     DogInputRequirements.BirthDate,
                     DogInputRequirements.OnePicture,
@@ -380,8 +380,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
@@ -389,7 +389,7 @@ class EditDogViewModelTest {
                 name = DOG_TWO.name,
                 weight = "5000",
                 isWeightValid = false,
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = setOf(
                     DogInputRequirements.BirthDate,
                     DogInputRequirements.OnePicture,
@@ -445,7 +445,8 @@ class EditDogViewModelTest {
         viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
 
         val expectedDog = DOG_ONE.copy(
-            weight = 73.29
+            weightInLb = 73.29,
+            weightInKg = 73.29.toNewWeight(WeightFormat.KILOGRAMS)
         )
         coVerify { updateDogUseCase.invoke(expectedDog) }
         capturedDog.captured shouldBe expectedDog
@@ -465,16 +466,16 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toString(),
-                birthDate = DOG_THREE.birthDate,
+                weight = DOG_THREE.weightInLb.formattedToString(),
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_THREE.profilePic,
                 name = DOG_THREE.name,
-                weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS).formattedToString(),
+                weight = DOG_THREE.weightInKg.formattedToString(),
                 weightFormat = WeightFormat.KILOGRAMS,
-                birthDate = DOG_THREE.birthDate,
+                birthDate = DOG_THREE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -498,26 +499,27 @@ class EditDogViewModelTest {
                 DogInputState(
                     profilePic = DOG_THREE.profilePic,
                     name = DOG_THREE.name,
-                    weight = DOG_THREE.weight.toString(),
-                    birthDate = DOG_THREE.birthDate,
+                    weight = DOG_THREE.weightInLb.formattedToString(),
+                    birthDate = DOG_THREE.birthDateAmerican,
                     inputRequirements = DogInputRequirements.values().toSet()
                 ),
                 DogInputState(
                     profilePic = DOG_THREE.profilePic,
                     name = DOG_THREE.name,
-                    weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS)
-                        .formattedToString(),
+                    weight = DOG_THREE.weightInKg.formattedToString(),
                     weightFormat = WeightFormat.KILOGRAMS,
-                    birthDate = DOG_THREE.birthDate,
+                    birthDate = DOG_THREE.birthDateAmerican,
                     inputRequirements = DogInputRequirements.values().toSet()
                 ),
                 DogInputState(
                     profilePic = DOG_THREE.profilePic,
                     name = DOG_THREE.name,
-                    weight = DOG_THREE.weight.toNewWeight(WeightFormat.KILOGRAMS)
-                        .formattedToTwoDecimals().toNewWeight(WeightFormat.POUNDS)
+                    weight = DOG_THREE.weightInLb.toNewWeight(WeightFormat.KILOGRAMS)
+                        .toNewWeight(WeightFormat.POUNDS)
+                        .toNewWeight(WeightFormat.KILOGRAMS)
+                        .toNewWeight(WeightFormat.POUNDS)
                         .formattedToString(),
-                    birthDate = DOG_THREE.birthDate,
+                    birthDate = DOG_THREE.birthDateAmerican,
                     inputRequirements = DogInputRequirements.values().toSet()
                 )
             )
@@ -538,8 +540,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
@@ -547,7 +549,7 @@ class EditDogViewModelTest {
                 name = DOG_TWO.name,
                 weight = "8500",
                 isWeightValid = false,
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
                     .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
@@ -557,7 +559,7 @@ class EditDogViewModelTest {
                 isWeightValid = false,
                 weightFormat = WeightFormat.KILOGRAMS,
                 weight = "8500".toDouble().toNewWeight(WeightFormat.KILOGRAMS).formattedToString(),
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
                     .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             )
@@ -579,8 +581,8 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_TWO.profilePic,
                 name = DOG_TWO.name,
-                weight = DOG_TWO.weight.toString(),
-                birthDate = DOG_TWO.birthDate,
+                weight = DOG_TWO.weightInLb.formattedToString(),
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
@@ -588,7 +590,7 @@ class EditDogViewModelTest {
                 name = DOG_TWO.name,
                 weight = "5.5.5",
                 isWeightValid = false,
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
                     .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             ),
@@ -598,7 +600,7 @@ class EditDogViewModelTest {
                 isWeightValid = false,
                 weightFormat = WeightFormat.KILOGRAMS,
                 weight = "5.5.5",
-                birthDate = DOG_TWO.birthDate,
+                birthDate = DOG_TWO.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
                     .minus(DogInputRequirements.WeightMoreThanZeroAndValidNumberBelow500LbOr225Kg)
             )
@@ -619,14 +621,14 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
-                birthDate = DOG_ONE.birthDate,
+                weight = DOG_ONE.weightInLb.formattedToString(),
+                birthDate = DOG_ONE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
+                weight = DOG_ONE.weightInLb.formattedToString(),
                 birthDate = "30/7/2019",
                 dateFormat = DateFormat.INTERNATIONAL,
                 inputRequirements = DogInputRequirements.values().toSet()
@@ -650,14 +652,15 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
-                birthDate = DOG_ONE.birthDate,
+                weight = DOG_ONE.weightInLb.formattedToString(),
+                dateFormat = DateFormat.AMERICAN,
+                birthDate = DOG_ONE.birthDateAmerican,
                 inputRequirements = DogInputRequirements.values().toSet()
             ),
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
+                weight = DOG_ONE.weightInLb.formattedToString(),
                 birthDate = "30/7/2019",
                 dateFormat = DateFormat.INTERNATIONAL,
                 inputRequirements = DogInputRequirements.values().toSet()
@@ -665,8 +668,9 @@ class EditDogViewModelTest {
             DogInputState(
                 profilePic = DOG_ONE.profilePic,
                 name = DOG_ONE.name,
-                weight = DOG_ONE.weight.toString(),
-                birthDate = DOG_ONE.birthDate,
+                weight = DOG_ONE.weightInLb.formattedToString(),
+                birthDate = DOG_ONE.birthDateAmerican,
+                dateFormat = DateFormat.AMERICAN,
                 inputRequirements = DogInputRequirements.values().toSet()
             )
         )
@@ -686,9 +690,11 @@ class EditDogViewModelTest {
         viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
 
         val expectedDog = DOG_TWO.copy(
-            birthDate = "15/4/2019",
+            birthDateInternational = "15/4/2019",
+            birthDateAmerican = "4/15/2019",
             dateFormat = DateFormat.INTERNATIONAL,
-            weight = 85.0.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
+            weightInLb =  85.0.toNewWeight(WeightFormat.KILOGRAMS).toNewWeight(WeightFormat.POUNDS),
+            weightInKg = 85.0.toNewWeight(WeightFormat.KILOGRAMS).formattedToTwoDecimals(),
             weightFormat = WeightFormat.KILOGRAMS
         )
         coVerify { updateDogUseCase.invoke(expectedDog) }
@@ -704,7 +710,8 @@ class EditDogViewModelTest {
         viewModel.handleEvent(DogInputEvent.SavingInfo).also { advanceUntilIdle() }
 
         val expectedDog = DOG_TWO.copy(
-            birthDate = "7/15/2019",
+            birthDateAmerican = "7/15/2019",
+            birthDateInternational = "15/7/2019",
             shouldAnimate = true,
             dogYears = "7/15/2019".toDogYears(dateFormat = DateFormat.AMERICAN),
             humanYears = "7/15/2019".toHumanYears(dateFormat = DateFormat.AMERICAN)
@@ -730,9 +737,11 @@ class EditDogViewModelTest {
         return Dog(
             id = 2,
             name = "Mowgli",
-            weight = 100.0,
+            weightInLb = 100.0,
+            weightInKg = 100.0.toNewWeight(WeightFormat.KILOGRAMS),
             profilePic = uri,
-            birthDate = "7/30/2019",
+            birthDateAmerican = "7/30/2019",
+            birthDateInternational = "30/7/2019",
             dogYears = "7/30/2019".toDogYears(),
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -765,8 +774,10 @@ class EditDogViewModelTest {
             id = 1,
             name = "Mowgli",
             profilePic = Uri.parse("http://image1"),
-            birthDate = "7/30/2019",
-            weight = 75.0,
+            birthDateAmerican = "7/30/2019",
+            birthDateInternational = "30/7/2019",
+            weightInLb = 75.0,
+            weightInKg = 75.0.toNewWeight(WeightFormat.KILOGRAMS),
             dogYears = "7/30/2019".toDogYears(),
             humanYears = "7/30/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -777,8 +788,10 @@ class EditDogViewModelTest {
             id = 2,
             name = "Tucker",
             profilePic = Uri.parse("http://image2"),
-            birthDate = "4/15/2019",
-            weight = 85.0,
+            birthDateAmerican = "4/15/2019",
+            birthDateInternational = "15/4/2019",
+            weightInLb = 85.0,
+            weightInKg = 85.0.toNewWeight(WeightFormat.KILOGRAMS),
             dogYears = "4/15/2019".toDogYears(),
             humanYears = "4/15/2019".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
@@ -789,8 +802,10 @@ class EditDogViewModelTest {
             id = 3,
             name = "Todd",
             profilePic = Uri.parse("http://image2"),
-            birthDate = "12/1/2022",
-            weight = 65.0,
+            birthDateAmerican = "12/1/2022",
+            birthDateInternational = "1/12/2022",
+            weightInLb = 65.0,
+            weightInKg = 65.0.toNewWeight(WeightFormat.KILOGRAMS),
             dogYears = "12/1/2022".toDogYears(),
             humanYears = "12/1/2022".toHumanYears(),
             weightFormat = WeightFormat.POUNDS,
