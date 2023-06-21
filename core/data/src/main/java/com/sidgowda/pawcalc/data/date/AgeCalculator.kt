@@ -126,38 +126,42 @@ fun String.toDogYears(
     )
 
     val totalMonthsCount = if (monthsOfBirthDate > monthsToday) {
+        // birthdate = 11/5/2015, today = 8/15/2022
         var total = 12 - monthsOfBirthDate + monthsToday
         if (daysOfBirthDate > daysToday) {
             total -= 1
         }
         total
-    } else if (daysToday < daysOfBirthDate && monthsOfBirthDate == monthsToday) {
-        11
-    } else if (daysOfBirthDate > daysToday && monthsToday - monthsOfBirthDate == 1) {
-        0
-    } else if (daysOfBirthDate > daysToday && monthsToday - monthsOfBirthDate > 1) {
-        monthsToday - 1 - monthsOfBirthDate
+    } else if (daysOfBirthDate > daysToday) {
+        if (monthsOfBirthDate == monthsToday) {
+            // birthdate = 12/10/2020, today = 12/1/2021,
+            11
+        } else {
+            // birthdate = 8/20/2021, today = 9/1/2022
+            monthsToday - monthsOfBirthDate - 1
+        }
     } else {
+        // birthdate = 5/10/2022, today = 8/20/2023
         monthsToday - monthsOfBirthDate
     }
 
-    val totayYearsCount = if (yearsToday > yearsOfBirthDate) {
-        var numOfyears = yearsToday - yearsOfBirthDate
-        if (daysToday <= daysOfBirthDate && (monthsOfBirthDate > monthsToday || monthsOfBirthDate == monthsToday)
-            && !(daysToday == daysOfBirthDate && monthsOfBirthDate == monthsToday)) {
-            // subtract by 1 if birthDate is after today and months of birth date is more or equal to monthsToday
-            // and days and months are not equal
-            // ex: birthdate 12/20/2019 today 4/20/2021, 2021 - 2019 is 2 years but real age is 1 year and x months y days
-            numOfyears -= 1
-        }
-        numOfyears
+    val numOfYears = yearsToday - yearsOfBirthDate
+    val totalYearsCount: Int = if (daysToday <= daysOfBirthDate &&
+        (monthsOfBirthDate > monthsToday || monthsOfBirthDate == monthsToday)
+        && !(daysToday == daysOfBirthDate && monthsOfBirthDate == monthsToday)
+    ) {
+        // subtract by 1 if birthDate is after today and
+        // months of birth date is more or equal to monthsToday
+        // and days and months are not equal
+        // ex: birthdate 12/20/2019, today 4/20/2021, 2021 - 2019 is 2 years
+        // but real age is 1 year and x months y days
+        numOfYears - 1
     } else {
-        0
+        numOfYears
     }
 
-    val totalDaysCount = if (daysOfBirthDate == daysToday) {
-        0
-    } else if (daysOfBirthDate < daysToday) {
+    val totalDaysCount = if (daysOfBirthDate <= daysToday) {
+        // birthdate = 3/20/2021, today = 4/22/2021
         daysToday - daysOfBirthDate
     } else {
         // daysOfBirthDate > daysToday
@@ -176,9 +180,9 @@ fun String.toDogYears(
     }
 
     Timber.tag("AgeCalculator")
-        .d("Dog Years: $totayYearsCount years $totalMonthsCount months $totalDaysCount days")
+        .d("Dog Years: $totalYearsCount years $totalMonthsCount months $totalDaysCount days")
     return Age(
-        years = totayYearsCount,
+        years = totalYearsCount,
         months = totalMonthsCount,
         days = totalDaysCount
     )
