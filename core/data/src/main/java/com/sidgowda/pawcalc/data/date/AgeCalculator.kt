@@ -83,17 +83,26 @@ fun Age.toAccessibilityText(context: Context): String {
 
 /**
  * Algorithm to calculate number of years, months, and days from a birth date till today:
- * years = Today(years) - BirthDate(years), subtract 1 if birth month is past today's month
- * months = loop from start of given birth month till end month
- *          if the next month is not the end month, calculate number of days between birth dates of
- *          each month. Ex Jan 15 - Feb 15 is 31 days. Increment total month count
- *          if the next month is end month, and if the birth date happens before today,
- *              Increment total month count and calculate difference of Today from birth date.
- *              Ex If birth date is April 15 and today is April 18. Difference is 3 for total days
- *              and we increment total month count.
- *              otherwise, if birth date happens after today, calculate difference from
- *               current month total days - birth date days + days today. This difference is total days
- * days = Absolute difference remaining when there is leftover from birth date till today.
+ * years = YearsToday - YearsBirthDate, subtract by 1 if birthDate is after today and
+ *          months of birth date is more or equal to monthsToday
+ *          and days and months are not equal.
+ *          ex: birthdate 12/20/2019, today 4/20/2021, 2021 - 2019 is 2 years
+ *          but real age is 1 year, X months, Y days
+ *
+ * months = if (monthsOfBirthDate > monthsToday),
+ *          find difference between Dec and birthMonth, and add monthsToday
+ *          subtract by 1 if daysOfBirthDate is more than daysToday
+ *       else if (monthsOfBirthDate <= monthsToday)
+ *          if (monthsOfBirthDate == monthsToday) 11
+ *          else monthsToday - monthsBirthDate - 1
+*        else
+ *          monthsToday - monthsBirthDate
+ *
+ * days = if (daysBirthDate <= daysToday)
+ *             daysToday - daysBirthDate
+*         else
+ *         find difference from birthDay to previousMonth number of days and then add daysOfToday
+ *         if leap year, add 1
  */
 fun String.toDogYears(
     today: String = dateFromLong(localDateTimeInMilliseconds()),
@@ -165,16 +174,14 @@ fun String.toDogYears(
         daysToday - daysOfBirthDate
     } else {
         // daysOfBirthDate > daysToday
+        // birthDate = 11/25/2021, today = 12/5/2022
         val currentMonth = Month from monthsToday
         val previousMonthId = currentMonth.prevMonthId
         val previousMonth = Month from previousMonthId
         // leap year
-        val diffToEndOfMonth = if (
-            previousMonth == Month.FEB && yearsToday % 4 == 0 && yearsToday % 100 != 0
-        ) {
-            previousMonth.days + 1 - daysOfBirthDate
-        } else {
-            previousMonth.days - daysOfBirthDate
+        var diffToEndOfMonth = previousMonth.days - daysOfBirthDate
+        if (previousMonth == Month.FEB && yearsToday % 4 == 0 && yearsToday % 100 != 0) {
+            diffToEndOfMonth++
         }
         diffToEndOfMonth + daysToday
     }
