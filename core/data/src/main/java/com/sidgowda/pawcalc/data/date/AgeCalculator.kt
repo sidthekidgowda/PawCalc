@@ -138,7 +138,7 @@ fun String.toDogYears(
         // birthdate = 11/5/2015, today = 8/15/2022
         var total = 12 - monthsOfBirthDate + monthsToday
         if (daysOfBirthDate > daysToday) {
-            total -= 1
+            total--
         }
         total
     } else if (daysOfBirthDate > daysToday) {
